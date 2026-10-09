@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B2014">
+<title>CreaMus · Campeonatos de mus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700;800&family=Alegreya+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#10291B;--bg2:#0B2014;--card:#183A27;--card2:#1F4831;--line:#2C5840;
+  --txt:#EEF5F0;--mute:#9DBBA8;--crema:#F6EDD5;--oro:#E7B94F;--oro2:#F3D488;--rojo:#E66B60;--azul:#8BBDF4;--verde:#7FD99C;
+  --serif:'Alegreya',Georgia,serif;--sans:'Alegreya Sans','Segoe UI',Roboto,Arial,sans-serif;
+  color-scheme:dark;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:16px;line-height:1.4;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+.app{max-width:480px;margin:0 auto;min-height:100%;position:relative}
+main{padding:14px 14px calc(130px + env(safe-area-inset-bottom,0px))}
+.sin-nav main{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{margin:0}
+h2.sec{font-family:var(--serif);font-size:1.3rem;color:var(--crema);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+.nota{color:var(--mute);font-size:.92rem;margin:6px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.pad{padding:14px}
+.fila-flex{display:flex;align-items:center;gap:10px}
+.oculto{display:none!important}
+
+/* Cabeceras */
+.top{background:linear-gradient(180deg,var(--bg2),var(--bg));padding:16px 14px 10px;position:relative;overflow:hidden}
+.top::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
+.top>*{position:relative;z-index:1}
+.top-barra{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.icono-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:1.1rem;flex:0 0 auto}
+.icono-btn.on{background:var(--oro);color:#1A1A10;border-color:var(--oro)}
+.titulo{font-family:var(--serif);font-weight:800;font-size:1.7rem;line-height:1.08;color:var(--crema);overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.chip.oro{background:rgba(231,185,79,.16);color:var(--oro2);border-color:rgba(231,185,79,.35)}
+.hero{text-align:center;padding:26px 14px 18px}
+.hero .logo{font-size:2.6rem}
+.hero h1{font-family:var(--serif);font-weight:800;font-size:2rem;color:var(--crema);line-height:1.05;margin-top:6px}
+.hero p{color:var(--mute);margin:8px auto 0;max-width:30ch}
+.banner{background:rgba(139,189,244,.10);border:1px solid rgba(139,189,244,.3);color:#D6E6FA;border-radius:12px;padding:10px 12px;font-size:.88rem;margin-bottom:14px}
+.banner b{color:#fff}
+
+/* Botones */
+.btn{border:0;border-radius:12px;padding:13px 18px;font-weight:800;background:var(--oro);color:#1A1A10;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.full{width:100%}
+.btn.sec{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+.btn.peligro{background:transparent;color:var(--rojo);border:1px solid var(--rojo)}
+.btn.peq{padding:8px 12px;font-size:.88rem;border-radius:10px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.acciones .btn{flex:1 1 auto}
+
+/* Portal */
+.camp{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.camp .ico{width:48px;height:48px;border-radius:14px;background:var(--card2);display:grid;place-items:center;font-size:1.5rem}
+.camp h3{font-family:var(--serif);font-size:1.15rem;color:var(--crema);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.camp .meta{display:block;color:var(--mute);font-size:.84rem;margin-top:2px}
+.camp .barra{display:block;height:5px;background:var(--card2);border-radius:3px;margin-top:8px;overflow:hidden}
+.camp .barra i{display:block;height:100%;background:var(--oro)}
+.candado{font-size:1.2rem;opacity:.85}
+
+/* Avatares y participantes */
+.av{--h:120;width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;font-size:.72rem;font-weight:800;color:#0B2014;background:hsl(var(--h),55%,68%);border:2px solid var(--card);flex:0 0 auto;letter-spacing:.02em}
+.av.g{width:44px;height:44px;font-size:.95rem}
+.av.xl{width:64px;height:64px;font-size:1.3rem;border-width:3px}
+.av.vacio{background:var(--card2);color:var(--mute)}
+.avs{display:inline-flex;flex:0 0 auto}
+.avs .av+.av{margin-left:-10px}
+.pt{display:flex;align-items:center;gap:8px;min-width:0}
+.pn{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.pn b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.95rem}
+.pn small{color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.78rem}
+.pt.der{flex-direction:row-reverse;text-align:right}
+.pt.der .avs{flex-direction:row-reverse}
+.pt.der .avs .av+.av{margin-left:0;margin-right:-10px}
+.pt.ph .pn b{color:var(--mute);font-weight:600;font-style:italic;white-space:normal;font-size:.85rem}
+.pt.gana .pn b{color:var(--verde)}
+
+/* Partidas */
+.lista{display:flex;flex-direction:column;gap:8px}
+.match{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr);gap:6px;align-items:center;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 10px;text-align:left}
+.match.mia{border-color:var(--oro);box-shadow:0 0 0 1px var(--oro) inset}
+.match.bye{opacity:.6;cursor:default}
+.centro{display:flex;flex-direction:column;align-items:center;gap:3px}
+.centro .res{font-family:var(--serif);font-weight:800;font-size:1.35rem;color:var(--crema);line-height:1}
+.centro .vs{font-weight:800;color:var(--mute);font-size:.85rem;border:1px solid var(--line);border-radius:20px;padding:2px 8px}
+.est{font-size:.68rem;font-weight:800;padding:1px 6px;border-radius:6px;white-space:nowrap}
+.e-jugada{background:rgba(139,189,244,.16);color:var(--azul)}
+.e-abierta{background:rgba(127,217,156,.16);color:var(--verde)}
+.e-proxima{background:var(--card2);color:var(--mute)}
+.e-tarde{background:rgba(230,107,96,.18);color:var(--rojo)}
+.ronda{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 8px}
+.ronda h3{font-family:var(--serif);font-size:1.12rem;color:var(--crema)}
+.ronda span{color:var(--mute);font-size:.85rem}
+.descanso{font-size:.85rem;color:var(--mute);display:flex;align-items:center;gap:8px;padding:2px 4px}
+
+/* Filtros y segmentos */
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:8px 6px;font-weight:800;color:var(--mute);font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--oro);color:#1A1A10}
+
+/* Clasificación */
+.tabla{display:flex;flex-direction:column;gap:6px}
+.pos-row{display:grid;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;width:100%;text-align:left}
+.pos-row.pasa{border-left:4px solid var(--oro)}
+.pos-row.yo{background:rgba(231,185,79,.12)}
+.pos-row.fuera{opacity:.55}
+.pos{font-family:var(--serif);font-weight:800;font-size:1.25rem;text-align:center;color:var(--crema)}
+.pos.p1{color:#F3D488}.pos.p2{color:#D9DEE3}.pos.p3{color:#E0A577}
+.cifra{text-align:right;line-height:1}
+.cifra b{font-family:var(--serif);font-size:1.5rem;color:var(--crema)}
+.cifra small{display:block;color:var(--mute);font-size:.72rem;margin-top:2px}
+.detalle{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+.mini{background:var(--card2);border-radius:10px;padding:6px 4px;text-align:center}
+.mini b{display:block;font-size:1rem}
+.mini span{font-size:.7rem;color:var(--mute)}
+.forma{display:flex;gap:3px}
+.forma i{width:14px;height:14px;border-radius:50%;font-style:normal;font-size:.55rem;font-weight:800;display:grid;place-items:center;color:#0B2014}
+.forma i.V{background:var(--verde)}.forma i.D{background:var(--rojo)}.forma i.N{background:var(--line)}
+.grupo-cab{display:flex;align-items:center;gap:8px;margin:18px 2px 8px;font-family:var(--serif);font-weight:800;font-size:1.15rem;color:var(--crema)}
+.grupo-cab .letra{width:30px;height:30px;border-radius:9px;background:var(--oro);color:#1A1A10;display:grid;place-items:center;font-size:1rem}
+.prom-bar{height:6px;background:var(--card2);border-radius:3px;margin-top:5px;overflow:hidden}
+.prom-bar i{display:block;height:100%;background:var(--verde)}
+
+/* Inicio */
+.yo-card{background:linear-gradient(135deg,#1F4831,#183A27);border:1px solid var(--line);border-radius:18px;padding:14px}
+.yo-card select{margin-top:8px}
+.proxima{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:12px;background:rgba(0,0,0,.18);border-radius:14px;padding:12px;border:0;width:100%;text-align:left}
+.proxima .lbl{font-size:.75rem;color:var(--oro2);font-weight:800}
+.proxima b{display:block;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proxima small{color:var(--mute)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
+.kpi b{display:block;font-family:var(--serif);font-size:1.45rem;line-height:1.1;color:var(--crema)}
+.kpi span{color:var(--mute);font-size:.75rem;line-height:1.2;display:block}
+.yo-card .kpis{margin-top:10px}
+.yo-card .kpi{background:rgba(0,0,0,.18);border:0}
+.podio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:8px;margin-top:6px}
+.podio .esc{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.podio .nom{font-weight:800;font-size:.82rem;text-align:center;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.podio .bloque{width:100%;border-radius:12px 12px 4px 4px;display:grid;place-items:center;font-family:var(--serif);font-weight:800;font-size:1.5rem;color:#1A1A10}
+.podio .b1{height:92px;background:linear-gradient(#F3D488,#C9962C)}
+.podio .b2{height:70px;background:linear-gradient(#E5E9ED,#A9B2BA)}
+.podio .b3{height:54px;background:linear-gradient(#EDB88E,#B07443)}
+.podio .val{font-size:.75rem;color:var(--mute)}
+.campeon{background:linear-gradient(135deg,#4A3A10,#7A5D18);border:1px solid var(--oro);border-radius:18px;padding:16px;text-align:center;margin-bottom:14px}
+.campeon .copa{font-size:2.2rem}
+.campeon b{display:block;font-family:var(--serif);font-size:1.5rem;color:#FFF3D6;line-height:1.1;margin-top:4px}
+.campeon small{color:#F0DDAA}
+.anillo{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--oro) calc(var(--p)*1%),var(--card2) 0);display:grid;place-items:center;flex:0 0 auto}
+.anillo span{width:50px;height:50px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-weight:800;font-size:.9rem}
+
+/* Comparador */
+.vs-cab{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;text-align:center}
+.vs-cab .lado{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.vs-cab .lado b{font-size:.9rem;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vs-cab .vs-big{font-family:var(--serif);font-weight:800;font-size:1.4rem;color:var(--oro)}
+.selects{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.duelo{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.duelo:first-child{border-top:0}
+.duelo .v{font-weight:800;text-align:center;font-size:.95rem}
+.duelo .v.mejor{color:var(--oro2)}
+.duelo .medio{display:flex;flex-direction:column;gap:4px}
+.duelo .lbl{text-align:center;font-size:.75rem;color:var(--mute);font-weight:700}
+.barras2{display:grid;grid-template-columns:1fr 1fr;gap:3px;height:8px}
+.barras2 .l{display:flex;justify-content:flex-end;background:var(--card2);border-radius:4px 0 0 4px;overflow:hidden}
+.barras2 .r{background:var(--card2);border-radius:0 4px 4px 0;overflow:hidden}
+.barras2 i{display:block;height:100%;background:var(--azul)}
+.barras2 .r i{background:var(--oro)}
+.h2h{display:flex;justify-content:center;align-items:center;gap:14px;font-family:var(--serif);font-weight:800;font-size:2rem;color:var(--crema);margin:6px 0}
+.h2h small{font-family:var(--sans);font-size:.8rem;color:var(--mute);font-weight:700}
+.rank{display:grid;grid-template-columns:22px minmax(0,1fr) 90px 44px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.rank:first-child{border-top:0}
+.rank .n{color:var(--mute);font-weight:800;font-size:.85rem}
+.rank .track{height:8px;background:var(--card2);border-radius:4px;overflow:hidden}
+.rank .track i{display:block;height:100%;background:var(--verde)}
+.rank .v{text-align:right;font-weight:800;font-size:.9rem}
+
+/* Reglas */
+.regla{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.regla .ri{width:42px;height:42px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:1.3rem}
+.regla h3{font-size:1rem;margin-bottom:3px}
+.regla p{margin:0;color:#CFE0D5;font-size:.92rem}
+.regla .tag{font-size:.7rem;font-weight:800;color:var(--oro2)}
+.regla-acc{display:flex;flex-direction:column;gap:4px}
+.mini-btn{border:1px solid var(--line);background:var(--card2);border-radius:8px;width:32px;height:32px;display:grid;place-items:center;font-size:.9rem}
+.log{font-size:.82rem;color:var(--mute);padding:6px 0;border-top:1px solid var(--line)}
+.log:first-child{border-top:0}
+
+/* Barra inferior */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(11,32,20,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav .in{max-width:480px;margin:0 auto;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.nav button{border:0;background:none;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute);font-size:.7rem;font-weight:800}
+.nav button span{font-size:1.25rem;line-height:1.2;filter:grayscale(.6);opacity:.8}
+.nav button[aria-current="page"]{color:var(--oro2)}
+.nav button[aria-current="page"] span{filter:none;opacity:1}
+.fab{position:fixed;right:max(14px,calc(50% - 226px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:31;border:0;border-radius:30px;padding:13px 18px;background:var(--oro);color:#1A1A10;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+
+/* Asistente */
+.pasos{display:flex;gap:4px;margin:4px 0 8px}
+.pasos i{flex:1;height:5px;border-radius:3px;background:var(--card2)}
+.pasos i.ok{background:var(--oro)}
+.paso-t{color:var(--mute);font-size:.82rem;font-weight:800}
+.op{display:grid;grid-template-columns:52px minmax(0,1fr) 22px;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.op[aria-pressed="true"]{border-color:var(--oro);background:rgba(231,185,79,.08)}
+.op:disabled{opacity:.35}
+.op .oi{width:52px;height:52px;border-radius:14px;background:var(--card2);display:grid;place-items:center;font-size:1.6rem}
+.op .oi svg{width:38px;height:38px}
+.op b{display:block;font-size:1.05rem}
+.op small{color:var(--mute);font-size:.86rem;display:block;margin-top:2px;line-height:1.3}
+.op .check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:900;color:transparent}
+.op[aria-pressed="true"] .check{background:var(--oro);border-color:var(--oro);color:#1A1A10}
+.cuantos{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cuantos button{min-width:52px;padding:10px 0;border-radius:12px;border:2px solid var(--line);background:var(--card);font-weight:800;font-size:1.05rem}
+.cuantos button[aria-pressed="true"]{border-color:var(--oro);background:var(--oro);color:#1A1A10}
+.stepper{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.stepper button{height:52px;border:0;background:var(--card2);font-size:1.5rem;font-weight:800}
+.stepper div{text-align:center}
+.stepper div b{font-family:var(--serif);font-size:1.6rem;color:var(--crema);display:block;line-height:1}
+.stepper div span{font-size:.78rem;color:var(--mute)}
+.pareja-in{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px}
+.pareja-in .cab{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:800;font-size:.85rem;color:var(--mute)}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+input,select,textarea{border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--bg2);width:100%;min-width:0}
+input::placeholder,textarea::placeholder{color:#6F8C7B}
+textarea{min-height:80px;resize:vertical}
+label.lbl{display:block;font-weight:800;font-size:.88rem;margin:12px 0 6px}
+.juegos-dots{display:flex;gap:4px;margin-top:6px}
+.juegos-dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.juegos-dots i.w{background:var(--oro)}
+.preview-grupos{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;margin-top:10px}
+.preview-grupos div{background:var(--card2);border-radius:10px;padding:8px 6px;text-align:center}
+.preview-grupos b{display:block;color:var(--oro2);font-family:var(--serif)}
+.preview-grupos span{font-size:.75rem;color:var(--mute)}
+.resumen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.resumen div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.resumen span{display:block;font-size:.75rem;color:var(--mute);font-weight:700}
+.resumen b{font-size:.95rem}
+.pie-asist{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(11,32,20,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.pie-asist .in{max-width:452px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:8px}
+.slug{font-size:.82rem;color:var(--mute);margin-top:6px;overflow-wrap:anywhere}
+.slug b{color:var(--oro2)}
+.exito{text-align:center;padding:20px 6px}
+.exito .big{font-size:3rem}
+.claves{display:grid;gap:8px;margin:14px 0;text-align:left}
+.clave{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.clave span{color:var(--mute);font-size:.85rem}
+.clave b{font-family:ui-monospace,Menlo,monospace;color:var(--oro2);font-size:1.05rem}
+
+/* Candado */
+.lock{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 10px}
+.lock .ic{width:84px;height:84px;border-radius:24px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:2.4rem;margin-bottom:16px}
+.lock h2{font-family:var(--serif);font-size:1.6rem;color:var(--crema)}
+.lock form{width:100%;max-width:320px;margin-top:18px}
+.lock input{text-align:center;font-size:1.3rem;letter-spacing:.2em;padding:14px}
+.recordar{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mute);font-size:.9rem;margin:12px 0}
+.recordar input{width:auto}
+.error{color:var(--rojo);font-weight:800;min-height:1.3em;margin:8px 0 0;font-size:.92rem}
+
+/* Hoja inferior */
+dialog.sheet{border:0;padding:0;margin:auto auto 0;width:100%;max-width:480px;max-height:92vh;background:var(--card);color:var(--txt);border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+dialog.sheet::backdrop{background:rgba(3,12,7,.7)}
+.sheet-in{padding:10px 16px calc(32px + env(safe-area-inset-bottom,0px));overflow-y:auto;max-height:92vh}
+.asa{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet h3.st{font-family:var(--serif);font-size:1.3rem;color:var(--crema)}
+.sheet .sub{color:var(--mute);font-size:.88rem;margin:2px 0 12px}
+.marcador{background:var(--bg2);border-radius:16px;padding:12px;margin-bottom:10px}
+.marcador .pt{margin-bottom:10px}
+.juegos{display:flex;gap:8px}
+.juegos button{flex:1;height:48px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-family:var(--serif);font-weight:800;font-size:1.3rem}
+.juegos button[aria-pressed="true"]{background:var(--oro);border-color:var(--oro);color:#1A1A10}
+.juegos button:disabled{opacity:.5}
+.presentes{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.presentes button{display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--card2);border-radius:24px;padding:4px 12px 4px 4px;font-weight:800;font-size:.88rem}
+.presentes button[aria-pressed="false"]{opacity:.45;border-style:dashed}
+.presentes button[aria-pressed="true"]{border-color:var(--verde)}
+.mesa{background:var(--bg2);border-radius:14px;padding:10px;margin-bottom:8px}
+.mesa .t{font-size:.75rem;font-weight:800;color:var(--oro2);margin-bottom:6px}
+@media (prefers-reduced-motion:no-preference){
+  dialog.sheet[open]{animation:sube .22s ease-out}
+  @keyframes sube{from{transform:translateY(40px);opacity:.4}}
+  .mesa.rev{animation:rev .4s ease-out both}
+  @keyframes rev{from{transform:scale(.9);opacity:0}}
+}
+.toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--crema);color:#1A1A10;font-weight:800;padding:10px 16px;border-radius:12px;z-index:60;box-shadow:0 8px 20px rgba(0,0,0,.4);max-width:90vw;text-align:center}
+.vacio{text-align:center;border:1px dashed var(--line);border-radius:16px;padding:24px 14px;color:var(--mute)}
+.vacio b{display:block;color:var(--txt);font-size:1.05rem;margin-bottom:4px}
+.admin-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}
+.admin-row h3{font-size:1rem;display:flex;gap:6px;align-items:center}
+.admin-row .meta{color:var(--mute);font-size:.82rem;margin:2px 0 8px}
+.admin-row .acciones{margin-top:0;gap:6px}
+.admin-row .acciones .btn{flex:0 0 auto}
+
+/* Pestañas superiores */
+.tabs{position:sticky;top:0;z-index:30;background:rgba(11,32,20,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:0 -0px}
+.tabs .in{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.tabs button{border:0;background:none;padding:8px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--mute);font-size:.72rem;font-weight:800;border-bottom:3px solid transparent}
+.tabs button span{font-size:1.15rem;line-height:1.2;filter:grayscale(.6);opacity:.8}
+.tabs button[aria-current="page"]{color:var(--oro2);border-bottom-color:var(--oro)}
+.tabs button[aria-current="page"] span{filter:none;opacity:1}
+.fab{bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.btn.grande{padding:16px;font-size:1.05rem;border-radius:14px;margin-top:12px}
+.yo-fila{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 8px 8px 12px}
+.yo-fila span{font-weight:800;font-size:.88rem;color:var(--oro2)}
+.yo-fila select{padding:9px 10px}
+.ver-mas{display:block;width:100%;margin-top:8px;background:none;border:1px dashed var(--line);border-radius:12px;padding:10px;color:var(--oro2);font-weight:800}
+/* Tabla PJ/PG */
+.tabla-cab,.pos-row{grid-template-columns:26px minmax(0,1fr) 28px 30px 34px}
+.tabla.ind .tabla-cab,.tabla.ind .pos-row{grid-template-columns:24px minmax(0,1fr) 26px 26px 32px 40px}
+.tabla-cab{display:grid;gap:8px;padding:0 10px 2px;font-size:.72rem;font-weight:800;color:var(--mute)}
+.tabla-cab span:nth-child(n+3){text-align:center}
+.num{text-align:center;font-weight:700;color:var(--mute);font-size:1rem}
+.num.fuerte{font-family:var(--serif);font-weight:800;font-size:1.35rem;color:var(--crema)}
+.num.prom{font-family:var(--serif);font-weight:800;font-size:1.05rem;color:var(--oro2)}
+.mini .forma{justify-content:center;margin-top:3px}
+.pos-row.yo .pn b{color:var(--oro2)}
+/* Árbol de eliminatoria */
+.arbol{display:flex;gap:14px;margin-top:4px}
+.arbol .col{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+.arbol h4{margin:0 0 6px;height:18px;font-size:.72rem;font-weight:800;color:var(--oro2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arbol .cuerpo{flex:1;display:flex;flex-direction:column}
+.par{flex:1;display:flex;flex-direction:column;position:relative}
+.par.une::after{content:"";position:absolute;right:-9px;top:25%;bottom:25%;width:8px;border:2px solid var(--line);border-left:0;border-radius:0 6px 6px 0}
+.slot{flex:1;display:flex;align-items:center;position:relative}
+.arbol .col+.col .slot::before{content:"";position:absolute;left:-7px;top:50%;width:7px;border-top:2px solid var(--line)}
+.celda{width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:0;text-align:left;overflow:hidden;display:block}
+.celda.off{opacity:.75;cursor:default}
+.celda .eq{display:flex;justify-content:space-between;align-items:center;gap:4px;padding:4px 6px;min-height:30px;font-size:.72rem;font-weight:700;line-height:1.2}
+.celda .eq span{overflow:hidden;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.celda .eq b{font-family:var(--serif);color:var(--crema)}
+.celda .eq+.eq{border-top:1px solid var(--line)}
+.celda .eq.gana{color:var(--verde)}
+.celda .eq.ph{color:var(--mute);font-style:italic;font-weight:500}
+.celda .eq.yo span{color:var(--oro2)}
+
+.num.dj{font-weight:800;font-size:.95rem}
+.num.dj.pos{color:var(--verde)}.num.dj.neg{color:var(--rojo)}
+.leyenda{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;font-size:.88rem;color:#CFE0D5}
+.leyenda>b{color:var(--oro2)}
+.leyenda ol{margin:6px 0 8px;padding-left:20px}
+.leyenda li{margin:2px 0}
+.leyenda p{margin:0;color:var(--mute)}
+.leyenda p b{color:var(--txt)}
+
+.e-corr{background:rgba(231,185,79,.18);color:var(--oro2)}
+.aviso-org{display:flex;gap:10px;align-items:flex-start;background:rgba(231,185,79,.10);border:1px solid rgba(231,185,79,.35);border-radius:12px;padding:10px 12px;font-size:.88rem;color:#F1E3BE;margin-bottom:10px}
+.aviso-org b{color:#fff}
+.ayuda-org{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:.88rem;color:#CFE0D5}
+.ayuda-org>b{color:var(--oro2)}
+.ayuda-org ul{margin:6px 0 0;padding-left:18px}
+.ayuda-org li{margin:4px 0}
+.ayuda-org li b{color:var(--txt)}
+details.res-grupo{margin-top:8px}
+details.res-grupo summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-weight:800;font-size:.9rem;color:var(--oro2)}
+details.res-grupo summary::-webkit-details-marker{display:none}
+details.res-grupo summary::after{content:'▾';margin-left:auto}
+details.res-grupo[open] summary::after{content:'▴'}
+details.res-grupo .lista{margin-top:8px}
+
+details.res-grupo *,details.res-grupo *::before,details.res-grupo *::after{box-sizing:border-box}
+
+/* Selector de pareja */
+.picker{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin-bottom:12px}
+.pick-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;text-align:left;width:100%}
+.picker.on .pick-main{border-color:var(--oro);background:rgba(231,185,79,.08)}
+.pick-main .pn small{color:var(--oro2);font-weight:800;font-size:.72rem}
+.pick-main .pn b{font-size:1.02rem}
+.pick-ico{width:44px;height:44px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:1.3rem}
+.pick-cambiar{font-size:.8rem;font-weight:800;color:var(--oro2);white-space:nowrap}
+.pick-x{width:46px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-weight:800;color:var(--mute)}
+.pick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg2);border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;min-width:0}
+.tile b{font-size:.8rem;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tile small{font-size:.68rem;color:var(--mute);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile.sel{border-color:var(--oro);background:rgba(231,185,79,.12)}
+.tile[hidden]{display:none}
+/* Partidas de una pareja */
+.resumen-p{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin-bottom:12px}
+.resumen-p span{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;font-size:.72rem;color:var(--mute)}
+.resumen-p b{display:block;font-family:var(--serif);font-size:1.3rem;color:var(--crema);line-height:1.1}
+.lista-p{display:flex;flex-direction:column;gap:6px}
+.fila-p{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-align:left}
+.fila-p:active{transform:scale(.99)}
+.vd{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-family:var(--serif);font-weight:800;font-size:1.1rem}
+.vd.v{background:rgba(127,217,156,.18);color:var(--verde)}
+.vd.d{background:rgba(230,107,96,.18);color:var(--rojo)}
+.vd.p{background:var(--card2);color:var(--mute)}
+.fp-mid{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fp-mid>small{font-size:.72rem;color:var(--mute);font-weight:700}
+.fp-con{font-size:.75rem;color:var(--oro2);font-weight:800}
+.sc{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.sc b{font-family:var(--serif);font-size:1.3rem;color:var(--crema);line-height:1}
+.sc small{font-size:.72rem;color:var(--mute)}
+.corr-dot{position:absolute;top:6px;right:8px;font-size:.7rem}
+/* Jornadas desplegables */
+details.jor{margin-bottom:8px}
+details.jor *,details.jor *::before,details.jor *::after{box-sizing:border-box}
+details.jor summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:36px minmax(0,1fr) auto 14px;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+details.jor summary::-webkit-details-marker{display:none}
+details.jor summary::after{content:'▾';color:var(--oro2)}
+details.jor[open] summary{border-color:var(--oro);margin-bottom:8px}
+details.jor[open] summary::after{content:'▴'}
+.jn{width:36px;height:36px;border-radius:10px;background:var(--card2);display:grid;place-items:center;font-family:var(--serif);font-weight:800;color:var(--oro2)}
+.jt{display:flex;flex-direction:column;min-width:0}
+.jt small{color:var(--mute);font-size:.78rem}
+.txt-v{color:var(--verde)!important}.txt-r{color:var(--rojo)!important}
+.kpi b small{font-size:.9rem;color:var(--mute)}
+
+.cmp-lado{background:var(--bg2);border:1px dashed var(--line);border-radius:14px;padding:10px 6px;width:100%}
+.cmp-lado:active{transform:scale(.98)}
+.vd.p{font-size:.72rem;font-family:var(--sans)}
+
+.rp{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;font-size:.72rem;color:var(--mute);font-weight:700}
+.rp b{display:block;font-family:var(--serif);font-size:1.35rem;color:var(--crema);line-height:1.1}
+.rp.ganadas b{color:var(--verde)}.rp.perdidas b{color:var(--rojo)}
+.rp.on{border-color:var(--oro);background:rgba(231,185,79,.12);color:var(--oro2)}
+.ficha .kpi{background:var(--bg2);border:1px solid var(--line)}
+.k-link{width:100%;font:inherit;color:inherit;cursor:pointer}
+.k-link b{font-size:1.8rem}
+.k-link:active{transform:scale(.97)}
+.barra-vic{height:8px;background:rgba(230,107,96,.45);border-radius:4px;overflow:hidden;margin-top:10px}
+.barra-vic i{display:block;height:100%;background:var(--verde)}
+
+.ri-par{background:var(--bg2);border-radius:14px;padding:10px;margin-bottom:8px}
+.ri-t{font-size:.75rem;font-weight:800;color:var(--oro2)}
+.ri-slots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.ri-slot{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border:2px dashed var(--line);border-radius:12px;color:var(--mute);font-weight:800;background:transparent;min-width:0}
+.ri-slot.on{border-style:solid;border-color:var(--verde);color:var(--txt);justify-content:flex-start;padding:4px 8px}
+.ri-slot b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile:disabled{opacity:.35}
+
+.celda .iv{display:block;font-size:.6rem;font-weight:800;color:var(--oro2);text-align:center;padding:2px 4px;border-top:1px solid var(--line);background:var(--bg2)}
+
+.podio.dos-p{grid-template-columns:repeat(2,minmax(0,1fr));max-width:280px;margin:6px auto 0}
+
+.desemp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:rgba(230,107,96,.10);border:1px solid rgba(230,107,96,.4);border-radius:14px;padding:10px 12px;margin-top:8px}
+.de-ic{font-size:1.4rem}
+.de-tx{display:flex;flex-direction:column;min-width:0}
+.de-tx b{font-size:.9rem}
+.de-tx small{color:var(--mute);font-size:.78rem}
+.jornada-box{background:var(--card);border:1px solid var(--oro);border-radius:16px;padding:12px;margin-bottom:6px}
+.jb-top{display:flex;gap:12px;align-items:center}
+.jb-top b{display:block}.jb-top small{color:var(--mute);font-size:.84rem}
+.jb-n{width:44px;height:44px;border-radius:12px;background:var(--oro);color:#1A1A10;display:grid;place-items:center;font-family:var(--serif);font-weight:800;font-size:1.3rem;flex:0 0 auto}
+details.como{margin-top:10px;font-size:.86rem;color:#CFE0D5}
+details.como summary{cursor:pointer;color:var(--oro2);font-weight:800}
+details.como ul{margin:6px 0 0;padding-left:18px}details.como li{margin:4px 0}
+.wo-box{margin-top:14px;padding:12px;border:1px dashed rgba(230,107,96,.6);border-radius:14px;background:rgba(230,107,96,.06)}
+.wo-box b{display:block;font-size:.92rem}.wo-box small{display:block;color:var(--mute);font-size:.8rem;margin:4px 0 8px}
+.wo-box .btn{white-space:normal;line-height:1.2}
+.wz-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wz-chips .chip{cursor:pointer}
+.resumen div[data-acc]{cursor:pointer}
+
+details.guia{margin-bottom:8px}
+details.guia *,details.guia *::before,details.guia *::after{box-sizing:border-box}
+details.guia summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) 14px;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+details.guia summary::-webkit-details-marker{display:none}
+details.guia summary::after{content:'▾';color:var(--oro2)}
+details.guia[open] summary{border-color:var(--oro)}
+details.guia[open] summary::after{content:'▴'}
+.g-ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:1.3rem}
+.g-in{padding:12px 4px 4px;font-size:.92rem;color:#D7E6DC}
+.g-in>p{margin:0 0 10px}
+.ps{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;margin-bottom:10px}
+.ps-n{width:30px;height:30px;border-radius:50%;background:var(--oro);color:#1A1A10;display:grid;place-items:center;font-weight:800;font-family:var(--serif)}
+.ps>div>b{display:block;color:var(--txt)}.ps p b{color:var(--txt)}.ps p{margin:2px 0 0;color:#C3D6CA;font-size:.88rem}
+.fmt{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.fmt b{color:var(--oro2)}.fmt p{margin:4px 0 0;font-size:.88rem}
+.rol{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.rol-cab{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.rol-cab b{display:block}.rol-cab small{color:var(--oro2);font-size:.78rem;font-weight:700}
+.rol ul{list-style:none;margin:0;padding:0;font-size:.86rem}
+.rol li{padding:3px 0 3px 24px;position:relative}
+.rol .si li::before{content:'✅';position:absolute;left:0;font-size:.8rem}
+.rol .no li::before{content:'⛔';position:absolute;left:0;font-size:.8rem}
+.switch{width:52px;height:30px;border-radius:15px;border:0;background:var(--card2);position:relative;flex:0 0 auto}
+.switch i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--mute);transition:left .15s}
+.switch.on{background:var(--oro)}.switch.on i{left:25px;background:#1A1A10}
+.bote{padding:11px 12px;border-radius:10px;background:var(--card2);font-family:var(--serif);font-weight:800;color:var(--oro2)}
+.apuesta{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;background:linear-gradient(135deg,#4A3A10,#6B5216);border:1px solid var(--oro);border-radius:16px;padding:12px;margin-bottom:12px}
+.ap-ic{width:44px;height:44px;border-radius:12px;background:rgba(0,0,0,.2);display:grid;place-items:center;font-size:1.5rem}
+.apuesta b{color:#FFF3D6}.apuesta p{margin:2px 0 0;font-size:.9rem;color:#F0DDAA}
+.regla.ap{border-color:var(--oro)}
+
+.avisos{background:rgba(230,107,96,.08);border:1px solid rgba(230,107,96,.45);border-radius:16px;padding:12px;margin-bottom:10px}
+.avisos>b{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.aviso-it{display:grid;grid-template-columns:24px minmax(0,1fr) 12px;gap:8px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin-top:6px}
+.aviso-it b{display:block;font-size:.88rem}.aviso-it small{color:var(--mute);font-size:.78rem;line-height:1.25;display:block}
+.form-box{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.form-box>b{display:block}
+.estado-box{border-radius:14px;padding:12px;margin:10px 0;font-size:.88rem}
+.estado-box.rev{background:rgba(230,107,96,.10);border:1px solid rgba(230,107,96,.45)}
+.estado-box.rec{background:rgba(231,185,79,.10);border:1px solid rgba(231,185,79,.45)}
+.estado-box b{display:block;margin-bottom:4px}
+.estado-box q{display:block;font-style:italic;color:#E9DDBB;margin:4px 0}
+.link-btn{background:none;border:0;color:var(--oro2);font-weight:800;text-decoration:underline;padding:6px 0}
+
+.caso{border-radius:16px;padding:12px;margin-bottom:10px;border:1px solid var(--line);background:var(--card)}
+.caso *,.caso *::before,.caso *::after{box-sizing:border-box}
+.caso.c-revision,.caso.c-rechazada{border-color:rgba(230,107,96,.6);background:linear-gradient(180deg,rgba(230,107,96,.10),var(--card))}
+.caso.c-reclamada{border-color:rgba(231,185,79,.6);background:linear-gradient(180deg,rgba(231,185,79,.10),var(--card))}
+.caso-cab b{display:block;font-size:1rem}.caso-cab small{color:var(--mute);font-size:.8rem}
+.caso .match{background:var(--bg2)}
+.caso-txt{font-size:.88rem;color:#D7E6DC}
+.caso-txt p{margin:4px 0}.caso-txt q{display:block;font-style:italic;color:#F0E2BC;margin:2px 0 6px;padding-left:10px;border-left:3px solid var(--line)}
+.caso-txt .pie{color:var(--mute);font-size:.8rem}
+.caso .acciones{margin-top:8px}
+.wo-box .btn.peligro{margin-top:4px}
+
+.pill-avisos{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;width:100%;background:rgba(230,107,96,.10);border:1px solid rgba(230,107,96,.5);border-radius:12px;padding:8px 12px;margin-bottom:10px;font-weight:800;font-size:.86rem;text-align:left}
+.pill-n{background:var(--rojo);color:#fff;border-radius:10px;min-width:22px;height:22px;display:grid;place-items:center;font-size:.78rem;padding:0 6px}
+.pill-ver{color:var(--oro2);font-size:.8rem}
+.form-box small{display:block}
+
+.acciones:last-child{margin-bottom:2px}
+.sheet .acciones .btn{min-height:46px}
+h2.sec{line-height:1.2}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<dialog class="sheet" id="sheet"><div class="sheet-in" id="sheetIn"></div></dialog>
+<script>
+/* ================= Utilidades ================= */
+const $=id=>document.getElementById(id);
+const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+const aF=s=>new Date(s+'T12:00:00');
+const hoy=()=>iso(new Date());
+function sumar(s,n){const d=aF(s);d.setDate(d.getDate()+n);return iso(d)}
+const dias=(a,b)=>Math.round((aF(b)-aF(a))/864e5);
+function fmt(s){if(!s)return'';const d=aF(s);return d.getDate()+' '+MESES[d.getMonth()].slice(0,3)}
+function fmtL(s){if(!s)return'';const d=aF(s);return DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]}
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+function uid(n=6){return Math.random().toString(36).slice(2,2+n)}
+function hue(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h}
+function barajar(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function slug(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'campeonato'}
+const pot2=n=>{let p=1;while(p<n)p*=2;return p};
+const pct=x=>Math.round(x*100)+'%';
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2300)}
+const LETRAS='ABCDEFGH';
+const nombreRonda=n=>({2:'Final',4:'Semifinales',8:'Cuartos de final',16:'Octavos de final',32:'Dieciseisavos',64:'Treintaidosavos'}[n]||'Ronda de '+n);
+const nombreCruce=n=>({2:'Final',4:'Semifinal',8:'Cuartos',16:'Octavos',32:'Dieciseisavos',64:'Ronda'}[n]||'Ronda');
+
+/* ================= Generación ================= */
+function roundRobin(ids){
+  const a=ids.slice();if(a.length%2)a.push(null);const n=a.length,rs=[];let arr=a;
+  for(let r=0;r<n-1;r++){const ms=[];let resto=null;
+    for(let i=0;i<n/2;i++){let x=arr[i],y=arr[n-1-i];if(i===0&&r%2)[x,y]=[y,x];if(x===null||y===null){resto=x??y;continue}ms.push([x,y])}
+    rs.push({ms,resto});arr=[arr[0],arr[n-1],...arr.slice(1,n-1)]}
+  return rs;
+}
+function tamanos(n,G){const t=Array(G).fill(Math.floor(n/G));for(let i=0;i<n%G;i++)t[i]++;return t}
+function opcionesPasan(G,minT){const o=[];[1,2,4,8].forEach(k=>{const N=G*k;if(k<=minT&&N>=2&&(N&(N-1))===0)o.push(k)});return o}
+function maxGrupos(n){return Math.max(1,Math.min(8,Math.floor(n/3)))}
+function generar(c){
+  const m=c.meta,ids=c.part.map(p=>p.id),ord=barajar(ids);
+  c.partidos=[];c.descansos={};c.grupos=[];c.orden=ord;c.jornadas=[];c.res=c.res||{};
+  if(m.modalidad==='individual')return c;
+  const addRR=(lista,g,vueltas)=>{const rs=roundRobin(lista),R=rs.length;
+    for(let v=0;v<vueltas;v++)rs.forEach((rd,r)=>{const ronda=v*R+r+1;
+      rd.ms.forEach(([a,b],i)=>c.partidos.push({id:(g||'L')+ronda+'-'+(i+1),grupo:g,ronda,a:v%2?b:a,b:v%2?a:b}));
+      if(rd.resto)(c.descansos[ronda]=c.descansos[ronda]||[]).push(rd.resto)})};
+  if(m.formato==='liga'){c.grupos=[{nombre:'',ids:ord}];if(m.libre)return c;addRR(ord,'',m.vueltas||1)}
+  if(m.formato==='grupos'){const G=m.grupos;c.grupos=Array.from({length:G},(_,i)=>({nombre:LETRAS[i],ids:[]}));
+    ord.forEach((id,i)=>{const f=Math.floor(i/G),col=f%2?G-1-(i%G):i%G;c.grupos[col].ids.push(id)});
+    c.grupos.forEach(g=>addRR(g.ids,g.nombre,1))}
+  return c;
+}
+
+/* ================= Campeonato activo ================= */
+let K=null;
+function con(c,fn){const p=K;K=c;try{return fn()}finally{K=p}}
+const esInd=()=>K.meta.modalidad==='individual';
+const esLibre=()=>!esInd()&&!!K.meta.libre;
+const porDias=()=>esInd()||esLibre();
+const koV=()=>K.meta.koVueltas||1;
+function finCamp(){const c=K.meta.cal;return c.tipo==='dia'?c.inicio:c.tipo==='dias'?sumar(c.inicio,c.ndias-1):c.tipo==='libre'?c.fin:null}
+const plazoMs=()=>(K.meta.plazoH||48)*3600e3;
+function estRes(r){if(!r)return null;if(r.disputa)return'revision';if(r.reclamo){if(r.reclamo.validado)return'ok';if(r.reclamo.rechazo)return'rechazada';return'reclamada'}return'ok'}
+function RV(id){const r=K.res[id];return estRes(r)==='ok'?r:null}
+const finPlazo=r=>new Date((r.reclamo?r.reclamo.ts:r.ts)+plazoMs());
+const fmtHora=d=>d.toLocaleString('es-ES',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
+function avisosAbiertos(){return todos().filter(m=>{const e=estRes(K.res[m.id]);return e&&e!=='ok'})}
+const gana=(md)=>Math.ceil((K.meta.mejorDe||md||3)/2);
+const ambosMD=()=>!K.meta.mejorDe;
+const txtMD=m=>m.mejorDe?'Mejor de '+m.mejorDe:'Mejor de 3 o 5';
+const porJornadas=()=>!porDias()&&K.meta.cal.tipo==='jornadas';
+function jornadaActual(){if(!porJornadas())return Infinity;const p=K.partidos.filter(m=>!RV(m.id));return p.length?Math.min(...p.map(m=>m.ronda)):Infinity}
+const bloqueada=m=>porJornadas()&&!m.ko&&m.ronda>jornadaActual();
+const P=id=>K.part.find(p=>p.id===id);
+function nom(id){if(id==='BYE')return'Exenta';const p=P(id);if(!p)return'¿?';return p.apodo||(p.j2?p.j1+' y '+p.j2:p.j1)}
+function nomCorto(id){const p=P(id);if(!p)return'¿?';return p.apodo||(p.j2?p.j1+' y '+p.j2:p.j1)}
+const rondasGrupo=()=>K.partidos.reduce((a,m)=>Math.max(a,m.ronda),0);
+function tamCuadro(){const m=K.meta;if(esInd()||m.formato==='liga')return 0;if(m.formato==='ko')return pot2(K.part.length);return m.pasan?K.grupos.length*m.pasan:0}
+const rondasTotales=()=>rondasGrupo()+(tamCuadro()?Math.log2(tamCuadro()):0);
+function fechaRonda(r){
+  const c=K.meta.cal;if(c.tipo==='libre'||c.tipo==='jornadas')return'';if(c.tipo==='dia')return c.inicio;
+  if(c.tipo==='dias')return sumar(c.inicio,Math.min(c.ndias-1,Math.floor((r-1)*c.ndias/Math.max(1,rondasTotales()))));
+  return sumar(c.inicio,(r-1)*7);
+}
+function desempateGan(x,y){const l=(K.desempates||[]).filter(d=>(d.a===x&&d.b===y)||(d.a===y&&d.b===x));return l.length?l[l.length-1].gan:null}
+const dz=(x,y)=>{const g=desempateGan(x.id,y.id);return g===x.id?-1:g===y.id?1:0};
+function igualados(x,y){if(!x||!y)return false;if(desempateGan(x.id,y.id))return false;return x.prom!==undefined?(x.ok===y.ok&&x.prom===y.prom&&x.dj===y.dj&&x.pj>0):(x.pg===y.pg&&x.dj===y.dj&&x.pj>0)}
+function empates(rows){const out=[];for(let i=1;i<rows.length;i++)if(igualados(rows[i-1],rows[i]))out.push([rows[i-1].id,rows[i].id]);return out}
+function standings(ids,ms){
+  const t={};ids.forEach(id=>t[id]={id,pj:0,pg:0,pp:0,jf:0,jc:0});
+  ms.filter(m=>RV(m.id)&&t[m.a]&&t[m.b]).forEach(m=>{const r=RV(m.id),A=t[m.a],B=t[m.b];
+    A.pj++;B.pj++;A.jf+=r.ga;A.jc+=r.gb;B.jf+=r.gb;B.jc+=r.ga;if(r.ga>r.gb){A.pg++;B.pp++}else{B.pg++;A.pp++}});
+  return Object.values(t).map(x=>({...x,dj:x.jf-x.jc})).sort((x,y)=>y.pg-x.pg||y.dj-x.dj||dz(x,y)||nom(x.id).localeCompare(nom(y.id)));
+}
+const tablaGrupo=g=>standings(g.ids,K.partidos.filter(m=>m.grupo===g.nombre));
+const gruposTerminados=()=>K.partidos.length>0&&K.partidos.every(m=>RV(m.id));
+function ordenCuadro(n){let o=[1,2];while(o.length<n){const m=o.length*2;o=o.flatMap(s=>[s,m+1-s])}return o}
+function ganador(m){if(m.a==='BYE')return m.b||null;if(m.b==='BYE')return m.a||null;
+  if(m.ko&&!m.padre&&koV()===2)return m.a&&m.b?globalCruce(m).gan:null;
+  const r=RV(m.id);return r&&m.a&&m.b?(r.ga>r.gb?m.a:m.b):null}
+function globalCruce(c){
+  const ri=RV(c.id+'i'),rv=RV(c.id+'v'),rd=RV(c.id+'d');let wa=0,wb=0,dj=0;
+  if(ri){ri.ga>ri.gb?wa++:wb++;dj+=ri.ga-ri.gb}
+  if(rv){rv.gb>rv.ga?wa++:wb++;dj+=rv.gb-rv.ga}
+  const ambos=!!(ri&&rv),empate=ambos&&wa===wb;let gan=null;
+  if(ambos){if(wa!==wb)gan=wa>wb?c.a:c.b;else if(rd)gan=rd.ga>rd.gb?c.a:c.b}
+  if(rd){rd.ga>rd.gb?wa++:wb++}
+  return{wa,wb,dj,empate,gan,algo:!!(ri||rv)};
+}
+function subPartidas(c){
+  if(koV()<2||!jugable(c))return[c];
+  const b={ko:c.ko,n:c.n,padre:c.id,fecha:c.fecha};
+  const L=[{...b,id:c.id+'i',a:c.a,b:c.b,sub:'ida'},{...b,id:c.id+'v',a:c.b,b:c.a,sub:'vuelta'}];
+  if(globalCruce(c).empate)L.push({...b,id:c.id+'d',a:c.a,b:c.b,sub:'desempate'});
+  return L;
+}
+const jugable=m=>m.a&&m.b&&m.a!=='BYE'&&m.b!=='BYE';
+function cuadro(){
+  const N=tamCuadro();if(N<2)return[];
+  let seeds=[],labels=[];
+  if(K.meta.formato==='ko'){seeds=[...K.orden,...Array(N-K.orden.length).fill('BYE')];labels=seeds.map((_,i)=>'Puesto '+(i+1)+' del sorteo')}
+  else{const listo=gruposTerminados(),tablas=listo?K.grupos.map(tablaGrupo):null;
+    for(let p=0;p<K.meta.pasan;p++)K.grupos.forEach((g,gi)=>{seeds.push(listo?tablas[gi][p].id:null);labels.push((p+1)+'.º del grupo '+g.nombre)})}
+  const ord=ordenCuadro(N),rg=rondasGrupo(),rondas=[];
+  let cur=[];for(let i=0;i<N/2;i++){const sa=ord[2*i]-1,sb=ord[2*i+1]-1;cur.push({id:'ko'+N+'-'+(i+1),ko:N,n:i+1,a:seeds[sa],b:seeds[sb],la:labels[sa],lb:labels[sb],fecha:fechaRonda(rg+1)})}
+  rondas.push(cur);let size=N/2,k=1;
+  while(size>=2){k++;const nx=[];
+    for(let i=0;i<size/2;i++){const m1=cur[2*i],m2=cur[2*i+1];
+      nx.push({id:'ko'+size+'-'+(i+1),ko:size,n:i+1,a:ganador(m1),b:ganador(m2),la:'Ganador '+nombreCruce(size*2).toLowerCase()+' '+m1.n,lb:'Ganador '+nombreCruce(size*2).toLowerCase()+' '+m2.n,fecha:fechaRonda(rg+k)})}
+    rondas.push(nx);cur=nx;size/=2}
+  return rondas;
+}
+function mesas(){return (K.jornadas||[]).flatMap((j,ji)=>j.mesas.map((m,i)=>({...m,fecha:j.fecha,dia:ji+1,mesa:i+1})))}
+function todos(){
+  if(porDias())return mesas();
+  K.partidos.forEach(m=>m.fecha=fechaRonda(m.ronda));
+  return[...K.partidos,...cuadro().flat().flatMap(subPartidas)];
+}
+const jugadas=()=>todos().filter(m=>RV(m.id));
+const pendientes=()=>porDias()?[]:todos().filter(m=>jugable(m)&&!K.res[m.id]&&!bloqueada(m));
+function lado(m,id){if(Array.isArray(m.a))return m.a.includes(id)?'a':m.b.includes(id)?'b':null;return m.a===id?'a':m.b===id?'b':null}
+function historial(id){
+  return todos().filter(m=>RV(m.id)&&lado(m,id)).sort((x,y)=>(RV(x.id).fecha||'').localeCompare(RV(y.id).fecha||'')||(RV(x.id).ts||0)-(RV(y.id).ts||0))
+   .map(m=>{const r=RV(m.id),l=lado(m,id),f=l==='a'?r.ga:r.gb,c=l==='a'?r.gb:r.ga;return{m,f,c,v:f>c,l}});
+}
+function racha(h){if(!h.length)return{t:'',n:0};const u=h[h.length-1].v;let n=0;for(let i=h.length-1;i>=0&&h[i].v===u;i--)n++;return{t:u?'V':'D',n}}
+function mejorRacha(h){let b=0,c=0;h.forEach(x=>{c=x.v?c+1:0;b=Math.max(b,c)});return b}
+function tablaInd(){
+  const t={};K.part.forEach(p=>t[p.id]={id:p.id,pj:0,pg:0,pp:0,jf:0,jc:0});
+  mesas().filter(m=>RV(m.id)).forEach(m=>{const r=RV(m.id);
+    m.a.forEach(x=>{const o=t[x];o.pj++;o.jf+=r.ga;o.jc+=r.gb;r.ga>r.gb?o.pg++:o.pp++});
+    m.b.forEach(x=>{const o=t[x];o.pj++;o.jf+=r.gb;o.jc+=r.ga;r.gb>r.ga?o.pg++:o.pp++})});
+  const max=Math.max(0,...Object.values(t).map(x=>x.pj)),min=Math.ceil(max*(K.meta.minPct||0)/100);
+  const rows=Object.values(t).map(x=>({...x,dj:x.jf-x.jc,prom:x.pj?x.pg/x.pj:0,ok:x.pj>0&&x.pj>=min}));
+  rows.sort((x,y)=>(y.ok-x.ok)||y.prom-x.prom||y.dj-x.dj||dz(x,y)||nom(x.id).localeCompare(nom(y.id)));
+  return{rows,min};
+}
+function clasificacionGeneral(){
+  if(esInd())return tablaInd().rows;
+  if(K.meta.formato==='liga')return standings(K.part.map(p=>p.id),esLibre()?mesas():K.partidos);
+  const ids=K.part.map(p=>p.id);return standings(ids,todos().filter(m=>jugable(m)));
+}
+function terminado(){
+  if(K.cerrado)return true;
+  if(porDias()){const f=finCamp();return!!(f&&hoy()>f)}
+  return pendientes().length===0&&todos().filter(jugable).length>0&&(!tamCuadro()||!!campeon());
+}
+function campeon(){
+  if(porDias()){if(!terminado())return null;const t=clasificacionGeneral();return t.length&&t[0].pj&&!igualados(t[0],t[1])?t[0].id:null}
+  const ko=cuadro();if(ko.length)return ganador(ko[ko.length-1][0]);
+  if(gruposTerminados()&&K.grupos.length===1){const t=tablaGrupo(K.grupos[0]);return igualados(t[0],t[1])?null:t[0].id}return null;
+}
+function etiqueta(m){
+  if(porDias())return'Día '+m.dia+', partida '+m.mesa;
+  if(m.ko)return(m.ko===2?'Final':nombreCruce(m.ko)+' '+m.n)+(m.sub?', '+m.sub:'');
+  return(m.grupo?'Grupo '+m.grupo+', ':'')+'Jornada '+m.ronda;
+}
+function estado(m){
+  const r=K.res[m.id];if(r){const e=estRes(r);if(e==='revision')return{c:'tarde',t:'⚠️ En revisión'};if(e==='reclamada')return{c:'proxima',t:'🚫 No presentado, por decidir'};if(e==='rechazada')return{c:'tarde',t:'🚫 En disputa'};return r.wo?{c:'tarde',t:'No presentado'}:{c:'jugada',t:'Jugada'}}
+  if(!jugable(m))return{c:'proxima',t:m.a==='BYE'||m.b==='BYE'?'Pasa directa':'Por decidir'};
+  const c=K.meta.cal,h=hoy();
+  if(bloqueada(m))return{c:'proxima',t:'🔒 Bloqueada'};
+  if(c.tipo==='jornadas'||c.tipo==='libre'||!m.fecha)return{c:'abierta',t:'En juego'};
+  if(h<m.fecha)return{c:'proxima',t:fmt(m.fecha)};if(h===m.fecha)return{c:'abierta',t:'Hoy'};return{c:'tarde',t:'Retrasada'};
+}
+function progreso(){
+  if(terminado())return 1;
+  if(porDias()){const f=finCamp(),i=K.meta.cal.inicio;if(!f)return 0;const tot=Math.max(1,dias(i,f)+1);return Math.max(0,Math.min(1,(dias(i,hoy())+1)/tot))}
+  const total=K.partidos.length+(tamCuadro()?(tamCuadro()-1-(K.meta.formato==='ko'?tamCuadro()-K.part.length:0))*koV():0);
+  return total?jugadas().length/total:0;
+}
+function resumenTexto(){
+  const m=K.meta;if(esInd())return'Individual';if(m.libre)return'Liga de partidas libres';
+  return{liga:'Liga',grupos:'Liguilla + eliminatoria',ko:'Eliminatoria'}[m.formato];
+}
+
+/* ================= Reglas por defecto ================= */
+function reglasPorDefecto(m,n){
+  const W=Math.ceil((m.mejorDe||3)/2),ind=m.modalidad==='individual',quien=ind?'equipo':'pareja';
+  const R=[];
+  R.push({i:'🃏',t:'Cada partida',x:m.mejorDe?`Se juega al mejor de ${m.mejorDe} juegos: gana la primera ${quien} que llegue a ${W}. Los juegos se disputan con las reglas habituales de mus.`:`Cada partida puede jugarse al mejor de 3 o al mejor de 5 juegos; se indica al registrarla. Todas cuentan igual: una partida ganada o perdida, y sus juegos a favor y en contra.`});
+  if(ind){
+    R.push({i:'🎲',t:'Parejas por sorteo',x:'Las parejas de cada partida se sortean en el lugar de juego entre los presentes, como se acuerde allí. En la app solo se registra quién ha jugado con quién y el resultado.'});
+    R.push({i:'📈',t:'Clasificación',x:`Manda el promedio de victorias: partidas ganadas entre partidas jugadas.${m.minPct?` Para entrar en la clasificación hay que haber jugado al menos el ${m.minPct} % de las partidas de quien más haya jugado.`:''}`});
+    R.push({i:'⚖️',t:'Desempates',x:'Si dos jugadores tienen el mismo promedio, va delante el de mejor diferencia de juegos (juegos ganados menos juegos perdidos). Si también coinciden, se juega una partida de desempate y el ganador queda por delante.'});
+  }else{
+    if(m.formato==='liga')R.push({i:'📋',t:'Formato',x:m.libre?'Liga de partidas libres: las parejas juegan entre sí tantas partidas como quieran mientras el campeonato esté abierto, y cada una se registra en la app. Al cierre gana la pareja con más partidas ganadas.':'Liga todos contra todos a una vuelta. Gana el campeonato la pareja con más partidas ganadas.'});
+    if(m.formato==='grupos')R.push({i:'🗂️',t:'Formato',x:`Fase de grupos todos contra todos${m.grupos>1?` en ${m.grupos} grupos sorteados`:''}. ${m.pasan?`Pasan ${m.pasan} por grupo a ${nombreRonda(m.grupos*m.pasan).toLowerCase()}, y desde ahí eliminatoria directa.`:'No hay eliminatoria.'}`});
+    if(m.formato==='ko')R.push({i:'⚔️',t:'Formato',x:`Eliminatoria directa: quien pierde, queda fuera. El cuadro se sortea al crear el campeonato.${pot2(n)>n?` Como no es un cuadro completo, ${pot2(n)-n} ${pot2(n)-n>1?'parejas pasan':'pareja pasa'} la primera ronda sin jugar.`:''}`});
+    if((m.formato==='ko'||(m.formato==='grupos'&&m.pasan))&&(m.koVueltas||1)===2)R.push({i:'🔁',t:'Cruces a ida y vuelta',x:'Cada cruce de la eliminatoria se juega a ida y vuelta. Pasa la pareja que gane más partidas. Si ganan una cada una, se juega una partida de desempate.'});
+    if(m.formato!=='ko')R.push({i:'🏆',t:'Clasificación',x:'Manda el número de partidas ganadas. Si dos parejas empatan, va delante la de mejor diferencia de juegos (juegos ganados menos juegos perdidos). Si también coinciden, se juega una partida de desempate entre ellas y la ganadora queda por delante.'});
+  }
+  const c=m.cal;
+  R.push({i:'📅',t:'Calendario',x:c.tipo==='dia'?'Todo el campeonato se juega en un solo día, ronda tras ronda.':c.tipo==='dias'?`El campeonato se juega en ${c.ndias} días.`:c.tipo==='jornadas'?'Jornada a jornada, sin fechas fijas: la siguiente jornada se abre cuando todas las partidas de la actual tienen resultado. Mientras tanto no se pueden registrar partidas de jornadas posteriores.':`Temporada abierta${c.fin?' hasta el '+fmtL(c.fin):''}: se juega cuando se queda.`});
+  if(ind||m.libre)R.push({i:'🏁',t:'Cierre',x:'El campeonato queda abierto hasta su último día. Al terminar ese día se cierra y se proclama ganador a quien vaya primero en la clasificación. El organizador también puede cerrarlo antes.'});
+  R.push({i:'📍',t:'Lugar',x:'El lugar es libre y lo acuerdan los jugadores de cada partida.'});
+  R.push({i:'✍️',t:'Registro de resultados',x:'Al terminar, cualquiera de los jugadores registra el resultado en la app. Una vez guardado, desde la cuenta de jugador ya no se puede cambiar.'});
+  R.push({i:'⚠️',t:'Si un resultado está mal',x:'Abre la partida, pulsa «Impugnar resultado», marca el resultado correcto y explica el motivo. Mientras se revisa no cuenta, y decide el organizador: aceptar el resultado propuesto, mantener el registrado o poner otro.'});
+  if(!ind&&!m.libre)R.push({i:'🚫',t:'Si una pareja no se presenta',x:`La pareja que sí se presentó abre la partida y pulsa «No se ha presentado», explicando qué pasó. La pareja señalada puede decir que no es cierto. El organizador decide: dar la partida por perdida (${W}–0) a quien no se presentó, o dejarla por jugar. El organizador también puede aplicarlo directamente.`});
+  return R.map(r=>({id:uid(),...r,propia:false}));
+}
+/* ================= Datos y sesión ================= */
+const LK='cdc-demo-v16',ADMIN_KEY='admin';
+let DB=null;
+function guardarDB(){try{localStorage.setItem(LK,JSON.stringify(DB))}catch(e){}}
+function cargarDB(){try{DB=JSON.parse(localStorage.getItem(LK))}catch(e){DB=null}if(!DB||!DB.camps){DB={camps:{}};sembrar();guardarDB()}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+const S={vista:'portal',id:null,tab:'inicio',sub:'grupos',filtro:'pendientes',org:false,admin:false,yo:'',ca:'',cb:'',exp:'',sesion:new Set(),nuevo:null};
+const accesoOK=id=>!!DB.camps[id];
+
+/* ================= Componentes ================= */
+function av(n,cls=''){const s=String(n||'?').trim();const ini=s.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();return `<span class="av ${cls}" style="--h:${hue(s)}">${esc(ini)}</span>`}
+function avsDe(id,cls=''){if(!id||id==='BYE')return `<span class="avs"><span class="av vacio ${cls}">–</span></span>`;const p=P(id);return `<span class="avs">${av(p.j1,cls)}${p.j2?av(p.j2,cls):''}</span>`}
+function pt(id,o={}){
+  const cls=['pt',o.der?'der':'',o.gana?'gana':''].join(' ');
+  if(!id)return `<span class="${cls} ph">${avsDe(null)}<span class="pn"><b>${esc(o.label||'Por decidir')}</b></span></span>`;
+  if(id==='BYE')return `<span class="${cls} ph">${avsDe('BYE')}<span class="pn"><b>Exenta</b></span></span>`;
+  const p=P(id);let n;
+  if(!p.j2)n=`<b>${esc(p.j1)}</b>`;else if(p.apodo)n=`<b>${esc(p.apodo)}</b><small>${esc(p.j1)} y ${esc(p.j2)}</small>`;else n=`<b>${esc(p.j1)}</b><b>${esc(p.j2)}</b>`;
+  return `<span class="${cls}">${avsDe(id,o.av||'')}<span class="pn">${n}</span></span>`;
+}
+function ptInd(ids,o={}){const cls=['pt',o.der?'der':'',o.gana?'gana':''].join(' ');return `<span class="${cls}"><span class="avs">${ids.map(i=>av(P(i).j1)).join('')}</span><span class="pn">${ids.map(i=>`<b>${esc(P(i).j1)}</b>`).join('')}</span></span>`}
+function matchHTML(m){
+  const r=K.res[m.id],e=estado(m),gA=r&&r.ga>r.gb,gB=r&&r.gb>r.ga,ind=Array.isArray(m.a),yo=S.yo&&lado(m,S.yo);
+  const A=ind?ptInd(m.a,{gana:gA}):pt(m.a,{gana:gA,label:m.la}),B=ind?ptInd(m.b,{der:1,gana:gB}):pt(m.b,{der:1,gana:gB,label:m.lb});
+  const ok=ind||jugable(m);
+  return `<button class="match ${yo?'mia':''} ${ok?'':'bye'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${A}<span class="centro">${r?`<span class="res">${r.ga}–${r.gb}</span>`:'<span class="vs">VS</span>'}<span class="est e-${e.c}">${e.t}</span>${r&&r.corregido?'<span class="est e-corr">✏️ Corregida</span>':''}</span>${B}</button>`;
+}
+function forma(id){const h=historial(id).slice(-5),pad=Array(5-h.length).fill('<i class="N"></i>');return '<span class="forma">'+pad.join('')+h.map(x=>`<i class="${x.v?'V':'D'}">${x.v?'V':'D'}</i>`).join('')+'</span>'}
+function campeonHTML(id){const p=P(id);return `<div class="campeon"><div class="copa">🏆</div><small>Campeones</small><b>${esc(nom(id))}</b>${p.apodo?`<small>${esc(p.j1)} y ${esc(p.j2)}</small>`:''}</div>`}
+const vacio=(t,x,btn='')=>`<div class="vacio"><b>${t}</b>${x}${btn?`<div class="acciones" style="justify-content:center">${btn}</div>`:''}</div>`;
+const iconoFormato=c=>c.meta.modalidad==='individual'?'🎲':{liga:'📋',grupos:'🗂️',ko:'⚔️'}[c.meta.formato];
+function textoCal(m){const c=m.cal;return c.tipo==='dia'?'Un día':c.tipo==='dias'?c.ndias+' días':c.tipo==='jornadas'?'Jornada a jornada':'Temporada libre'}
+
+/* ================= Hoja inferior ================= */
+function abrirHoja(html){$('sheetIn').innerHTML='<div class="asa"></div>'+html;const d=$('sheet');if(!d.open)d.showModal()}
+function cerrarHoja(){const d=$('sheet');if(d.open)d.close()}
+$('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))cerrarHoja()});
+
+/* ================= Render raíz ================= */
+function pinta(top,main,extra=''){$('app').innerHTML=top+`<main>${main}</main>`+extra;$('app').classList.toggle('sin-nav',!/class="nav"|pie-asist/.test(extra))}
+function render(){({portal:vPortal,crear:vCrear,exito:vExito,admin:vAdmin,camp:vCamp,ayuda:vAyuda})[S.vista]()}
+
+/* ================= Portal ================= */
+function tarjetaCamp(c,admin){
+  return con(c,()=>{const p=progreso(),fin=terminado(),n=c.part.length,ind=esInd();
+    const est=fin?'🏆 Terminado':esInd()?'En juego':p>0?'En juego':'Por empezar';
+    return `<button class="camp" data-acc="abrir" data-id="${c.id}"><span class="ico">${iconoFormato(c)}</span>
+      <span style="min-width:0"><h3>${esc(c.meta.nombre)}</h3><span class="meta">${n} ${ind?'jugadores':'parejas'}, ${resumenTexto().toLowerCase()}</span>
+      <span class="barra"><i style="width:${Math.round(p*100)}%"></i></span><span class="meta">${est}</span></span>
+      <span class="candado">${accesoOK(c.id)?'🔓':'🔒'}</span></button>`});
+}
+function vPortal(){
+  K=null;const lista=Object.values(DB.camps).filter(c=>!c.oculto).sort((a,b)=>b.creado-a.creado);
+  pinta(`<div class="top hero"><div class="logo">🏆</div><h1>Creador de Campeonatos de Mus</h1><p>Monta tu campeonato en un minuto y comparte el enlace con los jugadores.</p></div>`,
+  `<div class="banner">Demo con datos inventados. Claves de los campeonatos de ejemplo: acceso <b>1234</b>, organizador <b>9999</b>, administrador <b>admin</b>.</div>
+   <div class="dos"><button class="btn" data-acc="crear">＋ Crear campeonato</button><button class="btn sec" data-acc="ayuda">📖 Instrucciones</button></div>
+   <h2 class="sec">Campeonatos <span class="chip">${lista.length}</span></h2>
+   ${lista.map(c=>tarjetaCamp(c)).join('')||vacio('Aún no hay campeonatos','Crea el primero.')}
+   <div class="acciones" style="justify-content:center;margin-top:22px"><button class="btn sec peq" data-acc="adminLogin">🛡️ Administración</button></div>`);
+}
+
+/* ================= Acceso ================= */
+function vLock(c){
+  pinta(`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Volver">‹</button></div></div>`,
+  `<div class="lock"><div class="ic">🔒</div><h2>${esc(c.meta.nombre)}</h2><p class="nota">Este campeonato es privado. Introduce la clave de acceso que te ha pasado el organizador.</p>
+   <form onsubmit="return false"><input id="lockKey" type="password" inputmode="text" autocomplete="off" placeholder="Clave" aria-label="Clave de acceso">
+   <label class="recordar"><input type="checkbox" id="lockRec" checked> Recordar en este dispositivo</label>
+   <button class="btn full" data-acc="entrar">Entrar</button><p class="error" id="lockErr"></p></form></div>`);
+  setTimeout(()=>$('lockKey')&&$('lockKey').focus(),50);
+}
+
+/* ================= Vista de campeonato ================= */
+const TABS=()=>[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'&&!esInd()?'Cuadro':'Tabla'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']];
+function vCamp(){
+  K=DB.camps[S.id];if(!K){S.vista='portal';return render()}
+  if(!accesoOK(S.id))return vLock(K);
+  S.yo=ls('cdc-yo-'+S.id)||'';if(S.yo&&!P(S.yo))S.yo='';
+  const m=K.meta,n=K.part.length;
+  const top=`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Todos los campeonatos">‹</button>
+    <div class="fila-flex"><button class="icono-btn" data-acc="compartir" aria-label="Compartir">📤</button><button class="icono-btn ${S.org||S.admin?'on':''}" data-acc="org" aria-label="Organizador">🔑</button></div></div>
+    <h1 class="titulo">${esc(m.nombre)}</h1>
+    <div class="chips"><span class="chip oro">${iconoFormato(K)} ${resumenTexto()}</span><span class="chip">👥 ${n}</span><span class="chip">🃏 ${txtMD(m)}</span><span class="chip">📅 ${textoCal(m)}</span>${K.bloqueado?'<span class="chip" style="color:var(--rojo)">⛔ Cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="chip oro">💶 Con apuesta</span>':''}${S.org||S.admin?'<span class="chip oro">🔑 Organizador</span>':''}</div></div>
+    <nav class="tabs"><div class="in">${TABS().map(([k,i,t])=>`<button data-acc="tab" data-t="${k}" ${k===S.tab?'aria-current="page"':''}><span>${i}</span>${t}</button>`).join('')}</div></nav>`;
+  const cuerpo={inicio:tInicio,tabla:tTabla,partidas:tPartidas,estad:tEstad,reglas:tReglas}[S.tab]();
+  let fab='';
+  if((S.tab==='partidas'||S.tab==='inicio')&&!terminado()&&(!K.bloqueado||S.org||S.admin)){
+    if(porDias())fab=`<button class="fab" data-acc="regInd">＋ Registrar partida</button>`;
+    else if(pendientes().length)fab=`<button class="fab" data-acc="elegir">＋ Registrar resultado</button>`;
+  }
+  pinta(top,cuerpo,fab);
+}
+function grupoDe(id){return K.meta.formato==='grupos'&&!esInd()?K.grupos.find(g=>g.ids.includes(id)):null}
+function posDe(id){const g=grupoDe(id);const t=g?tablaGrupo(g):clasificacionGeneral();return t.findIndex(r=>r.id===id)}
+const txtPos=id=>{const p=posDe(id),g=grupoDe(id);return p>=0?(p+1)+'.º'+(g&&K.grupos.length>1?' del grupo '+g.nombre:''):''};
+function enJuego(){const h=hoy();return pendientes().filter(m=>!m.fecha||m.fecha<=h||K.meta.cal.tipo==='libre')}
+
+/* ---- Inicio: podio y clasificación ---- */
+function podioRows(){
+  const cp=campeon();
+  if(cp&&tamCuadro()){const rd=cuadro(),fin=rd[rd.length-1][0],seg=fin.a===cp?fin.b:fin.a,gen=clasificacionGeneral();
+    let ter=null;if(rd.length>1){const sl=rd[rd.length-2].map(m=>ganador(m)===m.a?m.b:m.a).filter(x=>x&&x!=='BYE');ter=sl.sort((x,y)=>gen.findIndex(r=>r.id===x)-gen.findIndex(r=>r.id===y))[0]}
+    const f=id=>gen.find(r=>r.id===id)||{id,pg:0,pj:0,dj:0};return[f(cp),f(seg),...(ter?[f(ter)]:[])]}
+  return clasificacionGeneral().filter(r=>r.pj&&(!esInd()||r.ok));
+}
+const signo=n=>(n>0?'+':'')+n;
+function selector(){
+  const p=S.yo&&P(S.yo),q=esInd()?'jugador':'pareja';
+  return `<div class="picker ${p?'on':''}"><button class="pick-main" data-acc="pick">${p?avsDe(S.yo,'g'):'<span class="pick-ico">👥</span>'}<span class="pn"><small>${p?(txtPos(S.yo)||'Seleccionada'):'Filtrar por '+q}</small><b>${p?esc(nom(S.yo)):(esInd()?'Todos los jugadores':'Todas las parejas')}</b></span><span class="pick-cambiar">${p?'Cambiar':'Elegir'} ▾</span></button>${p?`<button class="pick-x" data-acc="pickNo" aria-label="Quitar selección">✕</button>`:''}</div>`;
+}
+function hojaPicker(t='yo'){
+  const ops=[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id)));
+  const cur=S[t];abrirHoja(`<h3 class="st">${t==='yo'?(esInd()?'Elige jugador':'Elige pareja'):'Elige con quién comparar'}</h3><p class="sub">Toca para seleccionar.</p>
+   <div class="pick-grid">${t==='yo'?`<button class="tile ${!S.yo?'sel':''}" data-acc="pickSel" data-t="yo" data-id="" data-n="todas todos"><span class="pick-ico">👥</span><b>${esInd()?'Todos':'Todas'}</b></button>`:''}${ops.map(p=>`<button class="tile ${p.id===cur?'sel':''}" data-acc="pickSel" data-t="${t}" data-id="${p.id}" data-n="${esc((nom(p.id)+' '+p.j1+' '+p.j2).toLowerCase())}">${avsDe(p.id,'g')}<b>${esc(nom(p.id))}</b>${p.apodo?`<small>${esc(p.j1)} y ${esc(p.j2)}</small>`:''}</button>`).join('')}</div>`);
+}
+function yoFila(){const ops=[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id)));
+  return `<div class="yo-fila"><span>${esInd()?'Soy':'Mi pareja'}</span><select id="selYo" aria-label="Elegir participante"><option value="">${esInd()?'Elige quién eres':'Elige tu pareja'}</option>${ops.map(p=>`<option value="${p.id}" ${p.id===S.yo?'selected':''}>${esc(nom(p.id))}</option>`).join('')}</select></div>`}
+function leyenda(){
+  if(esInd())return `<div class="leyenda"><b>Cómo se ordena</b><ol><li>Promedio de victorias: partidas ganadas entre partidas jugadas.</li><li>Si hay empate, diferencia de juegos: juegos ganados menos juegos perdidos.</li><li>Si también coinciden, se juega una partida de desempate entre ellos.</li></ol><p><b>PJ</b> jugadas, <b>PG</b> ganadas, <b>DJ</b> diferencia de juegos, <b>Prom.</b> promedio.</p></div>`;
+  return `<div class="leyenda"><b>Cómo se ordena</b><ol><li>Partidas ganadas.</li><li>Si hay empate, diferencia de juegos: juegos ganados menos juegos perdidos.</li><li>Si también coinciden, se juega una partida de desempate entre ellas.</li></ol><p><b>PJ</b> partidas jugadas, <b>PG</b> partidas ganadas, <b>DJ</b> diferencia de juegos.</p></div>`;
+}
+function clasifCompleta(){
+  const m=K.meta;
+  const fin=terminado()||(m.formato==='liga'&&!esLibre()&&!esInd()&&gruposTerminados());
+  if(esInd())return tablaHTML(tablaInd().rows,{completa:fin});
+  if(m.formato==='liga')return tablaHTML(standings(K.part.map(p=>p.id),esLibre()?mesas():K.partidos),{completa:fin});
+  let h='';K.grupos.forEach(g=>{const ok=K.partidos.filter(x=>x.grupo===g.nombre).every(x=>RV(x.id));h+=(K.grupos.length>1?`<div class="grupo-cab"><span class="letra">${g.nombre}</span>Grupo ${g.nombre}</div>`:'')+tablaHTML(tablaGrupo(g),{pasa:m.pasan,completa:ok})});
+  if(m.pasan)h+=`<p class="nota">La franja dorada marca los ${m.pasan} primeros de cada grupo, que pasan al cuadro final.</p>`;
+  return h;
+}
+function resultadosGrupo(g){
+  const ms=K.partidos.filter(m=>m.grupo===g.nombre),jug=ms.filter(m=>K.res[m.id]).sort((a,b)=>a.ronda-b.ronda);
+  return `<details class="res-grupo"><summary>📋 Resultados ${K.grupos.length>1?'del grupo '+g.nombre:'de la liguilla'} <span class="chip">${jug.length} de ${ms.length}</span></summary><div class="lista">${jug.length?jug.map(matchHTML).join(''):'<p class="nota">Aún no hay resultados.</p>'}</div></details>`;
+}
+function casoHTML(m){
+  const r=K.res[m.id],e=estRes(r),ind=Array.isArray(m.a),org=S.org||S.admin;
+  const tit={revision:'⚠️ Resultado impugnado',reclamada:'🚫 No se ha presentado: '+nom(m[r.wo]),rechazada:'🚫 En disputa: ¿se presentó '+nom(m[r.wo])+'?'}[e]+((r.disputa&&r.disputa.espera)||(r.reclamo&&r.reclamo.espera)?' ⏸️':'');
+  let cuerpo='';
+  if(e==='revision')cuerpo=`<p><b>${esc(r.disputa.por||'Alguien')}</b> dice que no es correcto${r.disputa.prop?` y propone <b>${r.disputa.prop.ga}–${r.disputa.prop.gb}</b>`:''}:</p><q>${esc(r.disputa.motivo)}</q><p class="pie">${r.disputa.espera?'⏸️ El organizador lo ha dejado pendiente de decidir.':'Mientras se revisa, esta partida no cuenta.'}</p>`;
+  if(e==='reclamada')cuerpo=`<p><b>${esc(r.reclamo.por||nom(m[r.wo==='a'?'b':'a']))}</b> dice que <b>${esc(nom(m[r.wo]))}</b> no se presentó:</p><q>${esc(r.reclamo.motivo)}</q><p class="pie">${r.reclamo.espera?'⏸️ El organizador lo ha dejado pendiente de decidir.':'Pendiente de que decida el organizador. La pareja señalada puede decir que no es cierto.'}</p>`;
+  if(e==='rechazada')cuerpo=`<p><b>${esc(r.reclamo.por||'Una pareja')}</b> dice que <b>${esc(nom(m[r.wo]))}</b> no se presentó:</p><q>${esc(r.reclamo.motivo)}</q><p><b>${esc(r.reclamo.rechazo.por||'La otra pareja')}</b> dice que no es cierto:</p><q>${esc(r.reclamo.rechazo.motivo)}</q><p class="pie">${r.reclamo.espera?'⏸️ El organizador lo ha dejado pendiente de decidir.':'Tiene que decidir el organizador.'}</p>`;
+  return `<div class="caso c-${e}"><div class="caso-cab"><b>${tit}</b><small>${etiqueta(m)}</small></div>
+    <div class="match" style="pointer-events:none;margin:8px 0">${ind?ptInd(m.a):pt(m.a)}<span class="centro"><span class="res" style="opacity:.7">${r.ga}–${r.gb}</span></span>${ind?ptInd(m.b,{der:1}):pt(m.b,{der:1})}</div>
+    <div class="caso-txt">${cuerpo}</div>
+    <div class="acciones">${e==='reclamada'&&!org?`<button class="btn sec peq" data-acc="resultado" data-id="${m.id}">Ver o rechazar</button>`:`<button class="btn sec peq" data-acc="resultado" data-id="${m.id}">Ver detalle</button>`}<button class="btn peq" data-acc="resolver" data-id="${m.id}">${org?'✅ Resolver':'🔑 Resolver (organizador)'}</button></div></div>`;
+}
+function avisosHTML(){const av=avisosAbiertos();if(!av.length)return'';
+  return `<button class="pill-avisos" data-acc="verCasos"><span>⚖️ Reclamaciones e impugnaciones</span><span class="pill-n">${av.length}</span><span class="pill-ver">Ver ›</span></button>`}
+function hojaCasos(){const av=avisosAbiertos();if(!av.length){cerrarHoja();return}
+  abrirHoja(`<h3 class="st">⚖️ Reclamaciones e impugnaciones</h3><p class="sub">Visibles para todos. Las resuelve el organizador.</p>${av.map(casoHTML).join('')}<div class="acciones"><button class="btn sec" data-acc="cerrar">Cerrar</button></div>`)}
+function tInicio(){
+  let h=avisosHTML();const cp=campeon(),m=K.meta;
+  if(cp)h+=campeonHTML(cp);
+  else if(terminado()||(m.formato==='liga'&&!porDias()&&gruposTerminados())){const t=m.formato==='grupos'&&K.grupos.length===1?tablaGrupo(K.grupos[0]):clasificacionGeneral();if(igualados(t[0],t[1]))h+=`<div class="aviso-org">⚔️ <span><b>Empate en el primer puesto</b> entre ${esc(nom(t[0].id))} y ${esc(nom(t[1].id))}. El campeón saldrá de una partida de desempate: regístrala desde la clasificación.</span></div>`}
+  if(porJornadas()&&!gruposTerminados()){const ja=jornadaActual(),tot=rondasGrupo(),ms=K.partidos.filter(x=>x.ronda===ja),hechas=ms.filter(x=>K.res[x.id]).length;
+    h+=`<div class="jornada-box"><div class="jb-top"><span class="jb-n">${ja}</span><span><b>Jornada ${ja} de ${tot} en juego</b><small>${ms.length-hechas?`Faltan ${ms.length-hechas} ${ms.length-hechas>1?'partidas':'partida'} para abrir ${ja<tot?'la jornada '+(ja+1):'la fase final'}`:'Completa'}</small></span></div>
+    <div class="barra-vic" style="background:var(--card2)"><i style="width:${hechas/ms.length*100}%;background:var(--oro)"></i></div>
+    <details class="como"><summary>¿Cómo funcionan las jornadas?</summary><ul><li>Se juegan <b>en orden</b>: la jornada siguiente se abre sola cuando todas las partidas de la actual tienen resultado.</li><li>Hasta entonces, las partidas de jornadas posteriores aparecen con 🔒 y no se pueden registrar.</li><li>Si una pareja no se presenta, el organizador da la partida por perdida a esa pareja y la jornada puede seguir.</li></ul></details></div>`}
+  if(porDias()&&!terminado()){const f=finCamp();h+=`<div class="aviso-org">🏁 <span>${f?`Abierto hasta el <b>${fmtL(f)}</b>. Ese día, al terminar, se cierra y gana quien vaya primero.`:'Sin fecha de cierre: el organizador lo cerrará cuando termine.'} Se pueden registrar todas las partidas que se jueguen.</span></div>`}
+  if(!esInd()&&m.formato==='ko'){
+    h+=`<h2 class="sec">⚔️ Cuadro de la eliminatoria</h2><p class="nota">Toca un cruce para registrar su resultado. El ganador pasa solo a la siguiente ronda.</p>`+arbolHTML();
+  }else if(!esInd()&&m.formato==='grupos'){
+    h+=`<h2 class="sec">🗂️ ${K.grupos.length>1?'Fase de grupos':'Liguilla'}</h2>`;
+    K.grupos.forEach(g=>{h+=(K.grupos.length>1?`<div class="grupo-cab"><span class="letra">${g.nombre}</span>Grupo ${g.nombre}</div>`:'')+tablaHTML(tablaGrupo(g),{pasa:m.pasan})+resultadosGrupo(g)});
+    h+=leyenda();
+    if(m.pasan)h+=`<h2 class="sec">⚔️ Eliminatoria</h2><p class="nota">${gruposTerminados()?'Toca un cruce para registrar su resultado.':`Pasan los ${m.pasan} primeros de cada grupo (franja dorada). Los cruces se rellenan solos al terminar la fase de grupos.`}</p>`+arbolHTML();
+  }else{
+    const pr=podioRows();
+    h+=`<h2 class="sec">🥇 Podio ${terminado()?'final':'en este momento'}</h2>`+(pr.length>=Math.min(3,K.part.length)&&pr.length>=2?`<div class="card pad">${podioHTML(pr,r=>esInd()?r.pg+' de '+r.pj:r.pg+' PG, DJ '+signo(r.dj))}</div>`:`<p class="nota">El podio aparecerá en cuanto se jueguen las primeras partidas.</p>`);
+    h+=`<h2 class="sec">🏆 Clasificación</h2>`+clasifCompleta()+leyenda();
+  }
+  if(!terminado()){
+    if(porDias()){const js=K.jornadas||[];if(js.length){const n=js.length;h+=`<h2 class="sec">🃏 Último día <span class="chip">${cap(fmtL(js[n-1].fecha))}</span></h2><div class="lista">${mesas().filter(x=>x.dia===n).map(matchHTML).join('')}</div>`}}
+    else if(m.formato!=='ko'){const pend=enJuego().sort((a,b)=>(S.yo?(lado(b,S.yo)?1:0)-(lado(a,S.yo)?1:0):0)||(a.fecha||'').localeCompare(b.fecha||''));
+      if(pend.length)h+=`<h2 class="sec">🃏 Partidas en juego <span class="chip">${pend.length}</span></h2><div class="lista">${pend.slice(0,3).map(matchHTML).join('')}</div>${pend.length>3?`<button class="ver-mas" data-acc="tab" data-t="partidas">Ver todas las partidas ›</button>`:''}`}
+  }
+  return h;
+}
+
+/* ---- Tabla clara: PJ, PG y DJ ---- */
+function tablaHTML(rows,o={}){
+  const ind=esInd(),min=ind?tablaInd().min:0;
+  return `<div class="tabla ${ind?'ind':''}"><div class="tabla-cab"><span>#</span><span>${ind?'Jugador':'Pareja'}</span><span>PJ</span><span>PG</span><span>DJ</span>${ind?'<span>Prom.</span>':''}</div>`+
+  rows.map((r,i)=>{const ab=S.exp===r.id;const prev=rows[i-1];const igual=igualados(prev,r);if(!igual)o._p=i+1;const pos=o._p;
+    return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo?'yo':''} ${ind&&!r.ok?'fuera':''}" data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
+    <span class="pos ${pos<=3?'p'+pos:''}">${igual?'=':pos}</span>${pt(r.id)}<span class="num">${r.pj}</span><span class="num ${ind?'':'fuerte'}">${r.pg}</span><span class="num dj ${r.dj>0?'pos':r.dj<0?'neg':''}">${signo(r.dj)}</span>${ind?`<span class="num prom">${r.pj?r.prom.toFixed(2).replace('.',','):'–'}</span>`:''}
+    ${ab?`<span class="detalle"><span class="mini"><b>${r.pp}</b><span>perdidas</span></span><span class="mini"><b>${r.jf}</b><span>juegos ganados</span></span><span class="mini"><b>${r.jc}</b><span>juegos perdidos</span></span><span class="mini"><span>últimas 5</span>${forma(r.id)}</span></span>`:''}</button>`}).join('')+
+  `</div>${ind&&min?`<p class="nota">En gris, quien aún no llega al mínimo de ${min} partidas para clasificar.</p>`:''}${o.completa?cajaDesempates(rows):''}`;
+}
+function cajaDesempates(rows){
+  const em=empates(rows);if(!em.length)return'';
+  const puede=!K.bloqueado||S.org||S.admin;
+  return em.map(([a,b])=>`<div class="desemp"><span class="de-ic">⚔️</span><span class="de-tx"><b>Empate entre ${esc(nom(a))} y ${esc(nom(b))}</b><small>Están igualados en todo: se juega una partida de desempate.</small></span>${puede?`<button class="btn peq" data-acc="desempate" data-a="${a}" data-b="${b}">Registrar</button>`:''}</div>`).join('');
+}
+
+/* ---- Cuadro en forma de árbol ---- */
+function corto(l){return l?l.replace(' del grupo ',' '):''}
+function celdaHTML(m){
+  if(koV()===2&&jugable(m)){const g=globalCruce(m),gan=g.gan;
+    const eq2=(id,v)=>`<span class="eq ${gan===id?'gana':''} ${S.yo===id?'yo':''}"><span>${esc(nomCorto(id))}</span>${g.algo?`<b>${v}</b>`:''}</span>`;
+    return `<button class="celda" data-acc="cruce" data-id="${m.id}">${eq2(m.a,g.wa)}${eq2(m.b,g.wb)}<span class="iv">ida y vuelta${g.empate&&!gan?', falta desempate':''}</span></button>`}
+  const r=K.res[m.id],ga=ganador(m),ok=jugable(m);
+  const eq=(id,lbl,g,v)=>{if(id==='BYE')return `<span class="eq ph"><span>Exenta</span></span>`;if(!id)return `<span class="eq ph"><span>${esc(lbl&&!lbl.startsWith('Ganador')?corto(lbl):'Por decidir')}</span></span>`;
+    return `<span class="eq ${ga===id&&(r||m.a==='BYE'||m.b==='BYE')?'gana':''} ${S.yo===id?'yo':''}"><span>${esc(nomCorto(id))}</span>${r?`<b>${v}</b>`:''}</span>`};
+  return `<button class="celda ${ok?'':'off'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${eq(m.a,m.la,ga,r&&r.ga)}${eq(m.b,m.lb,ga,r&&r.gb)}</button>`;
+}
+function arbolHTML(){
+  const rd=cuadro();if(!rd.length)return'';
+  const desde=Math.max(0,Math.min(S.koDesde||0,rd.length-4)),vis=rd.slice(desde,desde+4);
+  let h='';
+  if(rd.length>4)h+=`<div class="seg">${rd.slice(0,rd.length-3).map((r,i)=>`<button data-acc="koDesde" data-v="${i}" aria-pressed="${i===desde}">Desde ${nombreCruce(r[0].ko).toLowerCase()}</button>`).join('')}</div>`;
+  const alto=vis[0].length*(koV()===2?86:70);
+  h+=`<div class="arbol" style="height:${alto+24}px">`+vis.map((r,ci)=>{
+    const pares=[];for(let i=0;i<r.length;i+=2)pares.push(r.slice(i,i+2));
+    return `<div class="col"><h4>${nombreCruce(r[0].ko)}</h4><div class="cuerpo">${pares.map(p=>`<div class="par ${p.length>1&&ci<vis.length-1?'une':''}">${p.map(m=>`<div class="slot">${celdaHTML(m)}</div>`).join('')}</div>`).join('')}</div></div>`}).join('')+`</div>`;
+  return h;
+}
+function vistaCuadro(){
+  const cp=campeon();let h=cp?campeonHTML(cp):'';
+  if(K.meta.formato==='grupos'&&!gruposTerminados())h+=`<p class="nota">El cuadro se rellena solo cuando termina la fase de grupos. Toca un cruce para registrar su resultado.</p>`;
+  else h+=`<p class="nota">Toca un cruce para registrar o ver su resultado.</p>`;
+  return h+arbolHTML();
+}
+function tTabla(){
+  const m=K.meta;
+  if(m.formato==='ko'&&!esInd())return vistaCuadro();
+  if(esInd()||m.formato==='liga')return clasifCompleta()+leyenda();
+  let h=m.pasan?`<div class="seg"><button data-acc="sub" data-v="grupos" aria-pressed="${S.sub==='grupos'}">Grupos</button><button data-acc="sub" data-v="cuadro" aria-pressed="${S.sub==='cuadro'}">Cuadro final</button></div>`:'';
+  if(m.pasan&&S.sub==='cuadro')return h+vistaCuadro();
+  return h+clasifCompleta()+leyenda();
+}
+
+/* ---- Estadísticas ---- */
+function podioHTML(rows,val){
+  const t=rows.slice(0,3);if(t.length<2)return'';
+  const esc3=(r,cls,lugar)=>`<div class="esc">${avsDe(r.id,'g')}<span class="nom">${esc(nom(r.id))}</span><div class="bloque ${cls}">${lugar}</div></div>`;
+  return t.length===2?`<div class="podio dos-p">${esc3(t[1],'b2',2)}${esc3(t[0],'b1',1)}</div>`:`<div class="podio">${esc3(t[1],'b2',2)}${esc3(t[0],'b1',1)}${esc3(t[2],'b3',3)}</div>`;
+}
+function tEstad(){
+  const jug=jugadas(),juegos=jug.reduce((s,m)=>s+K.res[m.id].ga+K.res[m.id].gb,0);
+  let h=selector()+`<div class="kpis" style="margin-top:12px"><div class="kpi"><b>${jug.length}</b><span>partidas jugadas</span></div><div class="kpi"><b>${porDias()?(K.jornadas||[]).length:pendientes().length}</b><span>${porDias()?'días de juego':'pendientes'}</span></div><div class="kpi"><b>${juegos}</b><span>juegos disputados</span></div></div>`;
+  const rows=clasificacionGeneral().filter(r=>r.pj&&(!esInd()||r.ok));
+
+  if(S.yo){const hi=historial(S.yo),pg=hi.filter(x=>x.v).length,pp=hi.length-pg,ra=racha(hi),jf=hi.reduce((s,x)=>s+x.f,0),jc=hi.reduce((s,x)=>s+x.c,0),dj=jf-jc;
+    h+=`<h2 class="sec">${avsDe(S.yo)} ${esc(nom(S.yo))}</h2><div class="card pad ficha">
+      <div class="kpis">
+        <button class="kpi k-link" data-acc="verPartidas" data-v="jugadas"><b>${hi.length}</b><span>partidas jugadas</span></button>
+        <button class="kpi k-link" data-acc="verPartidas" data-v="ganadas"><b class="txt-v">${pg}</b><span>partidas ganadas</span></button>
+        <button class="kpi k-link" data-acc="verPartidas" data-v="perdidas"><b class="txt-r">${pp}</b><span>partidas perdidas</span></button></div>
+      <div class="barra-vic"><i style="width:${hi.length?pg/hi.length*100:0}%"></i></div>
+      <div class="kpis" style="margin-top:10px">
+        <div class="kpi"><b>${hi.length?Math.round(pg/hi.length*100):0}%</b><span>de victorias</span></div>
+        <div class="kpi"><b>${ra.n?ra.n+' '+(ra.t==='V'?'V':'D'):'–'}</b><span>racha actual${ra.n?(ra.t==='V'?' ganando':' perdiendo'):''}</span></div>
+        <div class="kpi"><b>${mejorRacha(hi)}</b><span>máxima racha de victorias</span></div>
+        <div class="kpi"><b class="${dj>0?'txt-v':dj<0?'txt-r':''}">${signo(dj)}</b><span>diferencia de juegos</span></div>
+        <div class="kpi"><b>${jf}<small>/${jc}</small></b><span>juegos ganados / perdidos</span></div>
+        <div class="kpi"><b>${txtPos(S.yo).split(' ')[0]||'–'}</b><span>${grupoDe(S.yo)&&K.grupos.length>1?'en el grupo '+grupoDe(S.yo).nombre:'en la clasificación'}</span></div></div>
+      <div class="fila-flex" style="justify-content:space-between;margin-top:12px"><span class="nota" style="margin:0">Últimas 5 partidas</span>${forma(S.yo)}</div>
+      <p class="nota" style="margin:8px 0 0">Toca jugadas, ganadas o perdidas para ver esas partidas.</p></div>`}
+  return h+compHTML();
+}
+/* ---- Partidas ---- */
+function filaPareja(m,id){
+  const r=K.res[m.id],l=lado(m,id),riv=l==='a'?m.b:m.a,e=estado(m);
+  let badge,score;
+  if(r){const f=l==='a'?r.ga:r.gb,c=l==='a'?r.gb:r.ga,v=f>c;badge=`<span class="vd ${v?'v':'d'}">${v?'V':'D'}</span>`;score=`<span class="sc"><b>${f}–${c}</b><small>${r.fecha?fmt(r.fecha):''}</small></span>`}
+  else{badge=`<span class="vd p">VS</span>`;score=`<span class="sc"><span class="est e-${e.c}">${e.t}</span><small>${m.fecha&&e.t!==fmt(m.fecha)?fmt(m.fecha):''}</small></span>`}
+  const rivHTML=Array.isArray(riv)?ptInd(riv):pt(riv);
+  return `<button class="fila-p" data-acc="resultado" data-id="${m.id}">${badge}<span class="fp-mid"><small>${etiqueta(m)}${Array.isArray(riv)?'':''}</small>${Array.isArray(m.a)?`<span class="fp-con">🤝 con ${esc(P((l==='a'?m.a:m.b).find(x=>x!==id)).j1)}, contra:</span>`:''}${rivHTML}</span>${score}${r&&r.corregido?'<span class="corr-dot" title="Corregida">✏️</span>':''}${r&&r.wo?'<span class="corr-dot" title="No presentado">🚫</span>':''}</button>`;
+}
+function tPartidas(){
+  const org=S.org||S.admin?`<div class="aviso-org">🔑 <span><b>Modo organizador.</b> Toca cualquier partida ya jugada para corregir o borrar su resultado.</span></div>`:'';
+  let h=org+avisosHTML()+selector();
+  todos();
+  const lista=porDias()?mesas():[...K.partidos,...cuadro().flat().filter(jugable).flatMap(subPartidas)];
+  if(S.yo){
+    const mias=lista.filter(m=>lado(m,S.yo)),pend=mias.filter(m=>!K.res[m.id]),jug=mias.filter(m=>K.res[m.id]);
+    const gano=m=>{const r=K.res[m.id],l=lado(m,S.yo);return l==='a'?r.ga>r.gb:r.gb>r.ga};
+    const gan=jug.filter(gano),per=jug.filter(m=>!gano(m));
+    let f=S.filtroP;if(!f||(f==='pendientes'&&porDias()))f=pend.length&&!porDias()?'pendientes':'jugadas';
+    const op=[['jugadas','jugadas',jug],['ganadas','ganadas',gan],['perdidas','perdidas',per],...(porDias()?[]:[['pendientes','pendientes',pend]])];
+    h+=`<div class="resumen-p">${op.map(([k,t,a])=>`<button class="rp ${k} ${k===f?'on':''}" data-acc="filtroP" data-v="${k}" aria-pressed="${k===f}"><b>${a.length}</b>${t}</button>`).join('')}</div>`;
+    const sel=(op.find(o=>o[0]===f)||op[0])[2];
+    if(f==='pendientes')sel.sort((a,b)=>(bloqueada(a)-bloqueada(b))||((a.ronda||99)-(b.ronda||99))||(a.fecha||'').localeCompare(b.fecha||''));else sel.sort((a,b)=>(K.res[b.id].fecha||'').localeCompare(K.res[a.id].fecha||''));
+    const tit={jugadas:'Todas sus partidas jugadas',ganadas:'Partidas ganadas',perdidas:'Partidas perdidas',pendientes:'Partidas pendientes'}[f];
+    h+=`<h2 class="sec" style="margin-top:6px">${tit} <span class="chip">${sel.length}</span></h2>`;
+    h+=sel.length?`<div class="lista-p">${sel.map(m=>filaPareja(m,S.yo)).join('')}</div>`:vacio({pendientes:'Sin partidas pendientes',ganadas:'Todavía no ha ganado ninguna',perdidas:'No ha perdido ninguna',jugadas:'Aún no ha jugado'}[f],'');
+    return h;
+  }
+  if(porDias()){
+    const js=(K.jornadas||[]).map((j,i)=>({...j,n:i+1})).reverse();
+    if(!js.length)return h+vacio('Aún no hay partidas','Pulsa «Registrar partida» cuando terminéis la primera.');
+    return h+js.map((j,k)=>{const ms=mesas().filter(m=>m.dia===j.n);
+      return `<details class="jor"><summary><span class="jn">${j.n}</span><span class="jt"><b>Día ${j.n}</b><small>${cap(fmtL(j.fecha))}</small></span><span class="chip">${ms.length} ${ms.length>1?'partidas':'partida'}</span></summary><div class="lista">${ms.map(matchHTML).join('')}${j.descansan&&j.descansan.length?`<div class="descanso">Descansan: ${j.descansan.map(id=>esc(P(id).j1)).join(', ')}</div>`:''}</div></details>`}).join('');
+  }
+  const f=S.filtro;
+  h+=`<div class="seg">${[['pendientes','Pendientes'],['jugadas','Jugadas'],['todas','Todas']].map(([k,t])=>`<button data-acc="filtro" data-v="${k}" aria-pressed="${k===f}">${t}</button>`).join('')}</div>`;
+  const ok=m=>f==='todas'||(f==='pendientes'&&!K.res[m.id]&&jugable(m))||(f==='jugadas'&&K.res[m.id]);
+  const bloques=[];
+  const ja=jornadaActual();for(let r=1;r<=rondasGrupo();r++)bloques.push({t:'Jornada '+r,n:r,fecha:porJornadas()?(r<ja?'Completada':r===ja?'En juego':'🔒 Se abre al terminar la jornada '+(r-1)):fechaRonda(r),ms:K.partidos.filter(m=>m.ronda===r),d:K.descansos[r]||[]});
+  cuadro().forEach(rd=>bloques.push({t:nombreRonda(rd[0].ko),n:'⚔️',fecha:rd[0].fecha,ms:rd.filter(jugable).flatMap(subPartidas),d:[]}));
+  const hoyS=hoy();let abierto=false,alguna=false;
+  bloques.forEach(b=>{const vis=b.ms.filter(ok);if(!vis.length)return;alguna=true;
+    const jug=b.ms.filter(m=>K.res[m.id]).length,abrir=!abierto&&(f!=='pendientes'?true:vis.length>0);if(abrir)abierto=true;
+    h+=`<details class="jor"><summary><span class="jn">${b.n}</span><span class="jt"><b>${b.t}</b><small>${b.fecha?(/^\d{4}-/.test(b.fecha)?cap(fmtL(b.fecha)):b.fecha):''}</small></span><span class="chip ${jug===b.ms.length?'oro':''}">${jug}/${b.ms.length}</span></summary><div class="lista">${vis.map(matchHTML).join('')}${f==='todas'&&b.d.length?`<div class="descanso">Descansa: ${b.d.map(id=>esc(nom(id))).join(', ')}</div>`:''}</div></details>`});
+  if(!alguna)h+=vacio(f==='pendientes'?'No hay partidas pendientes':'Nada por aquí todavía',f==='pendientes'?'Todas las partidas disponibles tienen resultado.':'');
+  return h;
+}
+/* ---- Comparar ---- */
+function metricas(id){const h=historial(id),pg=h.filter(x=>x.v).length;return{pj:h.length,pg,pct:h.length?pg/h.length:0,jf:h.reduce((s,x)=>s+x.f,0),jc:h.reduce((s,x)=>s+x.c,0),mr:mejorRacha(h),pos:posDe(id)+1}}
+function parejasInd(){const t={};mesas().filter(m=>K.res[m.id]).forEach(m=>{const r=K.res[m.id];[[m.a,r.ga>r.gb],[m.b,r.gb>r.ga]].forEach(([p,v])=>{const k=[...p].sort().join('|');t[k]=t[k]||{ids:p,pj:0,pg:0};t[k].pj++;if(v)t[k].pg++})});return Object.values(t)}
+function compHTML(){
+  const ids=K.part.map(p=>p.id),orden=clasificacionGeneral().map(r=>r.id);
+  if(!S.ca||!P(S.ca))S.ca=S.yo||orden[0];if(!S.cb||!P(S.cb)||S.cb===S.ca)S.cb=orden.find(x=>x!==S.ca);
+  const ops=sel=>[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id))).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(nom(p.id))}</option>`).join('');
+  const A=metricas(S.ca),B=metricas(S.cb);
+  const fila=(lbl,a,b,menor,fmtv=v=>v)=>{const mx=Math.max(a,b)||1,ma=menor?a<b:a>b,mb=menor?b<a:b>a;
+    return `<div class="duelo"><span class="v ${ma?'mejor':''}">${fmtv(a)}</span><span class="medio"><span class="lbl">${lbl}</span><span class="barras2"><span class="l"><i style="width:${a/mx*100}%"></i></span><span class="r"><i style="width:${b/mx*100}%"></i></span></span></span><span class="v ${mb?'mejor':''}">${fmtv(b)}</span></div>`};
+  const dir=historial(S.ca).filter(x=>{const m=x.m;return Array.isArray(m.a)?(lado(m,S.cb)&&lado(m,S.cb)!==x.l):lado(m,S.cb)});
+  const ganaA=dir.filter(x=>x.v).length;
+  let h=`<h2 class="sec">⚖️ Comparador</h2><p class="nota">Toca cualquiera de los dos lados para cambiar quién se compara.</p>
+  <div class="card pad"><div class="vs-cab"><button class="lado cmp-lado" data-acc="pickCmp" data-t="ca">${avsDe(S.ca,'xl')}<b>${esc(nom(S.ca))}</b><small class="nota" style="margin:0">${txtPos(S.ca)}</small><span class="pick-cambiar">Cambiar ▾</span></button><span class="vs-big">VS</span><button class="lado cmp-lado" data-acc="pickCmp" data-t="cb">${avsDe(S.cb,'xl')}<b>${esc(nom(S.cb))}</b><small class="nota" style="margin:0">${txtPos(S.cb)}</small><span class="pick-cambiar">Cambiar ▾</span></button></div>
+  <div style="margin-top:12px">${fila('Partidas jugadas',A.pj,B.pj)}${fila('Partidas ganadas',A.pg,B.pg)}${fila('Partidas perdidas',A.pj-A.pg,B.pj-B.pg,true)}${fila('Juegos ganados',A.jf,B.jf)}${fila('Juegos perdidos',A.jc,B.jc,true)}${fila('Mejor racha',A.mr,B.mr)}</div></div>
+  <h2 class="sec">🤜🤛 Cara a cara</h2><div class="card pad"><div class="h2h"><span>${ganaA}</span><small>${dir.length?dir.length+(dir.length>1?' partidas':' partida'):'Sin enfrentamientos'}</small><span>${dir.length-ganaA}</span></div>
+  ${dir.length?`<div class="lista" style="margin-top:8px">${dir.slice(-4).reverse().map(x=>matchHTML(x.m)).join('')}</div>`:'<p class="nota" style="text-align:center">Todavía no se han enfrentado.</p>'}</div>`;
+  if(esInd()){const j=parejasInd().find(p=>p.ids.includes(S.ca)&&p.ids.includes(S.cb));
+    h+=`<h2 class="sec">🤝 Juntos como pareja</h2><div class="kpis"><div class="kpi"><b>${j?j.pj:0}</b><span>partidas juntos</span></div><div class="kpi"><b>${j?j.pg:0}</b><span>ganadas</span></div><div class="kpi"><b>${j?j.pj-j.pg:0}</b><span>perdidas</span></div></div>`}
+  const rk=(arr,v,max,txt)=>arr.map((x,i)=>`<div class="rank"><span class="n">${i+1}</span>${x.ids?ptInd(x.ids):pt(x.id)}<span class="track"><i style="width:${max?v(x)/max*100:0}%"></i></span><span class="v">${txt(x)}</span></div>`).join('');
+  const all=ids.map(id=>({id,...metricas(id),ra:racha(historial(id))})).filter(x=>x.pj);
+  if(all.length){
+    const a1=[...all].sort((a,b)=>b.pg-a.pg||a.pj-b.pj).slice(0,8);
+    h+=`<h2 class="sec">🏅 Más partidas ganadas</h2><div class="card pad">${rk(a1,x=>x.pg,a1[0].pg,x=>x.pg+' de '+x.pj)}</div>`;
+    const a2=[...all].sort((a,b)=>b.jf-a.jf).slice(0,8);
+    h+=`<h2 class="sec">🃏 Más juegos ganados</h2><div class="card pad">${rk(a2,x=>x.jf,a2[0].jf,x=>x.jf)}</div>`;
+    const a3=all.filter(x=>x.ra.t==='V').sort((a,b)=>b.ra.n-a.ra.n).slice(0,5);
+    if(a3.length)h+=`<h2 class="sec">🔥 Rachas de victorias en curso</h2><div class="card pad">${rk(a3,x=>x.ra.n,a3[0].ra.n,x=>x.ra.n+' V')}</div>`;
+    if(esInd()){const pj=parejasInd().filter(p=>p.pj>=2).sort((a,b)=>b.pg/b.pj-a.pg/a.pj||b.pj-a.pj).slice(0,5);
+      if(pj.length)h+=`<h2 class="sec">💞 Parejas más rentables</h2><div class="card pad">${rk(pj,x=>x.pg/x.pj,1,x=>x.pg+' de '+x.pj)}</div>`}
+  }
+  return h;
+}
+
+/* ---- Reglas ---- */
+function tReglas(){
+  const ed=S.org||S.admin,sub=S.regSub||'reglas';
+  const seg=`<div class="seg"><button data-acc="regSub" data-v="reglas" aria-pressed="${sub==='reglas'}">📜 Reglas</button><button data-acc="regSub" data-v="guia" aria-pressed="${sub==='guia'}">🧭 Cómo usar la web</button></div>`;
+  if(sub==='guia')return seg+guiaCamp();
+  const ap=K.reglas.filter(r=>r.apuesta);
+  let h=seg+(ap.length?ap.map(r=>`<div class="apuesta"><span class="ap-ic">${r.i}</span><div><b>${esc(r.t)}</b><p>${esc(r.x)}</p></div></div>`).join(''):'')+`<p class="nota">${ed?'Modo organizador: puedes editar, borrar o añadir reglas.':'Reglas del campeonato. Solo el organizador puede cambiarlas.'}</p><div class="lista">`+
+  K.reglas.map(r=>`<div class="regla ${r.apuesta?'ap':''}"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p>${r.propia?'<span class="tag">Regla añadida por el organizador</span>':''}</div>${ed?`<span class="regla-acc"><button class="mini-btn" data-acc="editRegla" data-id="${r.id}" aria-label="Editar">✏️</button><button class="mini-btn" data-acc="delRegla" data-id="${r.id}" aria-label="Borrar">🗑️</button></span>`:'<span></span>'}</div>`).join('')+'</div>';
+  if(ed)h+=`<div class="acciones"><button class="btn sec" data-acc="editRegla" data-id="">＋ Añadir regla</button></div>`;
+  if(K.reglasLog&&K.reglasLog.length)h+=`<h2 class="sec">🕓 Historial de cambios</h2><div class="card pad">${[...K.reglasLog].reverse().map(l=>`<div class="log">${new Date(l.ts).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})}: ${esc(l.txt)}</div>`).join('')}</div>`;
+  return h;
+}
+
+/* ================= Hojas ================= */
+let RS=null;
+function hojaResultado(id){
+  const m=todos().find(x=>x.id===id);if(!m)return;const r=K.res[id];
+  const puedeOrg=S.org||S.admin,blq=bloqueada(m),e=estRes(r),ind=Array.isArray(m.a);
+  if(!RS||RS.id!==id)RS={id,ga:r?r.ga:null,gb:r?r.gb:null,md:r&&r.md||(K.meta.mejorDe||3),modo:null,ega:null,egb:null,pga:null,pgb:null};
+  const W=gana(RS.md),porN=esc(ls('cdc-por')||'');
+  const formMot=(tit,ph,acc,btn)=>`<div class="form-box"><b>${tit}</b><label class="lbl" for="fMot">Motivo (obligatorio)</label><textarea id="fMot" placeholder="${ph}"></textarea><label class="lbl" for="fPor">Tu nombre</label><input id="fPor" value="${porN}" placeholder="Para que se sepa quién lo comunica"><p class="error" id="rErr"></p><div class="acciones"><button class="btn" data-acc="${acc}">${btn}</button><button class="btn sec" data-acc="modoNo">Volver</button></div></div>`;
+  /* 1. Tras impugnar o reclamar: avisar al grupo */
+  if(RS.modo==='avisar'){abrirHoja(`<h3 class="st">📤 Avisa al grupo</h3><p class="sub">Para que nadie se entere tarde, comparte el aviso en el grupo del campeonato. El mensaje ya está redactado.</p><div class="acciones"><button class="btn" data-acc="avisarGrupo">📤 Enviar aviso al grupo</button><button class="btn sec" data-acc="cerrar">Ahora no</button></div>`);RS.modo=null;return}
+  let h=`<h3 class="st">${r&&puedeOrg&&e==='ok'?'✏️ Corregir resultado':etiqueta(m)}</h3>`;
+  /* 2. Partida con conflicto abierto */
+  if(r&&e!=='ok'){
+    const conflictoHTML=`<div class="match" style="margin-bottom:6px;pointer-events:none">${ind?ptInd(m.a):pt(m.a)}<span class="centro"><span class="res" style="opacity:.6">${r.ga}–${r.gb}</span><span class="est e-proxima">registrado</span></span>${ind?ptInd(m.b,{der:1}):pt(m.b,{der:1})}</div>`;
+    h+=conflictoHTML;
+    const pr=r.disputa&&r.disputa.prop;
+    if(e==='revision')h+=`<div class="estado-box rev"><b>⚠️ Resultado impugnado${r.disputa.espera?' · ⏸️ en espera':''}</b>${esc(r.disputa.por||'Alguien')} dice que no es correcto:<q>${esc(r.disputa.motivo)}</q>${pr?`Propone como resultado correcto: <b style="display:inline">${esc(nom(m.a))} ${pr.ga}–${pr.gb} ${esc(nom(m.b))}</b>.<br>`:''}No cuenta en la clasificación hasta que el organizador decida.</div>`;
+    if(e==='reclamada')h+=`<div class="estado-box rec"><b>🚫 No se ha presentado: ${esc(nom(m[r.wo]))}</b>${esc(r.reclamo.por||'La otra pareja')} reclama la partida:<q>${esc(r.reclamo.motivo)}</q>${r.reclamo.espera?'⏸️ El organizador lo ha dejado pendiente de decidir.':'Pendiente de que decida el organizador.'} Mientras tanto no cuenta.</div>`;
+    if(e==='rechazada')h+=`<div class="estado-box rev"><b>🚫 En disputa: ¿se presentó ${esc(nom(m[r.wo]))}?</b>${esc(r.reclamo.por||'Una pareja')} dice que no se presentó:<q>${esc(r.reclamo.motivo)}</q>${esc(r.reclamo.rechazo.por||'La otra pareja')} dice que no es cierto:<q>${esc(r.reclamo.rechazo.motivo)}</q>Decide el organizador.</div>`;
+    if(RS.modo==='rechazar'){h+=formMot('Decir que no es cierto','Por ejemplo: avisamos el lunes de que no podíamos y propusimos el jueves','enviarRechazo','Enviar');abrirHoja(h);return}
+    if(puedeOrg){
+      if(e==='revision'){
+        if(RS.ega==null){RS.ega=pr?pr.ga:r.ga;RS.egb=pr?pr.gb:r.gb}
+        const Wd=gana(r.md);
+        const fila=(l,id)=>`<div class="marcador">${ind?ptInd(id):pt(id)}<div class="juegos">${Array.from({length:Wd+1},(_,v)=>`<button data-acc="eJuego" data-l="${l}" data-v="${v}" aria-pressed="${RS['eg'+l]===v}">${v}</button>`).join('')}</div></div>`;
+        h+=`<div class="form-box"><b>🔑 Decisión del organizador</b>
+          <div class="acciones" style="flex-direction:column">${pr?`<button class="btn" data-acc="orgProp">✅ Aceptar el resultado propuesto (${pr.ga}–${pr.gb})</button>`:''}<button class="btn sec" data-acc="orgValida">↩️ Mantener el registrado (${r.ga}–${r.gb})</button><button class="btn sec" data-acc="orgEspera">⏸️ Dejar pendiente de decidir</button><button class="btn peligro" data-acc="orgAnula">🗑️ Anular: la partida se vuelve a jugar</button></div>
+          <details class="como" style="margin-top:12px"><summary>✏️ Poner otro resultado y resolver</summary>${fila('a',m.a)}${fila('b',m.b)}<p class="error" id="eErr"></p><button class="btn full" data-acc="orgEdita">Guardar este resultado y resolver</button></details></div>`;
+      }else{
+        h+=`<div class="form-box"><b>🔑 Decisión del organizador</b><div class="acciones" style="flex-direction:column"><button class="btn" data-acc="orgValida">🚫 Dar por perdida la partida a ${esc(nom(m[r.wo]))} (${r.ga}–${r.gb})</button><button class="btn sec" data-acc="orgEspera">⏸️ Dejar pendiente de decidir</button><button class="btn peligro" data-acc="orgAnula">🗑️ No aceptar: la partida queda por jugar</button></div></div>`;
+      }
+    }
+    else h+=`<div class="acciones">${e==='reclamada'?`<button class="btn" data-acc="rechazar">No es cierto, sí nos presentamos</button>`:''}<button class="btn sec" data-acc="avisarGrupo">📤 Avisar al grupo</button><button class="btn sec" data-acc="org">🔑 Soy el organizador</button></div>`;
+    h+=`<div class="acciones"><button class="btn sec" data-acc="cerrar">Cerrar</button></div>`;
+    abrirHoja(h);return;
+  }
+  /* 3. Impugnar o reclamar */
+  if(RS.modo==='impugnar'){
+    const Wd=gana(r.md);
+    const fila=(l,id)=>`<div class="marcador">${ind?ptInd(id):pt(id)}<div class="juegos">${Array.from({length:Wd+1},(_,v)=>`<button data-acc="pJuego" data-l="${l}" data-v="${v}" aria-pressed="${RS['pg'+l]===v}">${v}</button>`).join('')}</div></div>`;
+    h+=`<div class="form-box"><b>⚠️ Este resultado no es correcto</b><p class="nota" style="margin:4px 0 8px">Se registró <b>${r.ga}–${r.gb}</b>. Marca cuál fue el resultado correcto:</p>${fila('a',m.a)}${fila('b',m.b)}
+      <label class="lbl" for="fMot">Motivo (obligatorio)</label><textarea id="fMot" placeholder="Por ejemplo: ganamos nosotros 3–1, se registró al revés"></textarea><label class="lbl" for="fPor">Tu nombre</label><input id="fPor" value="${porN}">
+      <p class="error" id="rErr"></p><div class="acciones"><button class="btn" data-acc="enviarImpugnar">Impugnar</button><button class="btn sec" data-acc="modoNo">Volver</button></div></div>`;
+    abrirHoja(h);return;
+  }
+  if(RS.modo==='reclamar'){
+    h+=`<div class="form-box"><b>🚫 No se ha presentado</b><p class="nota" style="margin:4px 0 8px">Toca la pareja que no se presentó a la partida.</p><div class="pick-grid" style="grid-template-columns:1fr 1fr">${['a','b'].map(l=>`<button class="tile ${RS.noVino===l?'sel':''}" data-acc="noVino" data-l="${l}">${avsDe(m[l],'g')}<b>${esc(nom(m[l]))}</b></button>`).join('')}</div>
+      <label class="lbl" for="fMot">¿Qué pasó? (obligatorio)</label><textarea id="fMot" placeholder="Cuándo y dónde habíais quedado, si avisaron…"></textarea><label class="lbl" for="fPor">Tu nombre</label><input id="fPor" value="${porN}">
+      <p class="nota">No cuenta todavía: lo verán todos, la pareja señalada puede decir que no es cierto y decide el organizador.</p><p class="error" id="rErr"></p>
+      <div class="acciones"><button class="btn" data-acc="enviarReclamar">Enviar aviso</button><button class="btn sec" data-acc="modoNo">Volver</button></div></div>`;
+    abrirHoja(h);return;
+  }
+  /* 4. Registro y corrección normales */
+  const editable=(!r&&(!K.bloqueado||puedeOrg)&&(!blq||puedeOrg))||(r&&puedeOrg);
+  const marc=(l,ids)=>`<div class="marcador">${ind?ptInd(ids):pt(ids)}<div class="juegos">${Array.from({length:W+1},(_,v)=>`<button data-acc="juego" data-l="${l}" data-v="${v}" aria-pressed="${RS['g'+l]===v}" ${editable?'':'disabled'}>${v}</button>`).join('')}</div></div>`;
+  if(blq&&!r)h+=`<div class="aviso-org">🔒 <span><b>Jornada todavía cerrada.</b> Se abrirá cuando terminen todas las partidas de la jornada ${jornadaActual()}.${puedeOrg?' Como organizador puedes registrarla igualmente.':''}</span></div>`;
+  if(ambosMD()&&editable)h+=`<label class="lbl" style="margin-top:4px">Esta partida se ha jugado</label><div class="seg">${[3,5].map(v=>`<button data-acc="md" data-v="${v}" aria-pressed="${RS.md===v}">Al mejor de ${v}</button>`).join('')}</div>`;
+  h+=`<p class="sub">Al mejor de ${RS.md}: gana quien llegue a ${W} juegos. Marca los juegos de cada ${esInd()?'equipo':'pareja'}.</p>`;
+  if(r&&puedeOrg)h+=`<div class="aviso-org">🔑 <span>Resultado registrado: <b>${r.ga}–${r.gb}</b>${r.wo?' (no presentado)':''}${r.por?' por '+esc(r.por):''}${r.fecha?', '+fmtL(r.fecha):''}. Cambia los juegos y pulsa «Guardar corrección», o bórralo. La corrección quedará anotada.</span></div>`;
+  h+=`${marc('a',m.a)}${marc('b',m.b)}`;
+  if(editable)h+=`<div class="dos"><div><label class="lbl" for="rFecha">Fecha</label><input type="date" id="rFecha" value="${r&&r.fecha||(m.fecha&&m.fecha<hoy()?m.fecha:hoy())}"></div><div><label class="lbl" for="rPor">Lo registra</label><input id="rPor" value="${esc(r&&r.por||ls('cdc-por')||'')}" placeholder="Tu nombre"></div></div>`;
+  else if(r){
+    h+=`<div class="aviso-org">ℹ️ <span>Registrado${r.por?' por '+esc(r.por):''}${r.fecha?' el '+fmtL(r.fecha):''}${r.wo?', por no presentarse una pareja':''}.</span></div>`;
+    h+=`<div class="wo-box"><b>⚠️ ¿Este resultado no es correcto?</b><small>Marca el resultado correcto y explica el motivo. Lo verán todos y decidirá el organizador.</small><button class="btn peligro" data-acc="impugnar">⚠️ Impugnar resultado</button></div>`}
+  else if(!blq)h+=`<p class="nota">El registro de resultados está cerrado.</p>`;
+  h+=`<p class="error" id="rErr"></p><div class="acciones">${editable?`<button class="btn" data-acc="guardarRes">${r?'Guardar corrección':'Guardar resultado'}</button>`:''}${r&&puedeOrg?`<button class="btn peligro" data-acc="borrarRes">Borrar</button>`:''}${(r||blq)&&!puedeOrg?`<button class="btn sec" data-acc="org">🔑 Soy el organizador</button>`:''}<button class="btn sec" data-acc="cerrar">Cerrar</button></div>`;
+  if(!r&&!ind&&!porDias()&&!blq&&jugable(m)){
+    if(puedeOrg)h+=`<div class="wo-box"><b>🚫 ¿No se ha presentado una pareja?</b><small>Como organizador lo aplicas directamente: ${W}–0 a favor de la otra.</small><div class="dos">${['a','b'].map(l=>`<button class="btn sec peq" data-acc="wo" data-l="${l}">No se presentó ${esc(nom(m[l]))}</button>`).join('')}</div></div>`;
+    else if(!K.bloqueado)h+=`<div class="wo-box"><b>🚫 ¿No se ha presentado la otra pareja?</b><small>Avísalo aquí. Lo verán todos y decidirá el organizador.</small><button class="btn sec peq" data-acc="reclamar">🚫 No se ha presentado</button></div>`;
+  }
+  abrirHoja(h);
+}
+function hojaElegir(){
+  let ps=pendientes();if(S.yo)ps=ps.sort((a,b)=>(lado(b,S.yo)?1:0)-(lado(a,S.yo)?1:0));
+  abrirHoja(`<h3 class="st">Registrar resultado</h3><p class="sub">Elige la partida que habéis jugado.${S.yo?' Las tuyas aparecen primero.':''}</p><div class="lista">${ps.slice(0,30).map(matchHTML).join('')}</div><div class="acciones"><button class="btn sec" data-acc="cerrar">Cerrar</button></div>`);
+}
+let SORT=null;
+function companeros(){const t={};mesas().forEach(m=>[m.a,m.b].forEach(p=>{const k=[...p].sort().join('|');t[k]=(t[k]||0)+1}));return t}
+function sortear(ids){const prev=companeros(),key=(x,y)=>[x,y].sort().join('|');let best=null,bc=1e9;
+  for(let t=0;t<80;t++){const s=barajar(ids),nm=Math.floor(s.length/4),ms=[];let c=0;
+    for(let i=0;i<nm;i++){const g=s.slice(i*4,i*4+4);ms.push({id:'m'+uid(7),a:[g[0],g[1]],b:[g[2],g[3]]});c+=(prev[key(g[0],g[1])]||0)+(prev[key(g[2],g[3])]||0)}
+    if(c<bc){bc=c;best={mesas:ms,descansan:s.slice(nm*4)}}}
+  return best}
+let IR=null;
+function hojaRegInd(){
+  if(!IR)IR={a:[],b:[],ga:null,gb:null,md:K.meta.mejorDe||3,fecha:hoy()<=(finCamp()||'9999')?hoy():finCamp()};
+  const W=gana(IR.md),per=esInd()?2:1,todos=[...IR.a,...IR.b],lleno=IR.a.length===per&&IR.b.length===per;
+  const chip=id=>esInd()?`${av(P(id).j1)}<b>${esc(P(id).j1)}</b>`:`${avsDe(id)}<b>${esc(nom(id))}</b>`;
+  const slot=(arr,n)=>`<div class="ri-par"><span class="ri-t">${esInd()?'Pareja '+n:'Lado '+n}</span><div class="ri-slots" style="grid-template-columns:repeat(${per},1fr)">${Array.from({length:per},(_,i)=>arr[i]?`<button class="ri-slot on" data-acc="irQuita" data-id="${arr[i]}">${chip(arr[i])}</button>`:`<span class="ri-slot">＋</span>`).join('')}</div>${lleno?`<div class="juegos">${Array.from({length:W+1},(_,v)=>`<button data-acc="irJuego" data-l="${n===1?'a':'b'}" data-v="${v}" aria-pressed="${IR[n===1?'ga':'gb']===v}">${v}</button>`).join('')}</div>`:''}</div>`;
+  abrirHoja(`<h3 class="st">＋ Registrar partida</h3><p class="sub">${lleno?'Marca los juegos de cada '+(esInd()?'pareja':'lado')+'.':esInd()?'Toca a los cuatro jugadores: los dos primeros forman la pareja 1 y los dos siguientes, la pareja 2.':'Toca las dos parejas que han jugado.'}</p>
+   ${ambosMD()&&lleno?`<div class="seg">${[3,5].map(v=>`<button data-acc="irMd" data-v="${v}" aria-pressed="${IR.md===v}">Al mejor de ${v}</button>`).join('')}</div>`:''}
+   ${slot(IR.a,1)}${slot(IR.b,2)}
+   ${lleno?'':`<div class="pick-grid">${[...K.part].sort((x,y)=>nom(x.id).localeCompare(nom(y.id))).map(p=>`<button class="tile ${todos.includes(p.id)?'sel':''}" data-acc="irPon" data-id="${p.id}" ${todos.includes(p.id)?'disabled':''}>${esInd()?av(p.j1,'g'):avsDe(p.id,'g')}<b>${esc(nom(p.id))}</b></button>`).join('')}</div>`}
+   <div class="dos" style="margin-top:12px"><div><label class="lbl" for="irFecha">Fecha</label><input type="date" id="irFecha" value="${IR.fecha}"></div><div><label class="lbl" for="irPor">Lo registra</label><input id="irPor" value="${esc(ls('cdc-por')||'')}" placeholder="Tu nombre"></div></div>
+   <p class="error" id="irErr"></p><div class="acciones"><button class="btn" data-acc="irGuardar" ${lleno?'':'disabled'}>Guardar partida</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+}
+function hojaDesempate(a,b){
+  abrirHoja(`<h3 class="st">⚔️ Partida de desempate</h3><p class="sub">${esc(nom(a))} y ${esc(nom(b))} están igualados en todo. Jugad una partida y toca quién la ha ganado.</p>
+   <div class="pick-grid" style="grid-template-columns:1fr 1fr">${[a,b].map(id=>`<button class="tile" data-acc="desempateGan" data-a="${a}" data-b="${b}" data-g="${id}">${avsDe(id,'g')}<b>${esc(nom(id))}</b><small>Ha ganado</small></button>`).join('')}</div>
+   <p class="nota" style="margin-top:10px">El ganador quedará por delante en la clasificación. Si se registra mal, el organizador puede corregirlo.</p>
+   <div class="acciones"><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+}
+function hojaCruce(id){
+  const c=cuadro().flat().find(x=>x.id===id);if(!c)return;const g=globalCruce(c),subs=subPartidas(c);
+  abrirHoja(`<h3 class="st">${c.ko===2?'Final':nombreCruce(c.ko)+' '+c.n}</h3><p class="sub">Cruce a ida y vuelta. Toca cada partida para registrar su resultado.</p>
+   <div class="vs-cab" style="margin:6px 0 12px"><span class="lado">${avsDe(c.a,'g')}<b>${esc(nom(c.a))}</b></span><span class="vs-big">${g.wa}–${g.wb}</span><span class="lado">${avsDe(c.b,'g')}<b>${esc(nom(c.b))}</b></span></div>
+   <div class="lista">${subs.map(matchHTML).join('')}</div>
+   <p class="nota" style="margin-top:10px">${g.gan?`Pasa <b>${esc(nom(g.gan))}</b>.`:g.empate?'Empate a una partida cada uno: hay que jugar la partida de desempate.':'Pasa quien gane más partidas. Si ganan una cada uno, se juega una partida de desempate.'}</p>
+   <div class="acciones"><button class="btn sec" data-acc="cerrar">Cerrar</button></div>`);
+}
+function hojaSorteo(){
+  if(!SORT)SORT={sel:new Set(K.part.map(p=>p.id)),fecha:hoy(),res:null};
+  const n=SORT.sel.size,mesasN=Math.floor(n/4),sob=n%4;
+  if(SORT.res){abrirHoja(`<h3 class="st">🎲 Parejas sorteadas</h3><p class="sub">${cap(fmtL(SORT.fecha))}. Se ha procurado no repetir compañero.</p>${SORT.res.mesas.map((m,i)=>`<div class="mesa rev" style="animation-delay:${i*.12}s"><div class="t">MESA ${i+1}</div><div class="match" style="border:0;background:transparent;padding:0">${ptInd(m.a)}<span class="centro"><span class="vs">VS</span></span>${ptInd(m.b,{der:1})}</div></div>`).join('')}${SORT.res.descansan.length?`<p class="nota">Descansan: ${SORT.res.descansan.map(id=>esc(P(id).j1)).join(', ')}</p>`:''}
+    <div class="acciones"><button class="btn" data-acc="guardarSorteo">Guardar el día</button><button class="btn sec" data-acc="resortear">Volver a sortear</button></div>`);return}
+  abrirHoja(`<h3 class="st">🎲 Nuevo día de juego</h3><p class="sub">Toca para marcar quién ha venido hoy.</p>
+   <div class="presentes">${K.part.map(p=>`<button data-acc="presente" data-id="${p.id}" aria-pressed="${SORT.sel.has(p.id)}">${av(p.j1)}${esc(p.j1)}</button>`).join('')}</div>
+   <div class="kpis"><div class="kpi"><b>${n}</b><span>presentes</span></div><div class="kpi"><b>${mesasN}</b><span>${mesasN===1?'mesa':'mesas'}</span></div><div class="kpi"><b>${sob}</b><span>descansan</span></div></div>
+   <label class="lbl" for="sFecha">Fecha</label><input type="date" id="sFecha" value="${SORT.fecha}">
+   <div class="acciones"><button class="btn" data-acc="hacerSorteo" ${mesasN?'':'disabled'}>Sortear parejas</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+}
+function hojaOrg(){
+  if(S.org||S.admin){const cs=(K.cambios||[]).slice(-5).reverse();abrirHoja(`<h3 class="st">🔑 Gestión del organizador</h3>
+    <div class="ayuda-org"><b>Qué puedes hacer</b><ul><li><b>Corregir un resultado:</b> ve a Partidas (o al cuadro), toca la partida ya jugada, cambia los juegos y pulsa «Guardar corrección». También puedes borrarlo.</li><li><b>Editar reglas:</b> en Reglas, con ✏️ y 🗑️, o «Añadir regla».</li><li><b>Datos del campeonato:</b> aquí abajo.</li></ul></div>
+    ${cs.length?`<b style="display:block;margin-top:12px">Últimas correcciones</b><div class="card pad" style="margin-top:6px">${cs.map(c=>`<div class="log">${new Date(c.ts).toLocaleDateString('es-ES',{day:'numeric',month:'short'})}: ${esc(c.txt)}</div>`).join('')}</div>`:''}
+    <label class="lbl" for="oNombre">Nombre del campeonato</label><input id="oNombre" value="${esc(K.meta.nombre)}">
+    <label class="lbl" for="oAcc">Nueva clave de acceso para los jugadores</label><input id="oAcc" placeholder="Déjalo vacío para no cambiarla">
+    <div class="acciones"><button class="btn" data-acc="guardarOrg">Guardar cambios</button></div>
+    ${porDias()?`<div class="acciones"><button class="btn ${K.cerrado?'sec':'peligro'}" data-acc="cerrarCamp">${K.cerrado?'🔓 Reabrir el campeonato':'🏁 Cerrar el campeonato ahora'}</button></div><p class="nota">${K.cerrado?'Está cerrado: no se pueden registrar más partidas.':'Al cerrarlo se proclama ganador a quien vaya primero y ya no se registran más partidas.'}</p>`:''}
+    <div class="form-box"><b>📦 Archivo del campeonato</b><small style="display:block;color:var(--mute);font-size:.82rem;margin:4px 0 8px">Descarga toda su configuración y resultados en un archivo. Puedes pasárselo a Claude para cambiar lo que quieras y luego el administrador lo vuelve a cargar.</small><button class="btn sec peq" data-acc="descargar">⬇️ Descargar archivo</button></div>
+    <div class="acciones"><button class="btn sec" data-acc="salirOrg">Salir del modo organizador</button></div>`);return}
+  abrirHoja(`<h3 class="st">🔑 Modo organizador</h3><p class="sub">Introduce la clave de organizador de este campeonato para corregir resultados, editar reglas o cambiar la clave de acceso.</p>
+    <input id="orgKey" type="password" placeholder="Clave de organizador" aria-label="Clave de organizador"><p class="error" id="orgErr"></p>
+    <div class="acciones"><button class="btn" data-acc="entrarOrg">Entrar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+  setTimeout(()=>$('orgKey')&&$('orgKey').focus(),60);
+}
+function hojaRegla(id){const r=K.reglas.find(x=>x.id===id)||{i:'📌',t:'',x:''};
+  const iconos=['📌','🃏','🏆','📅','📍','⚖️','⏰','💶','🍺','🚫','✍️','🎲'];
+  abrirHoja(`<h3 class="st">${id?'Editar regla':'Nueva regla'}</h3><div class="presentes" id="iconos">${iconos.map(i=>`<button data-acc="icono" data-v="${i}" aria-pressed="${i===r.i}" style="padding:6px 10px;font-size:1.2rem">${i}</button>`).join('')}</div>
+    <label class="lbl" for="gT">Título</label><input id="gT" value="${esc(r.t)}" placeholder="Por ejemplo: Apuesta">
+    <label class="lbl" for="gX">Texto</label><textarea id="gX" placeholder="Explica la regla en una o dos frases">${esc(r.x)}</textarea>
+    <p class="error" id="gErr"></p><div class="acciones"><button class="btn" data-acc="guardarRegla" data-id="${id||''}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+}
+function linkCamp(c){return 'https://creadordecampeonatos.es/'+c.slug}
+async function compartir(c){const url=linkCamp(c),txt='🃏 '+c.meta.nombre+'. Entra, consulta tus partidas y registra resultados';
+  if(navigator.share){try{await navigator.share({title:c.meta.nombre,text:txt,url})}catch(e){}return}
+  try{await navigator.clipboard.writeText(txt+': '+url);toast('Enlace copiado')}catch(e){toast(url)}}
+
+/* ================= Administración ================= */
+function vAdmin(){
+  if(!S.admin){S.vista='portal';return render()}
+  const cs=Object.values(DB.camps).sort((a,b)=>b.creado-a.creado),res=cs.reduce((s,c)=>s+Object.keys(c.res).length,0),kb=Math.round(JSON.stringify(DB).length/1024);
+  pinta(`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Volver">‹</button><button class="btn sec peq" data-acc="salirAdmin">Salir</button></div><h1 class="titulo">🛡️ Administración</h1><p class="nota">Control total de la plataforma: entrar en cualquier campeonato, ocultarlo, cerrar su registro, restablecer claves o eliminarlo.</p></div>`,
+  `<div class="kpis"><div class="kpi"><b>${cs.length}</b><span>campeonatos</span></div><div class="kpi"><b>${res}</b><span>resultados</span></div><div class="kpi"><b>${kb} KB</b><span>espacio usado</span></div></div>
+  <div class="form-box"><b>📥 Cargar un campeonato desde archivo</b><small style="display:block;color:var(--mute);font-size:.82rem;margin:4px 0 8px">Sube un archivo descargado (o modificado). Si ya existe un campeonato con el mismo código, se reemplaza.</small><label class="btn sec peq">Elegir archivo<input type="file" id="impCamp" accept=".json" hidden></label></div>
+  <h2 class="sec">Todos los campeonatos</h2>`+cs.map(c=>con(c,()=>`<div class="admin-row"><h3>${iconoFormato(c)} ${esc(c.meta.nombre)}</h3><div class="meta">${c.part.length} ${esInd()?'jugadores':'parejas'}, ${Object.keys(c.res).length} resultados, creado el ${new Date(c.creado).toLocaleDateString('es-ES')}</div>
+    <div class="chips" style="margin:0 0 10px">${c.oculto?'<span class="chip">👻 Oculto</span>':''}${c.bloqueado?'<span class="chip" style="color:var(--rojo)">⛔ Registro cerrado</span>':''}${terminado()?'<span class="chip oro">🏆 Terminado</span>':''}</div>
+    <div class="acciones"><button class="btn peq" data-acc="abrir" data-id="${c.id}">Entrar</button><button class="btn sec peq" data-acc="admOcultar" data-id="${c.id}">${c.oculto?'Mostrar':'Ocultar'}</button><button class="btn sec peq" data-acc="admBloq" data-id="${c.id}">${c.bloqueado?'Abrir registro':'Cerrar registro'}</button><button class="btn sec peq" data-acc="admClaves" data-id="${c.id}">Claves</button><button class="btn sec peq" data-acc="descargar" data-id="${c.id}">⬇️ Archivo</button><button class="btn peligro peq" data-acc="admBorrar" data-id="${c.id}">Eliminar</button></div></div>`)).join(''));
+}
+/* ================= Asistente de creación ================= */
+let WZ=null;
+function nuevoWZ(){return{ap:{on:false,tipo:'dinero',cuota:'',premio:'',texto:''},paso:1,modalidad:'parejas',formato:'grupos',n:8,mejorDe:5,vueltas:1,libre:0,tocadoLibre:false,koVueltas:1,grupos:2,pasan:2,minPct:30,tocadoG:false,cal:{tipo:'dia',inicio:hoy(),ndias:3,fin:sumar(hoy(),180)},part:[],reglas:null,firma:'',nombre:'',acceso:'',org:'',oculto:false}}
+const PASOS=['','Formato','Participantes','Partidas y estructura','Calendario','Reglas','Nombre y claves'];
+const AYUDA=['','Cómo se enfrentan los participantes y cómo se decide el campeón.','Cuántos son y cómo se llaman. Puedes rellenar un ejemplo para probar.','Cuántos juegos tiene cada partida y cómo se organiza la competición.','Cuándo se juega: en un día o en unos pocos días.','Reglas que verán los jugadores. Las que añadas son informativas: no cambian cómo funciona la app.','Nombre, enlace y claves. Repasa el resumen: toca cualquier dato para cambiarlo.'];
+function wzChips(){const w=WZ,ind=w.modalidad==='individual',c=[];
+  if(w.paso>1)c.push([1,ind?'📋 Liga':{liga:w.libre?'♾️ Liga libre':'📋 Liga',grupos:'🗂️ Liguilla + elim.',ko:'⚔️ Eliminatoria'}[w.formato]]);
+  if(w.paso>2)c.push([2,'🙋 '+w.n+(ind?' jugadores':' parejas')]);
+  if(w.paso>3)c.push([3,'🃏 '+(w.mejorDe?'Mejor de '+w.mejorDe:'Mejor de 3 o 5')]);
+  if(w.paso>4)c.push([4,'📅 '+textoCal({cal:w.cal})]);
+  return w.paso>1?`<div class="wz-chips">${c.map(([p,t])=>`<button class="chip" data-acc="wzIr" data-p="${p}">${t} ✎</button>`).join('')}</div>`:''}
+const SVG={
+  liga:`<svg viewBox="0 0 40 40" fill="none" stroke="#E7B94F" stroke-width="2.4"><rect x="5" y="5" width="30" height="30" rx="4"/><path d="M5 15h30M5 25h30M15 5v30M25 5v30"/></svg>`,
+  grupos:`<svg viewBox="0 0 40 40" fill="none" stroke="#E7B94F" stroke-width="2.4"><rect x="3" y="5" width="12" height="12" rx="3"/><rect x="3" y="23" width="12" height="12" rx="3"/><path d="M15 11h8v18h-8M23 20h12"/></svg>`,
+  ko:`<svg viewBox="0 0 40 40" fill="none" stroke="#E7B94F" stroke-width="2.4"><path d="M4 6h10v10H4M4 24h10v10H4M14 11h8v18h-8M22 20h14"/></svg>`};
+function wzAjustar(){
+  const w=WZ,n=w.n;
+  if(w.modalidad==='individual')w.formato='liga';
+  if(w.formato==='grupos'&&n<4)w.formato='liga';
+  while(w.part.length<n)w.part.push({j1:'',j2:'',apodo:''});w.part.length=n;
+  const mg=maxGrupos(n);if(!w.tocadoG)w.grupos=n<=6?1:n<=12?2:n<=24?4:8;w.grupos=Math.max(1,Math.min(w.grupos,mg));
+  const t=tamanos(n,w.grupos),ops=opcionesPasan(w.grupos,Math.min(...t));if(w.pasan&&!ops.includes(w.pasan))w.pasan=ops.includes(2)?2:(ops[ops.length-1]||0);
+  w.vueltas=1;if(!w.tocadoLibre)w.libre=n===2?1:0;if(w.modalidad!=='parejas'||w.formato!=='liga')w.libre=0;
+  w.modalidad='parejas';if(!['dia','dias'].includes(w.cal.tipo))w.cal.tipo='dia';
+}
+function wzResumen(){
+  const w=WZ,n=w.n;
+  if(w.modalidad==='individual')return'Cada día de juego se sortean parejas entre los presentes. No hay calendario cerrado.';
+  if(w.formato==='liga'&&w.libre)return'Sin calendario fijo: se registran todas las partidas que se jueguen mientras el campeonato esté abierto. Al cierre gana quien más partidas haya ganado.';
+  if(w.formato==='liga'){const R=n%2?n:n-1;return `${R} jornadas. Cada pareja juega ${n-1} partidas; ${n*(n-1)/2} partidas en total.`}
+  if(w.formato==='ko'){const p=pot2(n);return `Cuadro de ${p}${p>n?`, con ${p-n} ${p-n>1?'parejas exentas':'pareja exenta'} en la primera ronda`:''}. ${Math.log2(p)} rondas hasta la final${w.koVueltas===2?', cada cruce a ida y vuelta':''}.`}
+  const t=tamanos(n,w.grupos),mx=Math.max(...t),mn=Math.min(...t),tot=t.reduce((s,x)=>s+x*(x-1)/2,0),N=w.grupos*w.pasan;
+  return `Cada pareja juega ${mn===mx?mn-1:(mn-1)+' o '+(mx-1)} partidas de grupo (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''}`:''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
+}
+function wzRondas(){const w=WZ,n=w.n;if(w.formato==='liga')return w.libre?1:(n%2?n:n-1);if(w.formato==='ko')return Math.log2(pot2(n));const t=tamanos(n,w.grupos),mx=Math.max(...t);return(mx%2?mx:mx-1)+(w.pasan?Math.log2(w.grupos*w.pasan):0)}
+function wzFirma(){const w=WZ;return JSON.stringify([w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
+function wzMeta(){const w=WZ;return{modalidad:w.modalidad,formato:w.formato,mejorDe:w.mejorDe,vueltas:1,libre:!!w.libre,koVueltas:w.formato==='ko'||(w.formato==='grupos'&&w.pasan)?w.koVueltas:1,grupos:w.grupos,pasan:w.formato==='grupos'?w.pasan:0,minPct:w.minPct,cal:{...w.cal},nombre:w.nombre}}
+const op=(acc,k,v,actual,icono,t,x,dis=false)=>`<button class="op" data-acc="${acc}" data-k="${k}" data-v="${v}" aria-pressed="${String(actual)===String(v)}" ${dis?'disabled':''}><span class="oi">${icono}</span><span><b>${t}</b><small>${x}</small></span><span class="check">✓</span></button>`;
+function wzPaso(){
+  const w=WZ,ind=w.modalidad==='individual',quien=ind?'jugadores':'parejas';
+  switch(w.paso){
+  case 0:return op('wz','modalidad','parejas',w.modalidad,'👥','Parejas fijas','Cada pareja se inscribe y juega junta todo el campeonato.')+op('wz','modalidad','individual',w.modalidad,'🎲','Individual','Se apuntan jugadores sueltos y cada partida se juega con la pareja que toque. Clasificación por promedio de victorias.');
+  case 1:return (ind?'<p class="nota">En modo individual el formato es siempre liga, porque las parejas cambian cada día.</p>':'')+
+    op('wz','formato','liga',w.formato,SVG.liga,'Liga','Todos contra todos. Gana quien más partidas gane.')+
+    op('wz','formato','grupos',w.formato,SVG.grupos,'Liguilla + eliminatoria','Fase de grupos y después cruces hasta la final.',ind||w.n<4)+
+    op('wz','formato','ko',w.formato,SVG.ko,'Eliminatoria','Cuadro directo: quien pierde, queda fuera.',ind);
+  case 2:{const rap=ind?[4,6,8,10,12,16]:[2,4,5,6,8,12,16,24];
+    let h=`<div class="cuantos">${rap.map(v=>`<button data-acc="wzN" data-v="${v}" aria-pressed="${w.n===v}">${v}</button>`).join('')}</div>
+    <div class="stepper"><button data-acc="wzMas" data-v="-1" aria-label="Menos">−</button><div><b>${w.n}</b><span>${quien} (máximo 50)</span></div><button data-acc="wzMas" data-v="1" aria-label="Más">＋</button></div>
+    <div class="acciones" style="margin:0 0 12px"><button class="btn sec peq" data-acc="wzEjemplo">✨ Rellenar con ejemplo</button><button class="btn sec peq" data-acc="wzVaciar">Vaciar</button></div>`;
+    h+=w.part.map((p,i)=>ind?`<div class="pareja-in fila-flex" style="padding:8px 10px"><span data-avi="${i}">${av(p.j1||'?')}</span><input data-p="${i}" data-f="j1" value="${esc(p.j1)}" placeholder="Jugador ${i+1}" aria-label="Jugador ${i+1}"></div>`
+      :`<div class="pareja-in"><div class="cab"><span class="avs" data-avi="${i}">${av(p.j1||'?')}${av(p.j2||'?')}</span>Pareja ${i+1}</div><div class="dos"><input data-p="${i}" data-f="j1" value="${esc(p.j1)}" placeholder="Jugador 1" aria-label="Pareja ${i+1}, jugador 1"><input data-p="${i}" data-f="j2" value="${esc(p.j2)}" placeholder="Jugador 2" aria-label="Pareja ${i+1}, jugador 2"></div><input data-p="${i}" data-f="apodo" value="${esc(p.apodo)}" placeholder="Nombre de la pareja (opcional)" style="margin-top:6px" aria-label="Nombre de la pareja ${i+1}"></div>`).join('');
+    return h}
+  case 3:{const dots=k=>`<span class="juegos-dots">${Array.from({length:k},(_,i)=>`<i class="${i<Math.ceil(k/2)?'w':''}"></i>`).join('')}</span>`;
+    let h=op('wz','mejorDe',3,w.mejorDe,'3️⃣','Al mejor de 3 juegos','Gana quien llegue a 2. Partidas rápidas.'+dots(3))+op('wz','mejorDe',5,w.mejorDe,'5️⃣','Al mejor de 5 juegos','Gana quien llegue a 3. Más largas y justas.'+dots(5))+op('wz','mejorDe',0,w.mejorDe,'🔀','Al mejor de 3 o de 5','Se elige en cada partida al registrarla. Todas cuentan igual: partida ganada y sus juegos.');
+    if(ind)h+=`<label class="lbl">Mínimo de partidas para entrar en la clasificación</label><div class="cuantos">${[0,20,30,50].map(v=>`<button data-acc="wz" data-k="minPct" data-v="${v}" aria-pressed="${w.minPct===v}" style="padding:10px 12px">${v?v+' %':'Sin mínimo'}</button>`).join('')}</div><p class="nota">Porcentaje respecto a quien más partidas haya jugado. Evita que alguien con 3 de 3 lidere la tabla.</p>`;
+    else if(w.formato==='liga')h+=`<label class="lbl">¿Cómo se juega la liga?</label>`+op('wzLibre','libre',0,w.libre,'📋','Calendario fijo','Todos contra todos una vez. El calendario de partidas se genera solo.')+op('wzLibre','libre',1,w.libre,'♾️','Partidas libres','Se juegan todas las partidas que se quiera hasta el cierre. Ideal para un fin de semana o una temporada.');
+    else if(w.formato==='grupos'){const mg=maxGrupos(w.n),t=tamanos(w.n,w.grupos),ops=opcionesPasan(w.grupos,Math.min(...t));
+      h+=`<label class="lbl">Número de grupos</label><div class="stepper"><button data-acc="wzG" data-v="-1" ${w.grupos<=1?'disabled':''}>−</button><div><b>${w.grupos}</b><span>${w.grupos>1?'grupos':'grupo'} (máximo ${mg})</span></div><button data-acc="wzG" data-v="1" ${w.grupos>=mg?'disabled':''}>＋</button></div>
+      <div class="preview-grupos">${t.map((x,i)=>`<div><b>${LETRAS[i]}</b><span>${x} parejas</span></div>`).join('')}</div>
+      <label class="lbl">¿Cuántas pasan de cada grupo?</label><div class="cuantos">${ops.map(v=>`<button data-acc="wz" data-k="pasan" data-v="${v}" aria-pressed="${w.pasan===v}" style="padding:10px 14px">${v}</button>`).join('')}<button data-acc="wz" data-k="pasan" data-v="0" aria-pressed="${w.pasan===0}" style="padding:10px 14px">Ninguna</button></div>${w.pasan?`<label class="lbl">Cruces de la eliminatoria</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="koVueltas" data-v="${v}" aria-pressed="${w.koVueltas===v}">${t}</button>`).join('')}</div>`:''}`}
+    else{const p=pot2(w.n);h+=`<div class="card pad"><div class="kpis"><div class="kpi"><b>${p}</b><span>plazas en el cuadro</span></div><div class="kpi"><b>${p-w.n}</b><span>exentas en 1.ª ronda</span></div><div class="kpi"><b>${Math.log2(p)}</b><span>rondas</span></div></div><p class="nota" style="margin-bottom:0">El cuadro se sortea al crear el campeonato. Las exentas pasan directamente a la segunda ronda.</p></div><label class="lbl">Cruces de la eliminatoria</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="koVueltas" data-v="${v}" aria-pressed="${w.koVueltas===v}">${t}</button>`).join('')}</div>`}
+    return h+`<p class="nota" style="margin-top:12px">📐 ${wzResumen()}</p>`}
+  case 4:{const c=w.cal;let h=op('wzCal','tipo','dia',c.tipo,'☀️','Todo en un día','Ideal para un campeonato relámpago: todo se juega en una tarde o un día.')+
+    op('wzCal','tipo','dias',c.tipo,'🗓️','En varios días',w.libre?'Por ejemplo, un fin de semana: abierto los días que elijas.':'Por ejemplo, un puente o un fin de semana: las rondas se reparten entre los días.')+
+    (c.tipo==='dias'?`<div class="stepper"><button data-acc="wzDias" data-v="-1">−</button><div><b>${c.ndias}</b><span>días</span></div><button data-acc="wzDias" data-v="1">＋</button></div>`:'');
+    h+=`<label class="lbl" for="wInicio">${c.tipo==='dia'?'Fecha':'Empieza'}</label><input type="date" id="wInicio" data-c="inicio" value="${c.inicio}">`;
+    const fin=c.tipo==='dia'?c.inicio:sumar(c.inicio,c.ndias-1);
+    if(w.libre)h+=`<p class="nota" style="margin-top:12px">🏁 Se cierra al terminar el ${fmtL(fin)} y entonces se decide el ganador.</p>`;
+    else{const R=wzRondas();h+=`<p class="nota" style="margin-top:12px">📅 ${R} ${R>1?'rondas':'ronda'} en total. ${c.tipo==='dia'?'Todo el '+fmtL(c.inicio)+'.':'Del '+fmtL(c.inicio)+' al '+fmtL(fin)+'.'}</p>`}
+    return h}
+  case 5:{if(!w.reglas||w.firma!==wzFirma()){const propias=(w.reglas||[]).filter(r=>r.propia);w.reglas=[...reglasPorDefecto(wzMeta(),w.n),...propias];w.firma=wzFirma()}
+    return `<p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
+    <div class="card pad ap-card" style="margin-top:12px"><div class="fila-flex" style="justify-content:space-between"><b>💶 Apuesta (opcional)</b><button class="switch ${w.ap.on?'on':''}" data-acc="apOn" aria-pressed="${w.ap.on}" aria-label="Activar apuesta"><i></i></button></div>
+     ${w.ap.on?`<div class="seg" style="margin-top:10px">${[['dinero','💶 Dinero'],['extra','🍽️ Otra cosa']].map(([k,t])=>`<button data-acc="apTipo" data-v="${k}" aria-pressed="${w.ap.tipo===k}">${t}</button>`).join('')}</div>
+      ${w.ap.tipo==='dinero'?`<div class="dos"><div><label class="lbl" for="apC">Pone cada ${w.modalidad==='individual'?'jugador':'pareja'} (€)</label><input id="apC" data-ap="cuota" inputmode="decimal" value="${esc(w.ap.cuota)}" placeholder="30"></div><div><label class="lbl">Bote total</label><div class="bote">${w.ap.cuota&&!isNaN(+w.ap.cuota.replace(',','.'))?(+w.ap.cuota.replace(',','.')*w.n).toLocaleString('es-ES')+' €':'–'}</div></div></div>
+      <label class="lbl" for="apP">Reparto del premio</label><input id="apP" data-ap="premio" value="${esc(w.ap.premio)}" placeholder="Por ejemplo: 1.º 180 €, 2.º 60 €">`
+      :`<label class="lbl" for="apT">¿Qué se apuesta?</label><textarea id="apT" data-ap="texto" placeholder="Por ejemplo: los cuatro últimos invitan a comer a los cuatro primeros">${esc(w.ap.texto)}</textarea>`}
+      <p class="nota" style="margin:8px 0 0">Aparecerá destacada en las reglas del campeonato.</p>`:'<p class="nota" style="margin:6px 0 0">Actívala si os jugáis dinero o algo extra, como una comida.</p>'}</div>
+    <div class="card pad" style="margin-top:12px"><b>＋ Añadir una regla propia</b><input id="wzRT" placeholder="Título, por ejemplo: Apuesta" style="margin-top:8px"><textarea id="wzRX" placeholder="Por ejemplo: los cuatro últimos invitan a cenar a los cuatro primeros." style="margin-top:6px"></textarea><div class="acciones"><button class="btn sec" data-acc="wzAddRegla">Añadir</button></div></div>`}
+  case 6:{const s=slug(w.nombre||'mi-campeonato');
+    return `<label class="lbl" for="wNombre">Nombre del campeonato</label><input id="wNombre" data-w="nombre" value="${esc(w.nombre)}" placeholder="Campeonato de Mus de Navidad"><div class="slug" id="wSlug">Su dirección será <b>${location.host}/${esc(s)}</b></div>
+    <label class="lbl" for="wAcc">🔒 Clave de acceso (para los jugadores)</label><input id="wAcc" data-w="acceso" value="${esc(w.acceso)}" placeholder="Por ejemplo: sota2026">
+    <label class="lbl" for="wOrg">🔑 Clave de organizador (solo para ti)</label><input id="wOrg" data-w="org" type="password" value="${esc(w.org)}" placeholder="Para corregir resultados y editar reglas">
+    <label class="recordar" style="justify-content:flex-start"><input type="checkbox" id="wOculto" ${w.oculto?'checked':''}> No mostrarlo en la portada del creador</label>
+    <h2 class="sec">Resumen</h2><div class="resumen">
+      <div data-acc="wzIr" data-p="1"><span>Formato</span><b>${ind?'📋 Liga':{liga:'📋 Liga',grupos:'🗂️ Liguilla + elim.',ko:'⚔️ Eliminatoria'}[w.formato]}</b></div>
+      <div data-acc="wzIr" data-p="2"><span>Participantes</span><b>${w.n} ${quien}</b></div><div data-acc="wzIr" data-p="3"><span>Partidas</span><b>${w.mejorDe?'Al mejor de '+w.mejorDe:'Mejor de 3 o 5'}</b></div>
+      <div data-acc="wzIr" data-p="4"><span>Calendario</span><b>${textoCal({cal:w.cal})}</b></div><div data-acc="wzIr" data-p="5"><span>Reglas</span><b>${w.reglas?w.reglas.length:0} reglas</b></div></div>
+    <p class="error" id="wErr"></p>`}
+  }
+}
+function vCrear(){
+  if(!WZ){WZ=nuevoWZ()}wzAjustar();const w=WZ;
+  pinta(`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Cancelar">✕</button><span class="paso-t">Paso ${w.paso} de ${PASOS.length-1}</span></div>
+    <div class="pasos">${PASOS.slice(1).map((_,i)=>`<i class="${i+1<=w.paso?'ok':''}"></i>`).join('')}</div><h1 class="titulo" style="font-size:1.5rem">${PASOS[w.paso]}</h1><p class="nota" style="margin:4px 0 0">${AYUDA[w.paso]}</p>${wzChips()}</div>`,
+    wzPaso(),
+    `<div class="pie-asist"><div class="in"><button class="btn sec" data-acc="wzAtras">${w.paso>1?'Atrás':'Cancelar'}</button><button class="btn" data-acc="wzSig">${w.paso===PASOS.length-1?'Crear campeonato':'Siguiente'}</button></div></div>`);
+  $('app').classList.remove('sin-nav');
+}
+function wzValidar(){
+  const w=WZ;
+  if(w.paso===2){const falta=w.part.findIndex(p=>!p.j1.trim()||(w.modalidad==='parejas'&&!p.j2.trim()));if(falta>=0){toast(`Falta completar ${w.modalidad==='parejas'?'la pareja':'el jugador'} ${falta+1}`);return false}}
+  if(w.paso===4&&w.cal.tipo==='libre'&&(w.cal.fin||'')<=w.cal.inicio){toast('La fecha de fin tiene que ser posterior al inicio');return false}
+  if(w.paso===6){if(!w.nombre.trim())return $('wErr').textContent='Ponle un nombre al campeonato.',false;if(!w.acceso.trim())return $('wErr').textContent='Elige una clave de acceso para los jugadores.',false;if(!w.org.trim())return $('wErr').textContent='Elige tu clave de organizador.',false;
+    if((LISTA||[]).some(c=>c.slug===slug(w.nombre)))return $('wErr').textContent='Ya existe un campeonato con ese nombre. Prueba con otro.',false}
+  return true;
+}
+function apuestaRegla(w){const a=w.ap;if(!a.on)return[];
+  if(a.tipo==='dinero'){const c=+String(a.cuota).replace(',','.');if(!c&&!a.premio)return[];const bote=c?c*w.n:0;
+    return[{id:uid(),i:'💶',t:'Apuesta',x:`${c?`Cada ${w.modalidad==='individual'?'jugador':'pareja'} pone ${c.toLocaleString('es-ES')} € (bote de ${bote.toLocaleString('es-ES')} €). `:''}${a.premio?'Reparto: '+a.premio.trim()+'.':''}`.trim(),propia:true,apuesta:true}]}
+  return a.texto.trim()?[{id:uid(),i:'🍽️',t:'Apuesta',x:a.texto.trim(),propia:true,apuesta:true}]:[]}
+function crearCamp(){
+  const w=WZ,id=uid(8);
+  const c={id,slug:slug(w.nombre),meta:wzMeta(),part:w.part.map((p,i)=>({id:'p'+(i+1),j1:p.j1.trim(),j2:w.modalidad==='parejas'?p.j2.trim():'',apodo:w.modalidad==='parejas'?p.apodo.trim():''})),
+    reglas:[...w.reglas,...apuestaRegla(w)],reglasLog:[{ts:Date.now(),txt:'Reglas iniciales del campeonato'}],claveAcceso:w.acceso.trim(),claveOrg:w.org.trim(),oculto:w.oculto,bloqueado:false,creado:Date.now(),res:{}};
+  c.meta.nombre=w.nombre.trim();generar(c);DB.camps[id]=c;guardarDB();
+  S.sesion.add(id);ls('cdc-acc-'+id,'1');S.nuevo={id,acc:c.claveAcceso,org:c.claveOrg};S.org=true;S.orgDe=id;WZ=null;S.vista='exito';render();window.scrollTo(0,0);
+}
+function vExito(){
+  const c=DB.camps[S.nuevo.id];
+  pinta('',`<div class="exito"><div class="big">🎉</div><h1 class="titulo">¡Campeonato creado!</h1><p class="nota">${esc(c.meta.nombre)} ya está listo. Comparte el enlace y la clave de acceso con los jugadores.</p>
+    <div class="claves"><div class="clave"><span>Enlace</span><b style="font-size:.85rem;overflow-wrap:anywhere;text-align:right">${location.host}/${esc(c.slug)}</b></div>
+    <div class="clave"><span>🔒 Clave de acceso</span><b>${esc(S.nuevo.acc)}</b></div><div class="clave"><span>🔑 Clave de organizador</span><b>${esc(S.nuevo.org)}</b></div></div>
+    <p class="nota">Guarda la clave de organizador: solo con ella podrás corregir resultados o cambiar reglas.</p>
+    <div class="acciones"><button class="btn sec" data-acc="compartirNuevo">📤 Compartir</button><button class="btn" data-acc="abrir" data-id="${c.id}">Entrar al campeonato</button></div></div>`);
+}
+
+/* ================= Acciones ================= */
+const ACC={
+  portal(){S.vista='portal';S.id=null;S.org=false;cerrarHoja();render();scrollTo(0,0)},
+  crear(){WZ=null;S.vista='crear';render();scrollTo(0,0)},
+  abrir(el){S.vista='camp';S.id=el.dataset.id;S.tab='inicio';S.filtro='pendientes';S.sub='grupos';S.exp='';S.ca='';S.cb='';S.koDesde=0;if(S.orgDe!==S.id)S.org=false;render();scrollTo(0,0)},
+  entrar(){const c=DB.camps[S.id],k=$('lockKey').value.trim();if(k!==c.claveAcceso){$('lockErr').textContent='Clave incorrecta. Pídesela al organizador.';return}
+    S.sesion.add(S.id);if($('lockRec').checked)ls('cdc-acc-'+S.id,'1');render()},
+  tab(el){S.tab=el.dataset.t;S.exp='';render();scrollTo(0,0)},
+  sub(el){S.sub=el.dataset.v;render()},
+  koDesde(el){S.koDesde=+el.dataset.v;render()},
+  filtro(el){S.filtro=el.dataset.v;render()},
+  filtroP(el){S.filtroP=el.dataset.v;render()},
+  pick(){hojaPicker()},
+  verPartidas(el){S.filtroP=el.dataset.v;S.tab='partidas';render();scrollTo(0,0)},
+  pickSel(el){const t=el.dataset.t||'yo',id=el.dataset.id;
+    if(t==='yo'){S.yo=id;ls('cdc-yo-'+S.id,S.yo||null);S.filtroP=''}
+    else{const o=t==='ca'?'cb':'ca';if(S[o]===id)S[o]=S[t];S[t]=id}
+    cerrarHoja();render()},
+  pickCmp(el){hojaPicker(el.dataset.t)},
+  pickNo(){S.yo='';ls('cdc-yo-'+S.id,null);render()},
+  exp(el){S.exp=S.exp===el.dataset.id?'':el.dataset.id;render()},
+  resultado(el){RS=null;hojaResultado(el.dataset.id)},
+  elegir(){hojaElegir()},
+  juego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(RS.md);RS['g'+l]=v;const o=l==='a'?'b':'a';if(v<W&&RS['g'+o]!==W)RS['g'+o]=W;if(v===W&&RS['g'+o]===W)RS['g'+o]=null;hojaResultado(RS.id)},
+  guardarRes(){const W=gana(RS.md),{ga,gb}=RS;if(ga==null||gb==null||Math.max(ga,gb)!==W||Math.min(ga,gb)>=W){$('rErr').textContent=`Uno tiene que llegar a ${W} juegos y el otro quedarse por debajo.`;return}
+    const por=$('rPor').value.trim();if(por)ls('cdc-por',por);const ant=K.res[RS.id];
+    if(ant){const m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': '+ant.ga+'–'+ant.gb+' pasa a '+ga+'–'+gb})}
+    K.res[RS.id]={ga,gb,md:RS.md,...(ant&&ant.wo&&ga+gb===Math.max(ga,gb)?{wo:ant.wo}:{}),fecha:$('rFecha').value||hoy(),por:ant?ant.por:por,ts:ant?ant.ts:Date.now(),...(ant?{corregido:true}:{})};guardarDB();cerrarHoja();toast(ant?'Resultado corregido':'Resultado guardado');render()},
+  borrarRes(){const ant=K.res[RS.id],m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se borra el '+ant.ga+'–'+ant.gb});delete K.res[RS.id];guardarDB();cerrarHoja();toast('Resultado borrado');render()},
+  cerrar(){cerrarHoja()},
+  regInd(){IR=null;hojaRegInd()},
+  irPon(el){IR.fecha=$('irFecha').value||IR.fecha;const id=el.dataset.id,per=esInd()?2:1;if(IR.a.length<per)IR.a.push(id);else if(IR.b.length<per)IR.b.push(id);hojaRegInd()},
+  cruce(el){hojaCruce(el.dataset.id)},
+  md(el){RS.md=+el.dataset.v;RS.ga=RS.gb=null;hojaResultado(RS.id)},
+  irMd(el){IR.md=+el.dataset.v;IR.ga=IR.gb=null;hojaRegInd()},
+  wo(el){const m=todos().find(x=>x.id===RS.id),l=el.dataset.l,W=gana(RS.md);if(!confirm('¿Dar la partida por perdida a '+nom(m[l])+' por no presentarse?'))return;
+    K.res[RS.id]={ga:l==='a'?0:W,gb:l==='a'?W:0,md:RS.md,wo:l,fecha:hoy(),por:'Organizador',ts:Date.now()};(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': '+nom(m[l])+' no se presenta ('+(l==='a'?'0–'+W:W+'–0')+')'});guardarDB();cerrarHoja();toast('Partida dada por perdida a quien no se presentó');render()},
+  wzIr(el){WZ.paso=+el.dataset.p;render();scrollTo(0,0)},
+  impugnar(){RS.modo='impugnar';RS.pga=RS.pgb=null;hojaResultado(RS.id)},
+  pJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(K.res[RS.id].md),o=l==='a'?'pgb':'pga';const mot=$('fMot').value,por=$('fPor').value;RS['pg'+l]=v;if(v<W&&RS[o]!==W)RS[o]=W;if(v===W&&RS[o]===W)RS[o]=null;hojaResultado(RS.id);$('fMot').value=mot;$('fPor').value=por},
+  eJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(K.res[RS.id].md),o=l==='a'?'egb':'ega';RS['eg'+l]=v;if(v<W&&RS[o]!==W)RS[o]=W;if(v===W&&RS[o]===W)RS[o]=null;hojaResultado(RS.id);const dd=document.querySelector('#sheetIn details.como');if(dd)dd.open=true},
+  orgProp(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id],p=r.disputa.prop;(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se acepta el resultado propuesto, '+r.ga+'–'+r.gb+' pasa a '+p.ga+'–'+p.gb});r.ga=p.ga;r.gb=p.gb;r.corregido=true;delete r.wo;delete r.disputa;guardarDB();cerrarHoja();toast('Resultado corregido y resuelto');render();if(avisosAbiertos().length)setTimeout(hojaCasos,60)},
+  orgEdita(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id],W=gana(r.md),{ega,egb}=RS;if(ega==null||egb==null||Math.max(ega,egb)!==W||Math.min(ega,egb)>=W){$('eErr').textContent=`Uno tiene que llegar a ${W} juegos y el otro quedarse por debajo.`;return}
+    (K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': el organizador fija '+ega+'–'+egb+' (antes '+r.ga+'–'+r.gb+')'});r.ga=ega;r.gb=egb;r.corregido=true;delete r.wo;delete r.disputa;guardarDB();cerrarHoja();toast('Resultado guardado y resuelto');render();if(avisosAbiertos().length)setTimeout(hojaCasos,60)},
+  orgEspera(){const r=K.res[RS.id];if(r.disputa)r.disputa.espera=true;if(r.reclamo)r.reclamo.espera=true;guardarDB();toast('Queda pendiente de decidir');render();hojaCasos()},
+  verCasos(){RS=null;hojaCasos()},
+  async descargar(el){const c=el.dataset.id?DB.camps[el.dataset.id]:K;const copia=JSON.parse(JSON.stringify(c));delete copia.claveAcceso;delete copia.claveOrg;
+    const data=JSON.stringify({formato:'creador-campeonatos-mus',version:1,exportado:new Date().toISOString(),campeonato:copia},null,2),fname=(c.slug||'campeonato')+'.json';
+    let dl=null;try{if(window.claude&&window.claude.use)dl=await window.claude.use('downloads')}catch(e){}
+    if(dl){try{await dl.save({filename:fname,data});toast('Archivo guardado')}catch(e){if(e&&e.code!=='declined')toast('No se ha podido descargar aquí')}return}
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=fname;document.body.appendChild(a);a.click();a.remove();toast('Descargado: '+fname)},
+  resolver(el){const id=el.dataset.id;if(S.org||S.admin){RS=null;hojaResultado(id)}else{S.trasOrg=id;hojaOrg()}},
+  reclamar(){RS.modo='reclamar';RS.noVino=null;hojaResultado(RS.id)},
+  rechazar(){RS.modo='rechazar';hojaResultado(RS.id)},
+  modoNo(){RS.modo=null;hojaResultado(RS.id)},
+  noVino(el){RS.noVino=el.dataset.l;hojaResultado(RS.id)},
+  enviarImpugnar(){const mot=$('fMot').value.trim(),por=$('fPor').value.trim(),r=K.res[RS.id],W=gana(r.md),{pga,pgb}=RS;
+    if(pga==null||pgb==null||Math.max(pga,pgb)!==W||Math.min(pga,pgb)>=W){$('rErr').textContent=`Marca el resultado correcto: uno llega a ${W} juegos y el otro se queda por debajo.`;return}
+    if(pga===r.ga&&pgb===r.gb){$('rErr').textContent='El resultado que marcas es el mismo que el registrado.';return}
+    if(!mot){$('rErr').textContent='Explica qué no es correcto.';return}if(por)ls('cdc-por',por);
+    r.disputa={ts:Date.now(),motivo:mot,por,prop:{ga:pga,gb:pgb}};guardarDB();toast('Resultado impugnado: queda en revisión');RS.modo='avisar';hojaResultado(RS.id);render()},
+  enviarReclamar(){const mot=$('fMot').value.trim(),por=$('fPor').value.trim();if(!RS.noVino){$('rErr').textContent='Indica qué pareja no se presentó.';return}if(!mot){$('rErr').textContent='Explica qué pasó (cuándo y dónde habíais quedado).';return}if(por)ls('cdc-por',por);
+    const W=gana(RS.md),l=RS.noVino;K.res[RS.id]={ga:l==='a'?0:W,gb:l==='a'?W:0,md:RS.md,wo:l,fecha:hoy(),por,ts:Date.now(),reclamo:{ts:Date.now(),motivo:mot,por}};guardarDB();toast('Aviso registrado: decidirá el organizador');RS.modo='avisar';hojaResultado(RS.id);render()},
+  enviarRechazo(){const mot=$('fMot').value.trim(),por=$('fPor').value.trim();if(!mot){$('rErr').textContent='Explica por qué no es cierto.';return}if(por)ls('cdc-por',por);
+    K.res[RS.id].reclamo.rechazo={ts:Date.now(),motivo:mot,por};guardarDB();toast('Enviado: decidirá el organizador');RS.modo=null;hojaResultado(RS.id);render()},
+  avisarGrupo(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id];let t;
+    if(r.reclamo)t=`🚫 ${K.meta.nombre}: ${nom(m[r.wo==='a'?'b':'a'])} dice que ${nom(m[r.wo])} no se presentó a la partida (${etiqueta(m)}). Motivo: ${r.reclamo.motivo}. Si no es cierto, entrad en la app y pulsad «No es cierto». Decidirá el organizador.`;
+    else t=`⚠️ ${K.meta.nombre}: se ha impugnado el resultado ${r.ga}–${r.gb} de ${nom(m.a)} contra ${nom(m.b)} (${etiqueta(m)}). Motivo: ${r.disputa.motivo}. Lo revisará el organizador.`;
+    const url=linkCamp(K);if(navigator.share){navigator.share({text:t,url}).catch(()=>{})}else{navigator.clipboard&&navigator.clipboard.writeText(t+' '+url).then(()=>toast('Mensaje copiado: pégalo en el grupo')).catch(()=>toast('No se ha podido copiar'))}},
+  orgValidaOld(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id];if(r.disputa){delete r.disputa;K.cambios=(K.cambios||[]);K.cambios.push({ts:Date.now(),txt:etiqueta(m)+': impugnación resuelta, el resultado se mantiene'})}
+    if(r.reclamo){r.reclamo.validado=Date.now();K.cambios=(K.cambios||[]);K.cambios.push({ts:Date.now(),txt:etiqueta(m)+': se da por perdida a '+nom(m[r.wo])+' por no presentarse'})}guardarDB();cerrarHoja();toast('Resuelto');render()},
+  orgValida(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id];K.cambios=K.cambios||[];
+    if(r.disputa){delete r.disputa;K.cambios.push({ts:Date.now(),txt:etiqueta(m)+': se mantiene el resultado registrado '+r.ga+'–'+r.gb})}
+    if(r.reclamo){r.reclamo.validado=Date.now();delete r.reclamo.espera;K.cambios.push({ts:Date.now(),txt:etiqueta(m)+': se da por perdida a '+nom(m[r.wo])+' por no presentarse'})}
+    guardarDB();cerrarHoja();toast('Resuelto');render();if(avisosAbiertos().length)setTimeout(hojaCasos,60)},
+  orgAnula(){const m=todos().find(x=>x.id===RS.id);delete K.res[RS.id];(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se anula y vuelve a quedar pendiente'});guardarDB();cerrarHoja();toast('Anulada: la partida vuelve a estar pendiente');render()},
+  plazo(el){WZ.plazoH=+el.dataset.v;render()},
+  apOn(){WZ.ap.on=!WZ.ap.on;render()},
+  apTipo(el){WZ.ap.tipo=el.dataset.v;render()},
+  ayuda(){S.vista='ayuda';render();scrollTo(0,0)},
+  regSub(el){S.regSub=el.dataset.v;render()},
+  desempate(el){hojaDesempate(el.dataset.a,el.dataset.b)},
+  desempateGan(el){(K.desempates=K.desempates||[]).push({a:el.dataset.a,b:el.dataset.b,gan:el.dataset.g,ts:Date.now()});guardarDB();cerrarHoja();toast('Desempate registrado');render()},
+  cerrarCamp(){K.cerrado=!K.cerrado;guardarDB();cerrarHoja();toast(K.cerrado?'Campeonato cerrado':'Campeonato reabierto');render()},
+  irQuita(el){IR.fecha=$('irFecha').value||IR.fecha;const id=el.dataset.id;IR.a=IR.a.filter(x=>x!==id);IR.b=IR.b.filter(x=>x!==id);IR.ga=IR.gb=null;hojaRegInd()},
+  irJuego(el){IR.fecha=$('irFecha').value||IR.fecha;const l=el.dataset.l,v=+el.dataset.v,W=gana(IR.md),o=l==='a'?'gb':'ga';IR['g'+l]=v;if(v<W&&IR[o]!==W)IR[o]=W;if(v===W&&IR[o]===W)IR[o]=null;hojaRegInd()},
+  irGuardar(){const W=gana(IR.md),{ga,gb}=IR;if(ga==null||gb==null||Math.max(ga,gb)!==W||Math.min(ga,gb)>=W){$('irErr').textContent=`Una pareja tiene que llegar a ${W} juegos y la otra quedarse por debajo.`;return}
+    const fecha=$('irFecha').value||hoy(),por=$('irPor').value.trim();if(por)ls('cdc-por',por);
+    if(fecha<K.meta.cal.inicio||(finCamp()&&fecha>finCamp())){$('irErr').textContent='La fecha tiene que estar dentro del periodo del campeonato.';return}
+    let j=K.jornadas.find(x=>x.fecha===fecha);if(!j){j={fecha,mesas:[],descansan:[]};K.jornadas.push(j);K.jornadas.sort((x,y)=>x.fecha.localeCompare(y.fecha))}
+    const id='m'+uid(7);j.mesas.push(esInd()?{id,a:IR.a,b:IR.b}:{id,a:IR.a[0],b:IR.b[0]});K.res[id]={ga,gb,md:IR.md,fecha,por,ts:Date.now()};guardarDB();IR=null;cerrarHoja();toast('Partida guardada');render()},
+  sorteo(){SORT=null;hojaSorteo()},
+  presente(el){const id=el.dataset.id;SORT.sel.has(id)?SORT.sel.delete(id):SORT.sel.add(id);SORT.fecha=$('sFecha').value||SORT.fecha;hojaSorteo()},
+  hacerSorteo(){SORT.fecha=$('sFecha').value||hoy();SORT.res=sortear([...SORT.sel]);hojaSorteo()},
+  resortear(){SORT.res=sortear([...SORT.sel]);hojaSorteo()},
+  guardarSorteo(){K.jornadas.push({fecha:SORT.fecha,mesas:SORT.res.mesas,descansan:SORT.res.descansan});guardarDB();cerrarHoja();S.tab='partidas';toast('Día guardado. ¡A jugar!');render()},
+  org(){hojaOrg()},
+  entrarOrg(){if($('orgKey').value.trim()!==K.claveOrg){$('orgErr').textContent='Clave de organizador incorrecta.';return}S.org=true;S.orgDe=S.id;cerrarHoja();toast('Modo organizador activado');render();if(S.trasOrg){const id=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(id),50)}},
+  salirOrg(){S.org=false;cerrarHoja();render()},
+  guardarOrg(){const n=$('oNombre').value.trim(),a=$('oAcc').value.trim();if(n)K.meta.nombre=n;if(a){K.claveAcceso=a;toast('Clave de acceso cambiada')}guardarDB();cerrarHoja();render()},
+  compartir(){compartir(K)},
+  compartirNuevo(){compartir(DB.camps[S.nuevo.id])},
+  editRegla(el){S.reglaIcono=null;hojaRegla(el.dataset.id)},
+  icono(el){document.querySelectorAll('#iconos button').forEach(b=>b.setAttribute('aria-pressed',b===el));S.reglaIcono=el.dataset.v},
+  guardarRegla(el){const t=$('gT').value.trim(),x=$('gX').value.trim();if(!t||!x){$('gErr').textContent='Escribe el título y el texto.';return}
+    const id=el.dataset.id,i=S.reglaIcono||(document.querySelector('#iconos [aria-pressed="true"]')||{}).dataset?.v||'📌';
+    if(id){const r=K.reglas.find(r=>r.id===id);Object.assign(r,{i,t,x});K.reglasLog.push({ts:Date.now(),txt:'Se modifica la regla «'+t+'»'})}
+    else{K.reglas.push({id:uid(),i,t,x,propia:true});K.reglasLog.push({ts:Date.now(),txt:'Se añade la regla «'+t+'»'})}
+    guardarDB();cerrarHoja();render()},
+  delRegla(el){const r=K.reglas.find(r=>r.id===el.dataset.id);if(!confirm('¿Borrar la regla «'+r.t+'»?'))return;K.reglas=K.reglas.filter(x=>x!==r);K.reglasLog.push({ts:Date.now(),txt:'Se elimina la regla «'+r.t+'»'});guardarDB();render()},
+  adminLogin(){abrirHoja(`<h3 class="st">🛡️ Administración</h3><p class="sub">Acceso solo para el administrador de la plataforma.</p><input id="admKey" type="password" placeholder="Clave de administrador" aria-label="Clave de administrador"><p class="error" id="admErr"></p><div class="acciones"><button class="btn" data-acc="entrarAdmin">Entrar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);setTimeout(()=>$('admKey').focus(),60)},
+  entrarAdmin(){if($('admKey').value.trim()!==ADMIN_KEY){$('admErr').textContent='Clave incorrecta.';return}S.admin=true;cerrarHoja();S.vista='admin';render()},
+  salirAdmin(){S.admin=false;S.vista='portal';render()},
+  admOcultar(el){const c=DB.camps[el.dataset.id];c.oculto=!c.oculto;guardarDB();toast(c.oculto?'Oculto de la portada':'Visible en la portada');render()},
+  admBloq(el){const c=DB.camps[el.dataset.id];c.bloqueado=!c.bloqueado;guardarDB();toast(c.bloqueado?'Registro cerrado':'Registro abierto');render()},
+  admClaves(el){const c=DB.camps[el.dataset.id];abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.meta.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label><input id="aAcc"><label class="lbl" for="aOrg">Nueva clave de organizador</label><input id="aOrg"><div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)},
+  admGuardarClaves(el){const c=DB.camps[el.dataset.id],a=$('aAcc').value.trim(),o=$('aOrg').value.trim();if(a)c.claveAcceso=a;if(o)c.claveOrg=o;guardarDB();cerrarHoja();toast(a||o?'Claves restablecidas':'Sin cambios')},
+  admBorrar(el){const c=DB.camps[el.dataset.id];abrirHoja(`<h3 class="st">Eliminar campeonato</h3><p class="sub">Se borrará «${esc(c.meta.nombre)}» con todos sus resultados. No se puede deshacer.</p><div class="acciones"><button class="btn peligro" data-acc="admBorrarOk" data-id="${c.id}">Eliminar definitivamente</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)},
+  admBorrarOk(el){delete DB.camps[el.dataset.id];guardarDB();cerrarHoja();toast('Campeonato eliminado');render()},
+  /* asistente */
+  wz(el){const k=el.dataset.k,v=el.dataset.v;WZ[k]=isNaN(+v)?v:+v;if(k==='modalidad'){WZ.formato=v==='individual'?'liga':'grupos';WZ.cal.tipo=v==='individual'?'libre':'dia';WZ.n=8}if(k==='formato'&&v!=='liga')WZ.vueltas=1;render()},
+  wzCal(el){WZ.cal.tipo=el.dataset.v;render()},
+  wzLibre(el){WZ.libre=+el.dataset.v;WZ.tocadoLibre=true;render()},
+  wzDias(el){WZ.cal.ndias=Math.max(2,Math.min(365,WZ.cal.ndias+ +el.dataset.v));render()},
+  wzN(el){WZ.n=+el.dataset.v;render()},
+  wzMas(el){const min=WZ.modalidad==='individual'?4:2;WZ.n=Math.max(min,Math.min(50,WZ.n+ +el.dataset.v));render()},
+  wzG(el){WZ.tocadoG=true;WZ.grupos+= +el.dataset.v;WZ.pasan=WZ.pasan||2;render()},
+  wzEjemplo(){const N=NOMBRES.slice();WZ.part.forEach((p,i)=>{if(WZ.modalidad==='individual'){p.j1=N[i%N.length]}else{p.j1=N[(2*i)%N.length];p.j2=N[(2*i+1)%N.length];p.apodo=i%4===0?APODOS[(i/4)%APODOS.length]:''}});render()},
+  wzVaciar(){WZ.part.forEach(p=>{p.j1='';p.j2='';p.apodo=''});render()},
+  wzQuita(el){WZ.reglas=WZ.reglas.filter(r=>r.id!==el.dataset.id);render()},
+  wzAddRegla(){const t=$('wzRT').value.trim(),x=$('wzRX').value.trim();if(!t||!x)return toast('Escribe título y texto');WZ.reglas.push({id:uid(),i:'📌',t,x,propia:true});render()},
+  wzAtras(){if(WZ.paso<=1)return ACC.portal();WZ.paso--;render();scrollTo(0,0)},
+  wzSig(){if(!wzValidar())return;if(WZ.paso===PASOS.length-1)return crearCamp();WZ.paso++;render();scrollTo(0,0)},
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-acc]');if(!el||el.disabled)return;const f=ACC[el.dataset.acc];if(f){e.preventDefault();f(el,e)}});
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='pickQ'){const q=t.value.toLowerCase().trim();document.querySelectorAll('.pick-grid .tile').forEach(b=>b.hidden=q&&!b.dataset.n.includes(q));return}
+  if(t.dataset.p!==undefined){const i=+t.dataset.p;WZ.part[i][t.dataset.f]=t.value;const a=document.querySelector(`[data-avi="${i}"]`);if(a){const p=WZ.part[i];a.innerHTML=WZ.modalidad==='individual'?av(p.j1||'?'):av(p.j1||'?')+av(p.j2||'?')}}
+  if(t.dataset.w){WZ[t.dataset.w]=t.value;if(t.dataset.w==='nombre')$('wSlug').innerHTML='Su dirección será <b>'+location.host+'/'+esc(slug(t.value||'mi-campeonato'))+'</b>'}
+  if(t.dataset.c){WZ.cal[t.dataset.c]=t.value}
+  if(t.dataset.ap){WZ.ap[t.dataset.ap]=t.value;if(t.dataset.ap==='cuota'){const b=document.querySelector('.bote');const c=+t.value.replace(',','.');if(b)b.textContent=c?(c*WZ.n).toLocaleString('es-ES')+' €':'–'}}
+});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.id==='impCamp'){prodImport(t.files[0]);t.value='';return}
+  if(t.id==='selYo'){S.yo=t.value;ls('cdc-yo-'+S.id,t.value||null);render()}
+  if(t.id==='cmpA'){S.ca=t.value;if(S.cb===S.ca)S.cb='';render()}
+  if(t.id==='cmpB'){S.cb=t.value;if(S.cb===S.ca)S.ca='';render()}
+  if(t.id==='wOculto')WZ.oculto=t.checked;
+  if(t.dataset.c&&WZ)render();
+});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;if(e.target.id==='lockKey')ACC.entrar();if(e.target.id==='orgKey')ACC.entrarOrg();if(e.target.id==='admKey')ACC.entrarAdmin()});
+/* ================= Instrucciones ================= */
+const paso=(n,t,x)=>`<div class="ps"><span class="ps-n">${n}</span><div><b>${t}</b><p>${x}</p></div></div>`;
+const bloque=(i,t,cuerpo,abierto)=>`<details class="guia" ${abierto?'open':''}><summary><span class="g-ic">${i}</span><b>${t}</b></summary><div class="g-in">${cuerpo}</div></details>`;
+const rol=(i,t,clave,si,no)=>`<div class="rol"><div class="rol-cab"><span class="g-ic">${i}</span><span><b>${t}</b><small>${clave}</small></span></div><ul class="si">${si.map(x=>`<li>${x}</li>`).join('')}</ul>${no.length?`<ul class="no">${no.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`;
+function vAyuda(){
+  pinta(`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Volver">‹</button></div><h1 class="titulo">📖 Instrucciones</h1><p class="nota" style="margin:4px 0 0">Todo lo que necesitas saber, por partes. Toca cada apartado para abrirlo.</p></div>`,
+  bloque('🏆','Qué es y para qué sirve',`<p>Una plataforma para <b>crear campeonatos de mus</b> de cualquier tipo, compartirlos con un enlace y que los propios jugadores registren sus partidas desde el móvil. La clasificación, el cuadro y las estadísticas se actualizan solos.</p>
+    ${paso(1,'Creas el campeonato','Con un asistente de 6 pasos: formato, participantes, partidas, calendario, reglas y claves.')}
+    ${paso(2,'Compartes el enlace y la clave','Cada campeonato tiene su dirección (la dirección de la web seguida del nombre del campeonato) y su clave de acceso.')}
+    ${paso(3,'Los jugadores registran','Al terminar cada partida, uno de los jugadores la apunta. Todo se recalcula al momento.')}
+    ${paso(4,'Tú controlas','Como organizador corriges errores, editas reglas y cierras el campeonato.')}`,true)+
+  bloque('➕','Crear un campeonato, paso a paso',`
+    ${paso(1,'Formato','<b>Liga</b>: todos contra todos. <b>Liguilla + eliminatoria</b>: grupos y después cruces. <b>Eliminatoria</b>: cuadro directo, quien pierde queda fuera.')}
+    ${paso(2,'Participantes','Elige cuántos (de 2 a 50) y escribe los nombres. Las parejas pueden tener un nombre propio, por ejemplo «Los del Órdago».')}
+    ${paso(3,'Partidas y estructura','Al mejor de 3, de 5 o ambos (se elige en cada partida). Según el formato: liga con calendario fijo o partidas libres, número de grupos y cuántos pasan, cruces a solo ida o ida y vuelta.')}
+    ${paso(4,'Calendario','Todo en un día o en varios días, por ejemplo un fin de semana o un puente.')}
+    ${paso(5,'Reglas','Se generan solas según lo que has elegido. Puedes quitar las que no quieras, añadir las tuyas y poner una apuesta (dinero o, por ejemplo, una comida).')}
+    ${paso(6,'Nombre y claves','Pon el nombre (de él sale la dirección web), la clave de acceso para los jugadores y tu clave de organizador. Revisa el resumen y crea.')}
+    <p class="nota">En cualquier paso puedes tocar las etiquetas de arriba (✎) para volver atrás y cambiar algo.</p>`)+
+  bloque('🧩','Formatos y modalidades',`
+    <div class="fmt"><b>📋 Liga con calendario fijo</b><p>Todos contra todos una vez. La app genera las jornadas. Gana quien más partidas gane.</p></div>
+    <div class="fmt"><b>♾️ Liga de partidas libres</b><p>Sin calendario: se registran todas las partidas que se jueguen mientras el campeonato esté abierto (uno o varios días). Ideal para 2 parejas un fin de semana. Al cierre gana el primero.</p></div>
+    <div class="fmt"><b>🗂️ Liguilla + eliminatoria</b><p>Grupos todos contra todos; pasan los primeros de cada grupo a un cuadro final que se rellena solo.</p></div>
+    <div class="fmt"><b>⚔️ Eliminatoria</b><p>Cuadro sorteado. Si el número no es potencia de 2, algunas parejas pasan la primera ronda sin jugar (exentas).</p></div>
+    <div class="fmt"><b>🔁 Cruces a ida y vuelta</b><p>Pasa quien gane más partidas. Si ganan una cada uno, se juega una partida de desempate.</p></div>
+`)+
+  bloque('🏅','Cómo se ordena la clasificación',`
+    <div class="fmt"><b>Por parejas</b><p>1) Partidas ganadas. 2) Si hay empate, diferencia de juegos (ganados menos perdidos). 3) Si siguen igualadas, partida de desempate.</p></div>
+
+    <div class="fmt"><b>Empates</b><p>Al terminar, si dos siguen igualados en todo, la app avisa y pide registrar la partida de desempate. El ganador pasa por delante; si es en el primer puesto, el campeón no se proclama hasta entonces.</p></div>
+    <p class="nota">PJ: partidas jugadas. PG: partidas ganadas. DJ: diferencia de juegos.</p>`)+
+  bloque('⚖️','Evitar trampas: impugnar y reclamar',`
+    ${paso(1,'Si un resultado está mal','Abre la partida, pulsa «Impugnar resultado», marca cuál fue el resultado correcto y explica el motivo. Mientras se revisa no cuenta.')}
+    ${paso(2,'Si una pareja no se presenta','Abre la partida pendiente y pulsa «🚫 No se ha presentado». Indica quién faltó y qué pasó, y avisa al grupo con el botón 📤. No cuenta hasta que decida el organizador.')}
+    ${paso(3,'La otra parte puede defenderse','La pareja señalada puede abrir la partida y pulsar «No es cierto», explicando su versión.')}
+    ${paso(4,'Decide el organizador','Arriba de Inicio y Partidas aparece la pestaña «⚖️ Reclamaciones e impugnaciones» con el número de casos. Al tocar «Resolver» puede: aceptar el resultado propuesto, mantener el registrado, poner otro resultado, dar la partida por perdida a quien no se presentó, anularla para que se vuelva a jugar o dejarla pendiente de decidir.')}
+    <p class="nota">Todo queda anotado: quién registró, quién reclamó, cuándo y qué se decidió.</p>`)+
+  bloque('🔐','Claves y roles',`<p>Hay tres niveles. Cada uno ve y puede hacer cosas distintas.</p>
+    ${rol('🛡️','Administrador de la plataforma','Una sola clave, solo tuya',['Entra en cualquier campeonato sin saber su clave','Hace todo lo que puede un organizador, en todos los campeonatos','Oculta campeonatos, cierra su registro, restablece claves y elimina campeonatos'],[])}
+    ${rol('🔑','Organizador de un campeonato','La clave que pone quien lo crea',['Corrige o borra resultados y da partidas por perdidas a quien no se presenta','Edita, borra o añade reglas (quedan en el historial)','Cambia el nombre y la clave de acceso, cierra o reabre el campeonato'],['No puede tocar otros campeonatos ni la administración'])}
+    ${rol('👥','Jugadores','La clave de acceso del campeonato',['Ven clasificación, partidas, cuadro, estadísticas y reglas','Registran partidas y desempates','Impugnan resultados y avisan si una pareja no se ha presentado'],['No pueden modificar un resultado ya registrado: deben pedírselo al organizador'])}`)+
+  bloque('🛡️','El administrador, en detalle',`
+    ${paso(1,'Cómo entrar','En la portada, botón «🛡️ Administración» al final, e introduce tu clave.')}
+    ${paso(2,'Qué ve','Todos los campeonatos (también los ocultos), cuántos resultados tiene cada uno y el espacio que ocupan.')}
+    ${paso(3,'Qué puede hacer','Entrar en cualquiera sin clave y con poder de organizador; ocultarlo de la portada; cerrar su registro para que nadie apunte más; restablecer la clave de acceso o la del organizador; eliminarlo definitivamente.')}
+    ${paso(4,'Descargar y cargar archivos','Cada campeonato se puede descargar como archivo (⬇️). Sirve de copia de seguridad o para pasárselo a Claude y cambiar su configuración. Desde Administración, «Cargar un campeonato desde archivo» lo vuelve a subir. Las claves no van en el archivo.')}
+    ${paso(5,'Seguridad','En la versión real tu clave está guardada en el servidor, no en la web. Las claves de cada campeonato se guardan cifradas: nadie las ve en claro, ni tú; si alguien la olvida, la restableces.')}`)+
+  bloque('📤','Compartir y entrar',`
+    ${paso(1,'Compartir','Dentro del campeonato, botón 📤. Envía el enlace por WhatsApp junto con la clave de acceso.')}
+    ${paso(2,'Entrar','Quien abre el enlace ve solo el nombre y un candado. Al poner la clave entra; puede marcar «Recordar en este dispositivo» para no repetirla.')}
+    ${paso(3,'Elegir tu pareja','En Partidas o Estadísticas, «Elegir»: tus partidas se resaltan y ves tu ficha.')}`)+
+  bloque('❓','Preguntas frecuentes',`
+    <div class="fmt"><b>Me he equivocado al registrar</b><p>Avisa al organizador: él lo corrige con su clave y la partida queda marcada como corregida.</p></div>
+    <div class="fmt"><b>He olvidado la clave</b><p>Pídela al organizador. Si es el organizador quien la olvida, el administrador la restablece.</p></div>
+    <div class="fmt"><b>¿Cuándo termina un campeonato?</b><p>Con calendario fijo o eliminatoria, al jugarse la última partida. Con partidas libres, al acabar su último día, o antes si el organizador lo cierra.</p></div>
+    <div class="fmt"><b>¿Las reglas que añado cambian la app?</b><p>No. Son informativas para los jugadores. El funcionamiento lo marca la configuración elegida al crear el campeonato.</p></div>`));
+}
+function guiaCamp(){
+  const m=K.meta,ind=esInd(),q=ind?'jugador':'pareja',W=gana(3);
+  let h=`<p class="nota">Cómo usar la web de este campeonato. Toca cada apartado.</p>`;
+  h+=bloque('🧭','Lo básico',`
+    ${paso(1,'Inicio','Lo más importante de un vistazo: '+(m.formato==='ko'&&!ind?'el cuadro de la eliminatoria.':m.formato==='grupos'&&!ind?'los grupos con sus resultados y, debajo, la eliminatoria.':'el podio y la clasificación.'))}
+    ${paso(2,'Partidas','Todas las partidas por '+(porDias()?'días':'jornadas')+' (toca una para abrirla). Con «Elegir» ves solo las de una '+q+' y puedes filtrar por jugadas, ganadas, perdidas'+(porDias()?'.':' o pendientes.'))}
+    ${paso(3,m.formato==='ko'&&!ind?'Cuadro':'Tabla',m.formato==='ko'&&!ind?'El cuadro completo; toca un cruce para registrarlo o verlo.':'La clasificación completa. Toca una fila para ver su detalle.')}
+    ${paso(4,'Estadísticas','La ficha de cada '+q+' (jugadas, ganadas, perdidas, rachas, juegos) y el comparador cara a cara.')}
+    ${paso(5,'Reglas','Las normas del campeonato y esta guía.')}`,true);
+  h+=bloque('✍️','Registrar una partida',porDias()?`
+    ${paso(1,'Pulsa «＋ Registrar partida»','Botón flotante abajo a la derecha.')}
+    ${paso(2,ind?'Toca a los cuatro jugadores':'Toca las dos parejas',ind?'Los dos primeros forman la pareja 1 y los dos siguientes la pareja 2. Si te equivocas, toca el nombre para quitarlo.':'Las dos que han jugado.')}
+    ${paso(3,'Marca los juegos'+(ambosMD()?' y si fue al mejor de 3 o de 5':''),'Y guarda. Puedes registrar tantas partidas como se jueguen'+(finCamp()?', hasta el '+fmtL(finCamp())+'.':'.'))}`:`
+    ${paso(1,'Busca la partida','En Inicio, en Partidas o en el cuadro. También con «＋ Registrar resultado».')}
+    ${paso(2,'Tócala y marca los juegos'+(ambosMD()?' (elige antes si fue al mejor de 3 o de 5)':''),'Gana quien llega antes al número de juegos indicado.')}
+    ${paso(3,'Guarda','Queda registrada al momento para todos. Si ya tiene resultado, solo el organizador puede cambiarlo.')}`);
+  h+=bloque('🏅','Cómo se gana',ind?`<p>Manda el <b>promedio de victorias</b> (ganadas entre jugadas). Si hay empate, la <b>diferencia de juegos</b>; si persiste, <b>partida de desempate</b>.${m.minPct?` Para clasificar hay que jugar al menos el ${m.minPct} % de las partidas de quien más haya jugado.`:''}</p>`:
+    m.formato==='ko'?`<p>Eliminatoria directa: quien gana el cruce pasa a la siguiente ronda; el ganador de la final es campeón.${koV()===2?' Cada cruce es a ida y vuelta: pasa quien gane más partidas y, si ganan una cada uno, se juega un desempate.':''}</p>`:
+    `<p>Manda el número de <b>partidas ganadas</b>. Si hay empate, la <b>diferencia de juegos</b>; si persiste, <b>partida de desempate</b>.${m.formato==='grupos'&&m.pasan?` Pasan los ${m.pasan} primeros de cada grupo al cuadro final${koV()===2?' (cruces a ida y vuelta)':''}.`:''}${esLibre()?' Al cierre gana quien vaya primero.':''}</p>`);
+  h+=bloque('⚖️','Si algo no cuadra',`${paso(1,'Resultado incorrecto','Abre la partida y pulsa «Impugnar resultado»: marca el correcto y explica el motivo. Queda en revisión.')}${!porDias()&&!ind?paso(2,'No se presentaron','Abre la partida pendiente, pulsa «🚫 No se ha presentado», explica qué pasó y avisa al grupo. Decide el organizador.'):''}${paso(!porDias()&&!ind?3:2,'Te acusan sin razón','Abre la partida reclamada y pulsa «No es cierto». Decidirá el organizador.')}`);
+  if(porJornadas())h+=bloque('🔁','Jornadas',`${paso(1,'En orden','La siguiente jornada se abre cuando todas las partidas de la actual tienen resultado. Las demás se ven con 🔒.')}${paso(2,'Si alguien no se presenta','El organizador da la partida por perdida a esa pareja y la jornada continúa.')}`);
+  if(porDias())h+=bloque('🏁','Cierre',`<p>${finCamp()?'Abierto hasta el <b>'+fmtL(finCamp())+'</b>. Al terminar ese día se cierra y se proclama ganador.':'Sin fecha de cierre: lo cierra el organizador.'} El organizador puede cerrarlo antes.</p>`);
+  h+=bloque('🔐','Quién puede hacer qué',`
+    ${rol('👥','Jugadores','Clave de acceso',['Ver todo y registrar partidas y desempates'],['No pueden cambiar un resultado ya registrado'])}
+    ${rol('🔑','Organizador','Botón 🔑 y su clave',['Corregir o borrar resultados, dar partidas por perdidas a quien no se presenta','Editar reglas, cambiar la clave de acceso'+(porDias()?', cerrar el campeonato':'')],[])}`);
+  return h;
+}
+/* =====================================================================
+   CreaMus · conexión con el servidor (Google Apps Script)
+   Pega en SCRIPT_URL la dirección de tu implementación (termina en /exec).
+   ===================================================================== */
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzoANzkVAMMYzcO3Dj3qwkPsIIjDNuIaBvlKhW0XhPo-FbTqmvTvAziO19qfgLzW1g/exec';
+const NOMBRES=['Luis','Pablo','Javi','Nacho','Carlos','Íñigo','Álvaro','Jorge','Dani','Rubén','Mario','Sergio','Andrés','Víctor','Raúl','Hugo','Miguel','Óscar','Diego','Iván','Alberto','Fernando','Marcos','Rafa','Toni','Guille','Paco','Manu','Quique','Jaime','Pedro','Luismi','Chema','Kike','Gonzalo','Borja','Lucas','Adrián','Samuel','Bruno','Héctor','Ángel','Tomás','Félix','Ramón','Emilio','Julián','Santi','Nico','Alex'];
+const APODOS=['Los del Órdago','Treinta y una','La Chica','Duples','Los Reyes','Pares y juego','Los Caballos','Mus corrido'];
+let VER={},LISTA=null,ADMKEY='',SES={};
+const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id),kOrg=id=>SES['o'+id]||ls('cm-org-'+id);
+function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
+async function api(action,body={}){
+  if(!SCRIPT_URL||SCRIPT_URL.startsWith('__'))throw new Error('Falta conectar el servidor: pega la URL del Apps Script en SCRIPT_URL.');
+  let j;
+  try{const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...body})});j=await r.json()}
+  catch(e){throw new Error('Sin conexión con el servidor. Inténtalo de nuevo.')}
+  if(j.error){const e=new Error(j.error==='conflicto'?'Alguien ha cambiado el campeonato a la vez. Ya tienes la versión actual: revisa y repite.':j.error);e.data=j;throw e}
+  return j;
+}
+async function cargarLista(){try{LISTA=(await api('list',{key:ADMKEY})).items}catch(e){LISTA=LISTA||[];toast(e.message)}}
+async function cargarCamp(id,key){const r=await api('get',{id,key});DB.camps[id]=r.camp;VER[id]=r.version;if(r.rol==='org'||r.rol==='admin'){S.org=true;S.orgDe=id}return r}
+function resumenDe(c){return con(c,()=>({n:c.part.length,progreso:Math.round(progreso()*100),terminado:!!terminado(),formato:resumenTexto()}))}
+
+/* ---------- Guardado ---------- */
+let cola=Promise.resolve();
+function guardarDB(){
+  if(!K||!K.id)return;const c=K,id=c.id;c.resumen=resumenDe(c);
+  const copia=JSON.parse(JSON.stringify(c));
+  cola=cola.then(()=>api('save',{id,key:claveDe(id),camp:copia,version:VER[id]}).then(r=>{VER[id]=r.version})
+    .catch(e=>{if(e.data&&e.data.camp){DB.camps[id]=e.data.camp;VER[id]=e.data.version;if(K&&K.id===id)K=e.data.camp;cerrarHoja();render()}toast(e.message)}));
+}
+function cargarDB(){
+  DB={camps:{}};
+  const q=new URLSearchParams(location.search).get('c');
+  cargarLista().then(()=>{if(q){const it=LISTA.find(x=>x.slug===q||x.id===q);if(it){S.vista='camp';S.id=it.id}else toast('No se encuentra ese campeonato.')}render()});
+}
+function linkCamp(c){return location.origin+location.pathname.replace(/[^/]*$/,'')+c.slug}
+
+/* ---------- Portal ---------- */
+function tarjetaCamp(it){
+  const r=it.resumen||{},ico={Liga:'📋','Liga de partidas libres':'♾️','Liguilla + eliminatoria':'🗂️',Eliminatoria:'⚔️'}[r.formato]||'🏆';
+  return `<button class="camp" data-acc="abrir" data-id="${it.id}"><span class="ico">${ico}</span>
+    <span style="min-width:0"><h3>${esc(it.nombre)}</h3><span class="meta">${r.n||'?'} parejas${r.formato?', '+r.formato.toLowerCase():''}</span>
+    <span class="barra"><i style="width:${r.progreso||0}%"></i></span><span class="meta">${r.terminado?'🏆 Terminado':r.progreso?'En juego':'Por empezar'}</span></span>
+    <span class="candado">${kAcc(it.id)||kOrg(it.id)?'🔓':'🔒'}</span></button>`;
+}
+function vPortal(){
+  K=null;
+  const top=`<div class="top hero"><div class="logo">🏆</div><h1>CreaMus</h1><p>El creador de campeonatos de mus. Monta el tuyo en un minuto y comparte el enlace con los jugadores.</p></div>`;
+  if(LISTA===null)return pinta(top,'<p class="nota" style="text-align:center">Cargando campeonatos…</p>');
+  const lista=LISTA.filter(c=>!c.oculto).sort((a,b)=>(b.creado||0)-(a.creado||0));
+  pinta(top,`${SCRIPT_URL.startsWith('__')?'<div class="banner">Falta conectar el servidor: pega la URL del Apps Script en <b>SCRIPT_URL</b> dentro del index.html.</div>':''}
+   <div class="dos"><button class="btn" data-acc="crear">＋ Crear campeonato</button><button class="btn sec" data-acc="ayuda">📖 Instrucciones</button></div>
+   <h2 class="sec">Campeonatos <span class="chip">${lista.length}</span></h2>
+   ${lista.map(tarjetaCamp).join('')||vacio('Aún no hay campeonatos','Crea el primero.')}
+   <div class="acciones" style="justify-content:center;margin-top:22px"><button class="btn sec peq" data-acc="adminLogin">🛡️ Administración</button></div>`);
+}
+
+/* ---------- Campeonato ---------- */
+const _vCamp=vCamp;
+vCamp=function(){
+  const id=S.id;if(DB.camps[id])return _vCamp();
+  const it=(LISTA||[]).find(x=>x.id===id)||{nombre:'Campeonato'},key=claveDe(id);
+  if(!key)return vLock({meta:{nombre:it.nombre}});
+  pinta('','<p class="nota" style="text-align:center;margin-top:60px">Cargando…</p>');
+  cargarCamp(id,key).then(render).catch(e=>{if(e.data&&e.data.bloqueado){ls('cm-acc-'+id,null);ls('cm-org-'+id,null);delete SES['a'+id];delete SES['o'+id]}toast(e.message);render()});
+};
+ACC.entrar=async function(){
+  const id=S.id,k=$('lockKey').value.trim();if(!k)return;
+  try{const r=await cargarCamp(id,k);if($('lockRec').checked)ls(r.rol==='org'?'cm-org-'+id:'cm-acc-'+id,k);else SES[(r.rol==='org'?'o':'a')+id]=k;render()}
+  catch(e){$('lockErr').textContent=e.message}
+};
+ACC.entrarOrg=async function(){
+  const id=S.id,k=$('orgKey').value.trim();
+  try{const r=await api('rol',{id,key:k});if(r.rol!=='org'&&r.rol!=='admin')throw new Error('Clave de organizador incorrecta.');
+    ls('cm-org-'+id,k);S.org=true;S.orgDe=id;cerrarHoja();toast('Modo organizador activado');render();
+    if(S.trasOrg){const x=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(x),50)}}
+  catch(e){$('orgErr').textContent=e.message}
+};
+ACC.salirOrg=function(){ls('cm-org-'+S.id,null);delete SES['o'+S.id];S.org=false;cerrarHoja();render()};
+ACC.guardarOrg=async function(){
+  const n=$('oNombre').value.trim(),a=$('oAcc').value.trim();
+  if(n&&n!==K.meta.nombre){K.meta.nombre=n;guardarDB()}
+  if(a){try{await api('claves',{id:K.id,key:claveDe(K.id),acceso:a});toast('Clave de acceso cambiada')}catch(e){toast(e.message)}}
+  cerrarHoja();render();
+};
+function crearCamp(){
+  const w=WZ;
+  const c={slug:slug(w.nombre),meta:wzMeta(),part:w.part.map((p,i)=>({id:'p'+(i+1),j1:p.j1.trim(),j2:p.j2.trim(),apodo:p.apodo.trim()})),
+    reglas:[...w.reglas,...apuestaRegla(w)],reglasLog:[{ts:Date.now(),txt:'Reglas iniciales del campeonato'}],oculto:w.oculto,bloqueado:false,creado:Date.now(),res:{}};
+  c.meta.nombre=w.nombre.trim();generar(c);c.resumen=resumenDe(c);
+  const acc=w.acceso.trim(),org=w.org.trim();
+  const btn=document.querySelector('[data-acc="wzSig"]');if(btn){btn.disabled=true;btn.textContent='Creando…'}
+  api('create',{camp:c,acceso:acc,org}).then(r=>{
+    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;ls('cm-acc-'+r.id,acc);ls('cm-org-'+r.id,org);
+    LISTA=LISTA||[];LISTA.push({id:r.id,slug:c.slug,nombre:c.meta.nombre,resumen:c.resumen,creado:c.creado,oculto:c.oculto});
+    S.nuevo={id:r.id,acc,org};S.org=true;S.orgDe=r.id;WZ=null;S.vista='exito';render();scrollTo(0,0);
+  }).catch(e=>{if(btn){btn.disabled=false;btn.textContent='Crear campeonato'}const x=$('wErr');if(x)x.textContent=e.message;else toast(e.message)});
+}
+const _desc=ACC.descargar;
+ACC.descargar=async function(el){const id=el.dataset.id;if(id&&!DB.camps[id]){try{await cargarCamp(id,claveDe(id))}catch(e){return toast(e.message)}}return _desc(el)};
+
+/* ---------- Administración ---------- */
+ACC.entrarAdmin=async function(){
+  const k=$('admKey').value.trim();
+  try{await api('rol',{key:k});ADMKEY=k;S.admin=true;cerrarHoja();LISTA=null;S.vista='admin';render();await cargarLista();render()}
+  catch(e){$('admErr').textContent=e.message}
+};
+ACC.salirAdmin=function(){S.admin=false;ADMKEY='';S.vista='portal';LISTA=null;render();cargarLista().then(render)};
+function vAdmin(){
+  if(!S.admin){S.vista='portal';return render()}
+  const top=`<div class="top"><div class="top-barra"><button class="icono-btn" data-acc="portal" aria-label="Volver">‹</button><button class="btn sec peq" data-acc="salirAdmin">Salir</button></div><h1 class="titulo">🛡️ Administración</h1><p class="nota">Entra en cualquier campeonato sin su clave, ocúltalo, cierra su registro, restablece claves o elimínalo.</p></div>`;
+  if(LISTA===null)return pinta(top,'<p class="nota" style="text-align:center">Cargando…</p>');
+  const cs=[...LISTA].sort((a,b)=>(b.creado||0)-(a.creado||0)),res=cs.reduce((s,c)=>s+(c.resultados||0),0);
+  pinta(top,`<div class="kpis"><div class="kpi"><b>${cs.length}</b><span>campeonatos</span></div><div class="kpi"><b>${res}</b><span>resultados</span></div><div class="kpi"><b>${cs.filter(c=>c.oculto).length}</b><span>ocultos</span></div></div>
+  <div class="form-box"><b>📥 Cargar un campeonato desde archivo</b><small style="display:block;color:var(--mute);font-size:.82rem;margin:4px 0 8px">Sube un archivo descargado (o modificado). Si ya existe, se reemplaza y conserva sus claves.</small><label class="btn sec peq">Elegir archivo<input type="file" id="impCamp" accept=".json" hidden></label></div>
+  <h2 class="sec">Todos los campeonatos</h2>`+cs.map(c=>`<div class="admin-row"><h3>${esc(c.nombre)}</h3><div class="meta">${(c.resumen||{}).n||'?'} parejas, ${c.resultados||0} resultados${c.creado?', creado el '+new Date(c.creado).toLocaleDateString('es-ES'):''}</div>
+    <div class="chips" style="margin:0 0 10px">${c.oculto?'<span class="chip">👻 Oculto</span>':''}${c.bloqueado?'<span class="chip" style="color:var(--rojo)">⛔ Registro cerrado</span>':''}${(c.resumen||{}).terminado?'<span class="chip oro">🏆 Terminado</span>':''}</div>
+    <div class="acciones"><button class="btn peq" data-acc="abrir" data-id="${c.id}">Entrar</button><button class="btn sec peq" data-acc="admOcultar" data-id="${c.id}">${c.oculto?'Mostrar':'Ocultar'}</button><button class="btn sec peq" data-acc="admBloq" data-id="${c.id}">${c.bloqueado?'Abrir registro':'Cerrar registro'}</button><button class="btn sec peq" data-acc="admClaves" data-id="${c.id}">Claves</button><button class="btn sec peq" data-acc="descargar" data-id="${c.id}">⬇️ Archivo</button><button class="btn peligro peq" data-acc="admBorrar" data-id="${c.id}">Eliminar</button></div></div>`).join(''));
+}
+async function admOp(id,op,valor,msg){try{await api('admin',{key:ADMKEY,id,op,valor});delete DB.camps[id];toast(msg)}catch(e){toast(e.message)}await cargarLista();render()}
+const itemDe=id=>(LISTA||[]).find(x=>x.id===id)||{};
+ACC.admOcultar=el=>{const c=itemDe(el.dataset.id);admOp(c.id,'oculto',!c.oculto,c.oculto?'Visible en la portada':'Oculto de la portada')};
+ACC.admBloq=el=>{const c=itemDe(el.dataset.id);admOp(c.id,'bloqueado',!c.bloqueado,c.bloqueado?'Registro abierto':'Registro cerrado')};
+ACC.admClaves=el=>{const c=itemDe(el.dataset.id);abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label><input id="aAcc"><label class="lbl" for="aOrg">Nueva clave de organizador</label><input id="aOrg"><div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)};
+ACC.admGuardarClaves=async el=>{const a=$('aAcc').value.trim(),o=$('aOrg').value.trim();if(!a&&!o)return cerrarHoja();try{await api('claves',{key:ADMKEY,id:el.dataset.id,acceso:a||undefined,org:o||undefined});toast('Claves restablecidas')}catch(e){toast(e.message)}cerrarHoja()};
+ACC.admBorrar=el=>{const c=itemDe(el.dataset.id);abrirHoja(`<h3 class="st">Eliminar campeonato</h3><p class="sub">Se borrará «${esc(c.nombre)}» con todos sus resultados. No se puede deshacer.</p><div class="acciones"><button class="btn peligro" data-acc="admBorrarOk" data-id="${c.id}">Eliminar definitivamente</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)};
+ACC.admBorrarOk=el=>{cerrarHoja();admOp(el.dataset.id,'borrar',null,'Campeonato eliminado')};
+async function prodImport(f){
+  if(!f)return;
+  try{const j=JSON.parse(await f.text()),c=j.campeonato||j;if(!c.id||!c.meta||!Array.isArray(c.part))throw new Error('El archivo no es un campeonato válido.');
+    const existe=(LISTA||[]).some(x=>x.id===c.id);let acceso,org;
+    if(!existe){acceso=prompt('Es un campeonato nuevo. Clave de acceso para los jugadores:');if(!acceso)return;org=prompt('Clave de organizador:');if(!org)return}
+    c.resumen=resumenDe(c);const r=await api('importar',{key:ADMKEY,camp:c,acceso,org});delete DB.camps[c.id];toast(r.actualizado?'Campeonato actualizado':'Campeonato cargado');await cargarLista();render()}
+  catch(e){toast(e.message)}
+}
+
+/* ---------- Mantener al día ---------- */
+async function refrescar(){
+  if(S.vista!=='camp'||!DB.camps[S.id]||$('sheet').open||document.hidden)return;
+  try{await cola;const r=await api('get',{id:S.id,key:claveDe(S.id)});if(r.version!==VER[S.id]){DB.camps[S.id]=r.camp;VER[S.id]=r.version;render()}}catch(e){}
+}
+document.addEventListener('visibilitychange',refrescar);
+setInterval(refrescar,60000);
+
+cargarDB();render();
+</script>
+</body>
+</html>
