@@ -591,6 +591,20 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sw-ic{font-size:1.2rem;text-align:center}
 .sw-tx b{display:block;font-size:.95rem}.sw-tx small{color:var(--mute);font-size:.78rem}
 .sw-est{font-size:.78rem;font-weight:800;color:var(--oro2)}
+
+.camp-top{padding:10px 14px 12px}
+.cbar{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.cbar-sp{flex:1}
+.cbar .icono-btn{width:34px;height:34px}
+.cbar .org-pill{height:34px;padding:0 9px;gap:4px;font-size:.85rem;border-radius:10px}
+.cbar .org-pill span{font-size:.68rem}
+.cbar>span:empty{display:none}
+.camp-hero{text-align:left;padding:0}
+.camp-nombre{font-family:var(--serif);font-weight:800;font-size:1.3rem;line-height:1.15;color:var(--crema);margin:0}
+.camp-hero .meta-linea{margin:4px 0 0;font-size:.76rem}
+.camp-hero .meta-linea i{margin:0 4px}
+.camp-hero .cbs{justify-content:flex-start;margin-top:8px}
+.camp-hero .cb{font-size:.68rem;padding:3px 8px}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -856,9 +870,9 @@ function reglasPorDefecto(m,n){
   const W=Math.ceil((m.mejorDe||3)/2),ind=m.modalidad==='individual',quien=ind?'equipo':'pareja';
   const R=[];
   const jg=m.juego||{real:true,perete:false,deje:false};
-  R.push({i:'👑',t:jg.real?'Se juega con la real':'Se juega sin la real',x:jg.real?'La 31 real (tres sietes y una figura) es el mejor juego: gana a cualquier otra 31.':'La 31 formada por tres sietes y una figura vale como una 31 normal.',juego:true});
-  R.push({i:'🙅',t:jg.perete?'Se juega con perete':'Se juega sin perete',x:jg.perete?'Quien reciba de primeras un 4, 5, 6 y 7 (el perete) tiene derecho a descarte y se apunta una piedra.':'La jugada 4, 5, 6 y 7 (el perete) no tiene ningún premio: se juega como cualquier otra mano.',juego:true});
-  R.push({i:'✋',t:jg.deje?'Se juega con deje':'Se juega sin deje',x:jg.deje?'Se permite el deje.':'No se permite el deje.',juego:true});
+  if(jg.real)R.push({i:'👑',t:'Se juega con la real',x:'La 31 real (tres sietes y una figura) es el mejor juego: gana a cualquier otra 31.',juego:true});
+  if(jg.perete)R.push({i:'🙅',t:'Se juega con perete',x:'Si un jugador recibe de primeras un 4, 5, 6 y 7, su pareja tiene derecho a descarte y la pareja rival se apunta una piedra.',juego:true});
+  if(jg.deje)R.push({i:'✋',t:'Se juega con deje',x:'Se permite el deje.',juego:true});
   R.push({i:'🃏',t:'Cada partida',x:m.mejorDe?`Se juega al mejor de ${m.mejorDe} juegos: gana la primera ${quien} que llegue a ${W}. Los juegos se disputan con las reglas habituales de mus.`:`Cada partida puede jugarse al mejor de 3 o al mejor de 5 juegos; se indica al registrarla. Todas cuentan igual: una partida ganada o perdida, y sus juegos a favor y en contra.`});
   if(ind){
     R.push({i:'🎲',t:'Parejas por sorteo',x:'Las parejas de cada partida se sortean en el lugar de juego entre los presentes, como se acuerde allí. En la app solo se registra quién ha jugado con quién y el resultado.'});
@@ -959,10 +973,10 @@ function vCamp(){
   S.yo=ls('cdc-yo-'+S.id)||'';if(S.yo&&!P(S.yo))S.yo='';
   const m=K.meta,n=K.part.length;
   const est=terminado()?'<span class="cb est-fin">🏆 Terminado</span>':jugadas().length?'<span class="cb est-on">● En juego</span>':'<span class="cb">Por empezar</span>';
-  const top=`<div class="top camp-top"><div class="top-barra">${S.admin?'<button class="icono-btn" data-acc="volverAdmin" aria-label="Administración">🛡️</button>':'<span></span>'}
-    <div class="fila-flex"><button class="icono-btn" data-acc="compartir" aria-label="Compartir">📤</button><button class="org-pill ${S.org||S.admin?'on':''}" data-acc="org" aria-label="Modo organizador">🔑<span>${S.org||S.admin?'Organizador ✓':'Organizador'}</span></button></div></div>
-    <div class="camp-hero"><span class="emb">${iconoFormato(K)}</span><h1 class="titulo">${esc(m.nombre)}</h1>
-    <p class="meta-linea">${resumenTexto()}<i>·</i>${n} ${esInd()?'jugadores':'parejas'}<i>·</i>${txtMD(m).replace('Mejor','Al mejor')}</p>
+  const top=`<div class="top camp-top"><div class="cbar">${S.admin?'<button class="icono-btn" data-acc="volverAdmin" aria-label="Administración">🛡️</button>':'<span></span>'}<button class="org-pill" data-acc="irCreador">🏆<span>Creador</span></button><div class="cbar-sp"></div>
+    <button class="org-pill" data-acc="compartir">📤<span>Compartir</span></button><button class="org-pill ${S.org||S.admin?'on':''}" data-acc="org">🔑<span>${S.org||S.admin?'Organizador ✓':'Organizador'}</span></button></div>
+    <div class="camp-hero"><h1 class="camp-nombre">${iconoFormato(K)} ${esc(m.nombre)}</h1>
+    <p class="meta-linea">${resumenTexto()}<i>·</i>${n} ${esInd()?'jugadores':'parejas'}<i>·</i>${txtMD(m).replace('Mejor','al mejor')}</p>
     <div class="cbs">${est}${K.bloqueado?'<span class="cb est-off">⛔ Registro cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="cb est-ap">💶 Con apuesta</span>':''}</div></div></div>
     <nav class="tabs"><div class="in">${TABS().map(([k,i,t])=>`<button data-acc="tab" data-t="${k}" ${k===S.tab?'aria-current="page"':''}><span>${i}</span>${t}</button>`).join('')}</div></nav>`;
   const cuerpo={inicio:tInicio,tabla:tTabla,partidas:tPartidas,estad:tEstad,reglas:tReglas}[S.tab]();
@@ -1426,10 +1440,11 @@ function wzResumen(){
   const w=WZ,n=w.n;
   if(w.modalidad==='individual')return'Las parejas se hacen en el sitio. En la app se apunta quién jugó con quién y el resultado. Cuando el organizador cierra, gana el mejor promedio.';
   if(w.formato==='liga'&&w.libre)return'Sin lista fija: se apuntan todas las partidas que se jueguen. Cuando el organizador cierra, gana quien más partidas haya ganado.';
-  if(w.formato==='liga'){const R=n%2?n:n-1;return `${R} jornadas. Cada pareja juega ${n-1} partidas; ${n*(n-1)/2} partidas en total.`}
-  if(w.formato==='ko'){const p=pot2(n);return `Cuadro de ${p}${p>n?`, con ${p-n} ${p-n>1?'parejas exentas':'pareja exenta'} en la primera ronda`:''}. ${Math.log2(p)} rondas hasta la final${w.koVueltas===2?', cada cruce a ida y vuelta':''}.`}
+  if(w.formato==='liga'){const R=n%2?n:n-1;return `Cada pareja juega ${n-1} partidas: <b>${n*(n-1)/2} partidas en total</b>.`}
+  if(w.formato==='ko'){const p=pot2(n),cr=n-1,tot=cr*(w.koVueltas===2?2:1);return `Cuadro de ${p}${p>n?`, con ${p-n} ${p-n>1?'parejas exentas':'pareja exenta'} en la primera ronda`:''}. ${Math.log2(p)} rondas hasta la final. ${cr} cruces${w.koVueltas===2?' a ida y vuelta':''}: <b>${tot} partidas en total</b>${w.koVueltas===2?' (más los desempates que hagan falta)':''}.`}
   const t=tamanos(n,w.grupos),mx=Math.max(...t),mn=Math.min(...t),tot=t.reduce((s,x)=>s+x*(x-1)/2,0),N=w.grupos*w.pasan;
-  return `Cada pareja juega ${mn===mx?mn-1:(mn-1)+' o '+(mx-1)} partidas de grupo (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''}`:''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
+  const ko=w.pasan?(N-1)*(w.koVueltas===2?2:1):0;
+  return `Cada pareja juega ${mn===mx?mn-1:(mn-1)+' o '+(mx-1)} partidas de grupo (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''} (${ko} partidas más)`:''}. <b>${tot+ko} partidas en total</b>${w.pasan&&w.koVueltas===2?' (más los desempates que hagan falta)':''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
 }
 function wzRondas(){const w=WZ,n=w.n;if(w.formato==='liga')return w.libre?1:(n%2?n:n-1);if(w.formato==='ko')return Math.log2(pot2(n));const t=tamanos(n,w.grupos),mx=Math.max(...t);return(mx%2?mx:mx-1)+(w.pasan?Math.log2(w.grupos*w.pasan):0)}
 function wzFirma(){const w=WZ;return JSON.stringify([w.juego,w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
@@ -1469,9 +1484,9 @@ function wzPaso(){
     else{const R=wzRondas();h+=`<p class="nota" style="margin-top:12px">📅 ${R} ${R>1?'rondas':'ronda'} en total. ${c.tipo==='dia'?'Todo el '+fmtL(c.inicio)+'.':'Del '+fmtL(c.inicio)+' al '+fmtL(fin)+'.'}</p>`}
     return h}
   case 5:{if(!w.reglas||w.firma!==wzFirma()){const propias=(w.reglas||[]).filter(r=>r.propia);w.reglas=[...reglasPorDefecto(wzMeta(),w.n),...propias];w.firma=wzFirma()}
-    return `<p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
-    <div class="card pad" style="margin-top:12px"><b>🃏 Reglas de juego</b><p class="nota" style="margin:4px 0 8px">Vienen por defecto; cámbialas si en vuestro sitio se juega distinto.</p>
-     ${[['real','👑','La real','Tres sietes y una figura: la mejor 31'],['perete','🙅','Perete','4, 5, 6 y 7 de primeras: descarte y una piedra'],['deje','✋','Deje','']].map(([k,i,t,x])=>`<div class="fila-sw"><span class="sw-ic">${i}</span><span class="sw-tx"><b>${t}</b>${x?`<small>${x}</small>`:''}</span><span class="sw-est">${w.juego[k]?'Con':'Sin'}</span><button class="switch ${w.juego[k]?'on':''}" data-acc="wzJuego" data-k="${k}" aria-pressed="${w.juego[k]}" aria-label="${t}"><i></i></button></div>`).join('')}</div>
+    return `<div class="card pad" style="margin-bottom:14px"><b>🃏 Reglas de juego</b><p class="nota" style="margin:4px 0 8px">Las que estén en «Con» se añaden a las reglas del campeonato.</p>
+     ${[['real','👑','La real','Tres sietes y una figura: la mejor 31'],['perete','🙅','Perete','4, 5, 6 y 7 de primeras: descarte para su pareja y una piedra para el rival'],['deje','✋','Deje','']].map(([k,i,t,x])=>`<div class="fila-sw"><span class="sw-ic">${i}</span><span class="sw-tx"><b>${t}</b>${x?`<small>${x}</small>`:''}</span><span class="sw-est">${w.juego[k]?'Con':'Sin'}</span><button class="switch ${w.juego[k]?'on':''}" data-acc="wzJuego" data-k="${k}" aria-pressed="${w.juego[k]}" aria-label="${t}"><i></i></button></div>`).join('')}</div>
+    <p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.filter(r=>!r.juego).map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
     <div class="card pad ap-card" style="margin-top:12px"><div class="fila-flex" style="justify-content:space-between"><b>💶 Apuesta (opcional)</b><button class="switch ${w.ap.on?'on':''}" data-acc="apOn" aria-pressed="${w.ap.on}" aria-label="Activar apuesta"><i></i></button></div>
      ${w.ap.on?`<div class="seg" style="margin-top:10px">${[['dinero','💶 Dinero'],['extra','🍽️ Otra cosa']].map(([k,t])=>`<button data-acc="apTipo" data-v="${k}" aria-pressed="${w.ap.tipo===k}">${t}</button>`).join('')}</div>
       ${w.ap.tipo==='dinero'?`<div class="dos"><div><label class="lbl" for="apC">Pone cada ${w.modalidad==='individual'?'jugador':'pareja'} (€)</label><input id="apC" data-ap="cuota" inputmode="decimal" value="${esc(w.ap.cuota)}" placeholder="30"></div><div><label class="lbl">Bote total</label><div class="bote">${w.ap.cuota&&!isNaN(+w.ap.cuota.replace(',','.'))?(+w.ap.cuota.replace(',','.')*w.n).toLocaleString('es-ES')+' €':'–'}</div></div></div>
@@ -1530,6 +1545,7 @@ function vExito(){
 
 /* ================= Acciones ================= */
 const ACC={
+  irCreador(){ACC.portal()},
   portal(){S.vista='portal';S.id=null;S.org=false;cerrarHoja();render();scrollTo(0,0)},
   crear(){WZ=null;S.vista='crear';render();scrollTo(0,0)},
   abrir(el){S.vista='camp';S.id=el.dataset.id;S.tab='inicio';S.filtro='pendientes';S.sub='grupos';S.exp='';S.ca='';S.cb='';S.koDesde=0;if(S.orgDe!==S.id)S.org=false;render();scrollTo(0,0)},
@@ -1868,6 +1884,7 @@ function vPortal(){
 ACC.abrir=el=>irCamp(el.dataset.slug||(LISTA||[]).find(x=>x.id===el.dataset.id)?.slug||el.dataset.id);
 ACC.portal=()=>{if(MODO_CAMP)return;S.vista='portal';render()};
 ACC.volverAdmin=()=>{location.href=base()+'?admin'};
+ACC.irCreador=()=>{location.href=base()};
 
 /* ---------- Página del campeonato ---------- */
 const _vCamp=vCamp;
