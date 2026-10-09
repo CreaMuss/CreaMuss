@@ -569,6 +569,28 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .tipo-badge.ind{background:rgba(231,185,79,.14);color:var(--oro2);border:1px solid rgba(231,185,79,.35)}
 .op-tipo[aria-pressed="true"] .tipo-badge{box-shadow:0 0 0 2px var(--oro)}
 .jug-grid{display:grid;grid-template-columns:1fr;gap:6px}
+
+.camp-top{padding-bottom:18px;background:radial-gradient(110% 80% at 50% 0%,rgba(231,185,79,.14),transparent 60%),linear-gradient(180deg,var(--bg2),var(--bg))}
+.camp-hero{text-align:center;padding:6px 6px 0}
+.camp-hero .emb{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#2A5A40,#173826);border:1px solid rgba(231,185,79,.45);font-size:1.8rem;box-shadow:0 10px 22px rgba(0,0,0,.35)}
+.camp-hero .titulo{font-size:clamp(1.7rem,8vw,2.2rem);margin:12px 0 0;letter-spacing:-.01em}
+.meta-linea{margin:8px 0 0;color:var(--mute);font-size:.88rem;font-weight:700}
+.meta-linea i{font-style:normal;margin:0 6px;color:var(--oro2)}
+.cbs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
+.cb{font-size:.76rem;font-weight:800;padding:4px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line);color:var(--mute)}
+.cb.est-on{color:var(--verde);border-color:rgba(127,217,156,.4)}
+.cb.est-fin{color:var(--oro2);border-color:rgba(231,185,79,.5)}
+.cb.est-off{color:var(--rojo);border-color:rgba(230,107,96,.5)}
+.cb.est-ap{color:var(--oro2);border-color:rgba(231,185,79,.4)}
+.org-pill{display:inline-flex;align-items:center;gap:5px;height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:.95rem}
+.org-pill span{font-size:.72rem;font-weight:800;color:var(--mute)}
+.org-pill.on{background:var(--oro);border-color:var(--oro)}
+.org-pill.on span{color:#1A1A10}
+.fila-sw{display:grid;grid-template-columns:30px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.fila-sw:first-of-type{border-top:0}
+.sw-ic{font-size:1.2rem;text-align:center}
+.sw-tx b{display:block;font-size:.95rem}.sw-tx small{color:var(--mute);font-size:.78rem}
+.sw-est{font-size:.78rem;font-weight:800;color:var(--oro2)}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -833,6 +855,10 @@ function resumenTexto(){
 function reglasPorDefecto(m,n){
   const W=Math.ceil((m.mejorDe||3)/2),ind=m.modalidad==='individual',quien=ind?'equipo':'pareja';
   const R=[];
+  const jg=m.juego||{real:true,perete:false,deje:false};
+  R.push({i:'👑',t:jg.real?'Se juega con la real':'Se juega sin la real',x:jg.real?'La 31 real (tres sietes y una figura) es el mejor juego: gana a cualquier otra 31.':'La 31 formada por tres sietes y una figura vale como una 31 normal.',juego:true});
+  R.push({i:'🙅',t:jg.perete?'Se juega con perete':'Se juega sin perete',x:jg.perete?'Quien reciba de primeras un 4, 5, 6 y 7 (el perete) tiene derecho a descarte y se apunta una piedra.':'La jugada 4, 5, 6 y 7 (el perete) no tiene ningún premio: se juega como cualquier otra mano.',juego:true});
+  R.push({i:'✋',t:jg.deje?'Se juega con deje':'Se juega sin deje',x:jg.deje?'Se permite el deje.':'No se permite el deje.',juego:true});
   R.push({i:'🃏',t:'Cada partida',x:m.mejorDe?`Se juega al mejor de ${m.mejorDe} juegos: gana la primera ${quien} que llegue a ${W}. Los juegos se disputan con las reglas habituales de mus.`:`Cada partida puede jugarse al mejor de 3 o al mejor de 5 juegos; se indica al registrarla. Todas cuentan igual: una partida ganada o perdida, y sus juegos a favor y en contra.`});
   if(ind){
     R.push({i:'🎲',t:'Parejas por sorteo',x:'Las parejas de cada partida se sortean en el lugar de juego entre los presentes, como se acuerde allí. En la app solo se registra quién ha jugado con quién y el resultado.'});
@@ -852,7 +878,6 @@ function reglasPorDefecto(m,n){
   R.push({i:'📍',t:'Lugar',x:'El lugar es libre y lo acuerdan los jugadores de cada partida.'});
   R.push({i:'✍️',t:'Registro de resultados',x:'Al terminar, cualquiera de los jugadores registra el resultado en la app. Una vez guardado, desde la cuenta de jugador ya no se puede cambiar.'});
   R.push({i:'⚠️',t:'Si un resultado está mal',x:'Abre la partida, pulsa «Impugnar resultado», marca el resultado correcto y explica el motivo. Mientras se revisa no cuenta, y decide el organizador: aceptar el resultado propuesto, mantener el registrado o poner otro.'});
-  if(!ind&&!m.libre)R.push({i:'🚫',t:'Si una pareja no se presenta',x:`La pareja que sí se presentó abre la partida y pulsa «No se ha presentado», explicando qué pasó. La pareja señalada puede decir que no es cierto. El organizador decide: dar la partida por perdida (${W}–0) a quien no se presentó, o dejarla por jugar. El organizador también puede aplicarlo directamente.`});
   return R.map(r=>({id:uid(),...r,propia:false}));
 }
 /* ================= Datos y sesión ================= */
@@ -933,10 +958,12 @@ function vCamp(){
   if(!accesoOK(S.id))return vLock(K);
   S.yo=ls('cdc-yo-'+S.id)||'';if(S.yo&&!P(S.yo))S.yo='';
   const m=K.meta,n=K.part.length;
-  const top=`<div class="top"><div class="top-barra">${S.admin?'<button class="icono-btn" data-acc="volverAdmin" aria-label="Administración">🛡️</button>':'<span></span>'}
-    <div class="fila-flex"><button class="icono-btn" data-acc="compartir" aria-label="Compartir">📤</button><button class="icono-btn ${S.org||S.admin?'on':''}" data-acc="org" aria-label="Organizador">🔑</button></div></div>
-    <h1 class="titulo">${esc(m.nombre)}</h1>
-    <div class="chips"><span class="chip oro">${iconoFormato(K)} ${resumenTexto()}</span><span class="chip">👥 ${n}</span><span class="chip">🃏 ${txtMD(m)}</span>${m.cal&&m.cal.tipo!=='sin'?`<span class="chip">📅 ${textoCal(m)}</span>`:''}${K.bloqueado?'<span class="chip" style="color:var(--rojo)">⛔ Cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="chip oro">💶 Con apuesta</span>':''}${S.org||S.admin?'<span class="chip oro">🔑 Organizador</span>':''}</div></div>
+  const est=terminado()?'<span class="cb est-fin">🏆 Terminado</span>':jugadas().length?'<span class="cb est-on">● En juego</span>':'<span class="cb">Por empezar</span>';
+  const top=`<div class="top camp-top"><div class="top-barra">${S.admin?'<button class="icono-btn" data-acc="volverAdmin" aria-label="Administración">🛡️</button>':'<span></span>'}
+    <div class="fila-flex"><button class="icono-btn" data-acc="compartir" aria-label="Compartir">📤</button><button class="org-pill ${S.org||S.admin?'on':''}" data-acc="org" aria-label="Modo organizador">🔑<span>${S.org||S.admin?'Organizador ✓':'Organizador'}</span></button></div></div>
+    <div class="camp-hero"><span class="emb">${iconoFormato(K)}</span><h1 class="titulo">${esc(m.nombre)}</h1>
+    <p class="meta-linea">${resumenTexto()}<i>·</i>${n} ${esInd()?'jugadores':'parejas'}<i>·</i>${txtMD(m).replace('Mejor','Al mejor')}</p>
+    <div class="cbs">${est}${K.bloqueado?'<span class="cb est-off">⛔ Registro cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="cb est-ap">💶 Con apuesta</span>':''}</div></div></div>
     <nav class="tabs"><div class="in">${TABS().map(([k,i,t])=>`<button data-acc="tab" data-t="${k}" ${k===S.tab?'aria-current="page"':''}><span>${i}</span>${t}</button>`).join('')}</div></nav>`;
   const cuerpo={inicio:tInicio,tabla:tTabla,partidas:tPartidas,estad:tEstad,reglas:tReglas}[S.tab]();
   let fab='';
@@ -1177,6 +1204,7 @@ function compHTML(){
   <div style="margin-top:12px">${fila('Partidas jugadas',A.pj,B.pj)}${fila('Partidas ganadas',A.pg,B.pg)}${fila('Partidas perdidas',A.pj-A.pg,B.pj-B.pg,true)}${fila('Juegos ganados',A.jf,B.jf)}${fila('Juegos perdidos',A.jc,B.jc,true)}${fila('Mejor racha',A.mr,B.mr)}</div></div>
   <h2 class="sec">🤜🤛 Cara a cara</h2><div class="card pad"><div class="h2h"><span>${ganaA}</span><small>${dir.length?dir.length+(dir.length>1?' partidas':' partida'):'Sin enfrentamientos'}</small><span>${dir.length-ganaA}</span></div>
   ${dir.length?`<div class="lista" style="margin-top:8px">${dir.slice(-4).reverse().map(x=>matchHTML(x.m)).join('')}</div>`:'<p class="nota" style="text-align:center">Todavía no se han enfrentado.</p>'}</div>`;
+  if(!porDias())h='';
   if(esInd()){const j=parejasInd().find(p=>p.ids.includes(S.ca)&&p.ids.includes(S.cb));
     h+=`<h2 class="sec">🤝 Juntos como pareja</h2><div class="kpis"><div class="kpi"><b>${j?j.pj:0}</b><span>partidas juntos</span></div><div class="kpi"><b>${j?j.pg:0}</b><span>ganadas</span></div><div class="kpi"><b>${j?j.pj-j.pg:0}</b><span>perdidas</span></div></div>`}
   const rk=(arr,v,max,txt)=>arr.map((x,i)=>`<div class="rank"><span class="n">${i+1}</span>${x.ids?ptInd(x.ids):pt(x.id)}<span class="track"><i style="width:${max?v(x)/max*100:0}%"></i></span><span class="v">${txt(x)}</span></div>`).join('');
@@ -1273,10 +1301,6 @@ function hojaResultado(id){
     h+=`<div class="wo-box"><b>⚠️ ¿Este resultado no es correcto?</b><small>Marca el resultado correcto y explica el motivo. Lo verán todos y decidirá el organizador.</small><button class="btn peligro" data-acc="impugnar">⚠️ Impugnar resultado</button></div>`}
   else if(!blq)h+=`<p class="nota">El registro de resultados está cerrado.</p>`;
   h+=`<p class="error" id="rErr"></p><div class="acciones">${editable?`<button class="btn" data-acc="guardarRes">${r?'Guardar corrección':'Guardar resultado'}</button>`:''}${r&&puedeOrg?`<button class="btn peligro" data-acc="borrarRes">Borrar</button>`:''}${(r||blq)&&!puedeOrg?`<button class="btn sec" data-acc="org">🔑 Soy el organizador</button>`:''}<button class="btn sec" data-acc="cerrar">Cerrar</button></div>`;
-  if(!r&&!ind&&!porDias()&&!blq&&jugable(m)){
-    if(puedeOrg)h+=`<div class="wo-box"><b>🚫 ¿No se ha presentado una pareja?</b><small>Como organizador lo aplicas directamente: ${W}–0 a favor de la otra.</small><div class="dos">${['a','b'].map(l=>`<button class="btn sec peq" data-acc="wo" data-l="${l}">No se presentó ${esc(nom(m[l]))}</button>`).join('')}</div></div>`;
-    else if(!K.bloqueado)h+=`<div class="wo-box"><b>🚫 ¿No se ha presentado la otra pareja?</b><small>Avísalo aquí. Lo verán todos y decidirá el organizador.</small><button class="btn sec peq" data-acc="reclamar">🚫 No se ha presentado</button></div>`;
-  }
   abrirHoja(h);
 }
 function hojaElegir(){
@@ -1368,7 +1392,7 @@ function vAdmin(){
 }
 /* ================= Asistente de creación ================= */
 let WZ=null;
-function nuevoWZ(){return{sorteoP:false,jug:[],ap:{on:false,tipo:'dinero',cuota:'',premio:'',texto:''},paso:1,modalidad:'parejas',formato:'liga',n:4,mejorDe:5,vueltas:1,libre:0,tocadoLibre:false,koVueltas:1,grupos:2,pasan:2,minPct:30,tocadoG:false,cal:{tipo:'dia',inicio:hoy(),ndias:3,fin:sumar(hoy(),180)},part:[],reglas:null,firma:'',nombre:'',acceso:'',org:'',oculto:false}}
+function nuevoWZ(){return{juego:{real:true,perete:false,deje:false},sorteoP:false,jug:[],ap:{on:false,tipo:'dinero',cuota:'',premio:'',texto:''},paso:1,modalidad:'parejas',formato:'liga',n:4,mejorDe:5,vueltas:1,libre:0,tocadoLibre:false,koVueltas:1,grupos:2,pasan:2,minPct:30,tocadoG:false,cal:{tipo:'dia',inicio:hoy(),ndias:3,fin:sumar(hoy(),180)},part:[],reglas:null,firma:'',nombre:'',acceso:'',org:'',oculto:false}}
 const PASOS=['','Tipo de campeonato','Participantes','Partidas y estructura','Calendario','Reglas','Nombre y claves'];
 const AYUDA=['','A la derecha verás si es por parejas o individual.','Cuántos son y cómo se llaman. Puedes rellenar un ejemplo para probar.','Cuántos juegos tiene cada partida y cómo se organiza la competición.','Cuándo se juega: en un día o en unos pocos días.','Reglas que verán los jugadores. Las que añadas son informativas: no cambian cómo funciona la app.','Nombre, enlace y claves. Repasa el resumen: toca cualquier dato para cambiarlo.'];
 function wzChips(){const w=WZ,ind=w.modalidad==='individual',c=[];
@@ -1408,8 +1432,8 @@ function wzResumen(){
   return `Cada pareja juega ${mn===mx?mn-1:(mn-1)+' o '+(mx-1)} partidas de grupo (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''}`:''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
 }
 function wzRondas(){const w=WZ,n=w.n;if(w.formato==='liga')return w.libre?1:(n%2?n:n-1);if(w.formato==='ko')return Math.log2(pot2(n));const t=tamanos(n,w.grupos),mx=Math.max(...t);return(mx%2?mx:mx-1)+(w.pasan?Math.log2(w.grupos*w.pasan):0)}
-function wzFirma(){const w=WZ;return JSON.stringify([w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
-function wzMeta(){const w=WZ;return{modalidad:w.modalidad,formato:w.formato,mejorDe:w.mejorDe,vueltas:1,libre:!!w.libre,koVueltas:w.formato==='ko'||(w.formato==='grupos'&&w.pasan)?w.koVueltas:1,grupos:w.grupos,pasan:w.formato==='grupos'?w.pasan:0,minPct:w.minPct,cal:{...w.cal},nombre:w.nombre}}
+function wzFirma(){const w=WZ;return JSON.stringify([w.juego,w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
+function wzMeta(){const w=WZ;return{juego:{...w.juego},modalidad:w.modalidad,formato:w.formato,mejorDe:w.mejorDe,vueltas:1,libre:!!w.libre,koVueltas:w.formato==='ko'||(w.formato==='grupos'&&w.pasan)?w.koVueltas:1,grupos:w.grupos,pasan:w.formato==='grupos'?w.pasan:0,minPct:w.minPct,cal:{...w.cal},nombre:w.nombre}}
 const op=(acc,k,v,actual,icono,t,x,dis=false)=>`<button class="op" data-acc="${acc}" data-k="${k}" data-v="${v}" aria-pressed="${String(actual)===String(v)}" ${dis?'disabled':''}><span class="oi">${icono}</span><span><b>${t}</b><small>${x}</small></span><span class="check">✓</span></button>`;
 function wzPaso(){
   const w=WZ,ind=w.modalidad==='individual',quien=ind?'jugadores':'parejas';
@@ -1446,6 +1470,8 @@ function wzPaso(){
     return h}
   case 5:{if(!w.reglas||w.firma!==wzFirma()){const propias=(w.reglas||[]).filter(r=>r.propia);w.reglas=[...reglasPorDefecto(wzMeta(),w.n),...propias];w.firma=wzFirma()}
     return `<p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
+    <div class="card pad" style="margin-top:12px"><b>🃏 Reglas de juego</b><p class="nota" style="margin:4px 0 8px">Vienen por defecto; cámbialas si en vuestro sitio se juega distinto.</p>
+     ${[['real','👑','La real','Tres sietes y una figura: la mejor 31'],['perete','🙅','Perete','4, 5, 6 y 7 de primeras: descarte y una piedra'],['deje','✋','Deje','']].map(([k,i,t,x])=>`<div class="fila-sw"><span class="sw-ic">${i}</span><span class="sw-tx"><b>${t}</b>${x?`<small>${x}</small>`:''}</span><span class="sw-est">${w.juego[k]?'Con':'Sin'}</span><button class="switch ${w.juego[k]?'on':''}" data-acc="wzJuego" data-k="${k}" aria-pressed="${w.juego[k]}" aria-label="${t}"><i></i></button></div>`).join('')}</div>
     <div class="card pad ap-card" style="margin-top:12px"><div class="fila-flex" style="justify-content:space-between"><b>💶 Apuesta (opcional)</b><button class="switch ${w.ap.on?'on':''}" data-acc="apOn" aria-pressed="${w.ap.on}" aria-label="Activar apuesta"><i></i></button></div>
      ${w.ap.on?`<div class="seg" style="margin-top:10px">${[['dinero','💶 Dinero'],['extra','🍽️ Otra cosa']].map(([k,t])=>`<button data-acc="apTipo" data-v="${k}" aria-pressed="${w.ap.tipo===k}">${t}</button>`).join('')}</div>
       ${w.ap.tipo==='dinero'?`<div class="dos"><div><label class="lbl" for="apC">Pone cada ${w.modalidad==='individual'?'jugador':'pareja'} (€)</label><input id="apC" data-ap="cuota" inputmode="decimal" value="${esc(w.ap.cuota)}" placeholder="30"></div><div><label class="lbl">Bote total</label><div class="bote">${w.ap.cuota&&!isNaN(+w.ap.cuota.replace(',','.'))?(+w.ap.cuota.replace(',','.')*w.n).toLocaleString('es-ES')+' €':'–'}</div></div></div>
@@ -1623,6 +1649,7 @@ const ACC={
   /* asistente */
   wz(el){const k=el.dataset.k,v=el.dataset.v;WZ[k]=isNaN(+v)?v:+v;if(k==='modalidad'){WZ.formato=v==='individual'?'liga':'grupos';WZ.cal.tipo=v==='individual'?'libre':'dia';WZ.n=8}if(k==='formato'&&v!=='liga')WZ.vueltas=1;render()},
   wzCal(el){WZ.cal.tipo=el.dataset.v;render()},
+  wzJuego(el){const k=el.dataset.k;WZ.juego[k]=!WZ.juego[k];render()},
   wzTipo(el){const o=TIPOS[el.dataset.v];WZ.modalidad=o.mod;WZ.formato=o.f;WZ.libre=o.libre;WZ.n=o.n;WZ.tocadoG=false;WZ.part=[];render()},
   wzLibre(el){WZ.libre=+el.dataset.v;WZ.tocadoLibre=true;render()},
   wzDias(el){WZ.cal.ndias=Math.max(2,Math.min(365,WZ.cal.ndias+ +el.dataset.v));render()},
@@ -1657,7 +1684,7 @@ document.addEventListener('change',e=>{const t=e.target;
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;if(e.target.id==='lockKey')ACC.entrar();if(e.target.id==='orgKey')ACC.entrarOrg();if(e.target.id==='admKey')ACC.entrarAdmin()});
 /* ================= Instrucciones ================= */
 const paso=(n,t,x)=>`<div class="ps"><span class="ps-n">${n}</span><div><b>${t}</b><p>${x}</p></div></div>`;
-const SUBS={'Qué es y para qué sirve':'La idea en 30 segundos','Crear un campeonato, paso a paso':'El asistente de 5 pasos','Formatos y modalidades':'Liga, liguilla, eliminatoria…','Cómo se ordena la clasificación':'Ganadas, diferencia y desempate','Evitar trampas: impugnar y reclamar':'Si un resultado está mal o alguien no viene','Claves y roles':'Quién puede hacer qué','El administrador, en detalle':'Tu panel de control','Compartir y entrar':'Enlace, clave y tu pareja','Preguntas frecuentes':'Dudas habituales','Lo básico':'Para qué sirve cada pestaña','Registrar una partida':'En tres toques','Cómo se gana':'Criterios de este campeonato','Si algo no cuadra':'Impugnar o avisar','Cierre':'Cuándo termina','Quién puede hacer qué':'Jugadores y organizador','Jornadas':'En orden'};
+const SUBS={'Qué es y para qué sirve':'La idea en 30 segundos','Crear un campeonato, paso a paso':'El asistente de 5 pasos','Formatos y modalidades':'Liga, liguilla, eliminatoria…','Cómo se ordena la clasificación':'Ganadas, diferencia y desempate','Si un resultado está mal':'Impugnar y corregir','Claves y roles':'Quién puede hacer qué','El administrador, en detalle':'Tu panel de control','Compartir y entrar':'Enlace, clave y tu pareja','Preguntas frecuentes':'Dudas habituales','Lo básico':'Para qué sirve cada pestaña','Registrar una partida':'En tres toques','Cómo se gana':'Criterios de este campeonato','Si un resultado está mal':'Impugnar o avisar','Cierre':'Cuándo termina','Quién puede hacer qué':'Jugadores y organizador','Jornadas':'En orden'};
 const bloque=(i,t,cuerpo)=>`<details class="guia"><summary><span class="g-ic">${i}</span><span class="g-t"><b>${t}</b>${SUBS[t]?`<small>${SUBS[t]}</small>`:''}</span></summary><div class="g-in">${cuerpo}</div></details>`;
 const rol=(i,t,clave,si,no)=>`<div class="rol"><div class="rol-cab"><span class="g-ic">${i}</span><span><b>${t}</b><small>${clave}</small></span></div><ul class="si">${si.map(x=>`<li>${x}</li>`).join('')}</ul>${no.length?`<ul class="no">${no.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`;
 function vAyuda(){
@@ -1689,16 +1716,15 @@ function vAyuda(){
     <div class="fmt"><b>Individual</b><p>1) Promedio de victorias (ganadas entre jugadas). 2) Si hay empate, diferencia de juegos. 3) Si siguen igualados, partida de desempate.</p></div>
     <div class="fmt"><b>Empates</b><p>Al terminar, si dos siguen igualados en todo, la app avisa y pide registrar la partida de desempate. El ganador pasa por delante; si es en el primer puesto, el campeón no se proclama hasta entonces.</p></div>
     <p class="nota">PJ: partidas jugadas. PG: partidas ganadas. DJ: diferencia de juegos.</p>`)+
-  bloque('⚖️','Evitar trampas: impugnar y reclamar',`
+  bloque('⚖️','Si un resultado está mal',`
     ${paso(1,'Si un resultado está mal','Abre la partida, pulsa «Impugnar resultado», marca cuál fue el resultado correcto y explica el motivo. Mientras se revisa no cuenta.')}
-    ${paso(2,'Si una pareja no se presenta','Abre la partida pendiente y pulsa «🚫 No se ha presentado». Indica quién faltó y qué pasó, y avisa al grupo con el botón 📤. No cuenta hasta que decida el organizador.')}
-    ${paso(3,'La otra parte puede defenderse','La pareja señalada puede abrir la partida y pulsar «No es cierto», explicando su versión.')}
-    ${paso(4,'Decide el organizador','Arriba de Inicio y Partidas aparece la pestaña «⚖️ Reclamaciones e impugnaciones» con el número de casos. Al tocar «Resolver» puede: aceptar el resultado propuesto, mantener el registrado, poner otro resultado, dar la partida por perdida a quien no se presentó, anularla para que se vuelva a jugar o dejarla pendiente de decidir.')}
-    <p class="nota">Todo queda anotado: quién registró, quién reclamó, cuándo y qué se decidió.</p>`)+
+    
+    ${paso(2,'Decide el organizador','Arriba de Inicio y Partidas aparece «⚖️ Reclamaciones e impugnaciones» con el número de casos. Al tocar «Resolver» puede aceptar el resultado propuesto, mantener el registrado, poner otro, anularla o dejarla pendiente.')}
+    <p class="nota">Todo queda anotado: quién registró, quién impugnó, cuándo y qué se decidió.</p>`)+
   bloque('🔐','Claves y roles',`<p>Hay tres niveles. Cada uno ve y puede hacer cosas distintas.</p>
     ${rol('🛡️','Administrador de la plataforma','Una sola clave, solo tuya',['Entra en cualquier campeonato sin saber su clave','Hace todo lo que puede un organizador, en todos los campeonatos','Oculta campeonatos, cierra su registro, restablece claves y elimina campeonatos'],[])}
-    ${rol('🔑','Organizador de un campeonato','La clave que pone quien lo crea',['Corrige o borra resultados y da partidas por perdidas a quien no se presenta','Edita, borra o añade reglas (quedan en el historial)','Cambia el nombre y la clave de acceso, cierra o reabre el campeonato'],['No puede tocar otros campeonatos ni la administración'])}
-    ${rol('👥','Jugadores','La clave de acceso del campeonato',['Ven clasificación, partidas, cuadro, estadísticas y reglas','Registran partidas y desempates','Impugnan resultados y avisan si una pareja no se ha presentado'],['No pueden modificar un resultado ya registrado: deben pedírselo al organizador'])}`)+
+    ${rol('🔑','Organizador de un campeonato','La clave que pone quien lo crea',['Corrige o borra resultados','Edita, borra o añade reglas (quedan en el historial)','Cambia el nombre y la clave de acceso, cierra o reabre el campeonato'],['No puede tocar otros campeonatos ni la administración'])}
+    ${rol('👥','Jugadores','La clave de acceso del campeonato',['Ven clasificación, partidas, cuadro, estadísticas y reglas','Registran partidas y desempates','Impugnan un resultado si está mal'],['No pueden modificar un resultado ya registrado: deben pedírselo al organizador'])}`)+
   bloque('🛡️','El administrador, en detalle',`
     ${paso(1,'Cómo entrar','En la portada, botón «🛡️ Administración» al final, e introduce tu clave.')}
     ${paso(2,'Qué ve','Todos los campeonatos (también los ocultos), cuántos resultados tiene cada uno y el espacio que ocupan.')}
@@ -1734,12 +1760,12 @@ function guiaCamp(){
   h+=bloque('🏅','Cómo se gana',ind?`<p>Manda el <b>promedio de victorias</b> (ganadas entre jugadas). Si hay empate, la <b>diferencia de juegos</b>; si persiste, <b>partida de desempate</b>.${m.minPct?` Para clasificar hay que jugar al menos el ${m.minPct} % de las partidas de quien más haya jugado.`:''}</p>`:
     m.formato==='ko'?`<p>Eliminatoria directa: quien gana el cruce pasa a la siguiente ronda; el ganador de la final es campeón.${koV()===2?' Cada cruce es a ida y vuelta: pasa quien gane más partidas y, si ganan una cada uno, se juega un desempate.':''}</p>`:
     `<p>Manda el número de <b>partidas ganadas</b>. Si hay empate, la <b>diferencia de juegos</b>; si persiste, <b>partida de desempate</b>.${m.formato==='grupos'&&m.pasan?` Pasan los ${m.pasan} primeros de cada grupo al cuadro final${koV()===2?' (cruces a ida y vuelta)':''}.`:''}${esLibre()?' Al cierre gana quien vaya primero.':''}</p>`);
-  h+=bloque('⚖️','Si algo no cuadra',`${paso(1,'Resultado incorrecto','Abre la partida y pulsa «Impugnar resultado»: marca el correcto y explica el motivo. Queda en revisión.')}${!porDias()&&!ind?paso(2,'No se presentaron','Abre la partida pendiente, pulsa «🚫 No se ha presentado», explica qué pasó y avisa al grupo. Decide el organizador.'):''}${paso(!porDias()&&!ind?3:2,'Te acusan sin razón','Abre la partida reclamada y pulsa «No es cierto». Decidirá el organizador.')}`);
+  h+=bloque('⚖️','Si un resultado está mal',`${paso(1,'Resultado incorrecto','Abre la partida y pulsa «Impugnar resultado»: marca el correcto y explica el motivo. Queda en revisión.')}`);
   if(porJornadas())h+=bloque('🔁','Jornadas',`${paso(1,'En orden','La siguiente jornada se abre cuando todas las partidas de la actual tienen resultado. Las demás se ven con 🔒.')}${paso(2,'Si alguien no se presenta','El organizador da la partida por perdida a esa pareja y la jornada continúa.')}`);
   if(porDias())h+=bloque('🏁','Cierre',`<p>Se apuntan todas las partidas que se jueguen. Cuando el organizador cierra el campeonato, gana quien vaya primero.</p>`);
   h+=bloque('🔐','Quién puede hacer qué',`
     ${rol('👥','Jugadores','Clave de acceso',['Ver todo y registrar partidas y desempates'],['No pueden cambiar un resultado ya registrado'])}
-    ${rol('🔑','Organizador','Botón 🔑 y su clave',['Corregir o borrar resultados, dar partidas por perdidas a quien no se presenta','Editar reglas, cambiar la clave de acceso'+(porDias()?', cerrar el campeonato':'')],[])}`);
+    ${rol('🔑','Organizador','Botón 🔑 y su clave',['Corregir o borrar resultados','Editar reglas, cambiar la clave de acceso'+(porDias()?', cerrar el campeonato':'')],[])}`);
   return h;
 }
 /* =====================================================================
@@ -1786,7 +1812,6 @@ async function cargarCamp(id,key,{slug}={}){
   const r=await api('get',{id,slug,key,version:id&&DB.camps[id]?VER[id]:undefined});
   const cid=r.id||id;
   if(!r.igual){DB.camps[cid]=r.camp;VER[cid]=r.version}
-  if(r.rol==='org'||r.rol==='admin'){S.org=true;S.orgDe=cid}
   guardarCache(cid);return r;
 }
 function resumenDe(c){return con(c,()=>({n:c.part.length,progreso:Math.round(progreso()*100),terminado:!!terminado(),formato:resumenTexto()}))}
@@ -1868,7 +1893,9 @@ ACC.entrarOrg=async function(){
     if(S.trasOrg){const x=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(x),50)}}
   catch(e){$('orgErr').textContent=e.message}
 };
-ACC.salirOrg=function(){ls('cm-org-'+S.id,null);delete SES['o'+S.id];S.org=false;cerrarHoja();render()};
+ACC.salirOrg=function(){S.org=false;cerrarHoja();toast('Has vuelto al modo jugador');render()};
+const _hojaOrg=ACC.org;
+ACC.org=function(){if(S.org||S.admin)return hojaOrg();const k=kOrg(S.id);if(k){S.org=true;S.orgDe=S.id;toast('Modo organizador activado');return render()}hojaOrg()};
 ACC.guardarOrg=async function(){
   const n=$('oNombre').value.trim(),a=$('oAcc').value.trim();
   if(n&&n!==K.meta.nombre){K.meta.nombre=n;guardarDB()}
