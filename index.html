@@ -615,6 +615,18 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 
 .sync{top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140px)}
 .sync.carga,.sync.guarda,.sync.ok,.sync.error{transform:translate(-50%,0)}
+
+.asa{width:48px;height:5px;margin:2px auto 14px;cursor:grab;touch-action:none}
+.sheet-in{overscroll-behavior:contain}
+
+.desemp.mini{align-items:start}
+.mini-pares{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.mp{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;font-weight:800;font-size:.82rem;text-align:left}
+.mp i{color:var(--oro2);font-style:normal;margin:0 4px}
+.mp.ok{color:var(--verde);border-color:rgba(127,217,156,.5);opacity:.85}
+
+.desemp.mini{grid-template-columns:auto minmax(0,1fr)}
+.desemp .de-tx{text-align:left}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -764,13 +776,35 @@ function fechaRonda(r){
 }
 function desempateGan(x,y){const l=(K.desempates||[]).filter(d=>(d.a===x&&d.b===y)||(d.a===y&&d.b===x));return l.length?l[l.length-1].gan:null}
 const dz=(x,y)=>{const g=desempateGan(x.id,y.id);return g===x.id?-1:g===y.id?1:0};
-function igualados(x,y){if(!x||!y)return false;if(desempateGan(x.id,y.id))return false;return x.prom!==undefined?(x.ok===y.ok&&x.prom===y.prom&&x.dj===y.dj&&x.pj>0):(x.pg===y.pg&&x.dj===y.dj&&x.pj>0)}
-function empates(rows){const out=[];for(let i=1;i<rows.length;i++)if(igualados(rows[i-1],rows[i]))out.push([rows[i-1].id,rows[i].id]);return out}
+function trozos(arr,key){const g=[];arr.forEach(x=>{const k=key(x);if(g.length&&g[g.length-1].k===k)g[g.length-1].v.push(x);else g.push({k,v:[x]})});return g.map(x=>x.v)}
+function paresDe(ids){const p=[];for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)p.push([ids[i],ids[j]]);return p}
+const claveEmp=ids=>[...ids].sort().join('|');
+/* 3) mini-tabla entre los empatados  4) desempates jugados  5) sorteo guardado */
+function ordenarBloque(b,ms,h2h){
+  const ids=b.map(r=>r.id);
+  if(h2h&&ms){const t={};ids.forEach(id=>t[id]={pg:0,dj:0});
+    ms.forEach(m=>{if(Array.isArray(m.a)||!ids.includes(m.a)||!ids.includes(m.b))return;const r=RV(m.id);if(!r)return;t[m.a].dj+=r.ga-r.gb;t[m.b].dj+=r.gb-r.ga;if(r.ga>r.gb)t[m.a].pg++;else t[m.b].pg++});
+    const s=[...b].sort((x,y)=>t[y.id].pg-t[x.id].pg||t[y.id].dj-t[x.id].dj),g=trozos(s,r=>t[r.id].pg+'|'+t[r.id].dj);
+    if(g.length>1)return g.flatMap(x=>x.length>1?ordenarBloque(x,ms,h2h):x)}
+  const w={};ids.forEach(id=>w[id]=0);paresDe(ids).forEach(([x,y])=>{const gn=desempateGan(x,y);if(gn)w[gn]++});
+  const s=[...b].sort((x,y)=>w[y.id]-w[x.id]),g=trozos(s,r=>w[r.id]);
+  if(g.length>1)return g.flatMap(x=>x.length>1?ordenarBloque(x,null,false):x);
+  const so=(K.sorteoEmp||{})[claveEmp(ids)];
+  if(so)return [...b].sort((x,y)=>so.indexOf(x.id)-so.indexOf(y.id));
+  const k=claveEmp(ids);return [...b].sort((x,y)=>nom(x.id).localeCompare(nom(y.id))).map(r=>(r.emp=k,r));
+}
+function resolver(rows,clave,ms,h2h){return trozos(rows,clave).flatMap(b=>b.length>1&&b[0].pj>0?ordenarBloque(b,ms,h2h):b)}
+function igualados(x,y){return!!(x&&y&&x.emp&&x.emp===y.emp)}
+/* bloques empatados sin resolver que deciden algo: el título (posición 0) o la línea de clasificación */
+function empates(rows,o={}){const out=[],vistos={};rows.forEach((r,i)=>{if(!r.emp)return;(vistos[r.emp]=vistos[r.emp]||[]).push(i)});
+  for(const k in vistos){const ix=vistos[k],mn=Math.min(...ix),mx=Math.max(...ix);
+    if((o.titulo&&mn===0)||(o.pasa&&mn<o.pasa&&mx>=o.pasa))out.push(ix.map(i=>rows[i].id))}
+  return out}
 function standings(ids,ms){
   const t={};ids.forEach(id=>t[id]={id,pj:0,pg:0,pp:0,jf:0,jc:0});
   ms.filter(m=>RV(m.id)&&t[m.a]&&t[m.b]).forEach(m=>{const r=RV(m.id),A=t[m.a],B=t[m.b];
     A.pj++;B.pj++;A.jf+=r.ga;A.jc+=r.gb;B.jf+=r.gb;B.jc+=r.ga;if(r.ga>r.gb){A.pg++;B.pp++}else{B.pg++;A.pp++}});
-  return Object.values(t).map(x=>({...x,dj:x.jf-x.jc})).sort((x,y)=>y.pg-x.pg||y.dj-x.dj||dz(x,y)||nom(x.id).localeCompare(nom(y.id)));
+  return resolver(Object.values(t).map(x=>({...x,dj:x.jf-x.jc})).sort((x,y)=>y.pg-x.pg||y.dj-x.dj||nom(x.id).localeCompare(nom(y.id))),r=>r.pg+'|'+r.dj,ms,true);
 }
 const tablaGrupo=g=>standings(g.ids,K.partidos.filter(m=>m.grupo===g.nombre));
 const gruposTerminados=()=>K.partidos.length>0&&K.partidos.every(m=>RV(m.id));
@@ -799,7 +833,7 @@ function cuadro(){
   const N=tamCuadro();if(N<2)return[];
   let seeds=[],labels=[];
   if(K.meta.formato==='ko'){seeds=[...K.orden,...Array(N-K.orden.length).fill('BYE')];labels=seeds.map((_,i)=>'Puesto '+(i+1)+' del sorteo')}
-  else{const listo=gruposTerminados(),tablas=listo?K.grupos.map(tablaGrupo):null;
+  else{let tablas=gruposTerminados()?K.grupos.map(tablaGrupo):null;if(tablas&&tablas.some(t=>empates(t,{pasa:K.meta.pasan}).length))tablas=null;const listo=!!tablas;
     for(let p=0;p<K.meta.pasan;p++)K.grupos.forEach((g,gi)=>{seeds.push(listo?tablas[gi][p].id:null);labels.push((p+1)+'.º del grupo '+g.nombre)})}
   const ord=ordenCuadro(N),rg=rondasGrupo(),rondas=[];
   let cur=[];for(let i=0;i<N/2;i++){const sa=ord[2*i]-1,sb=ord[2*i+1]-1;cur.push({id:'ko'+N+'-'+(i+1),ko:N,n:i+1,a:seeds[sa],b:seeds[sb],la:labels[sa],lb:labels[sb],fecha:fechaRonda(rg+1)})}
@@ -833,8 +867,8 @@ function tablaInd(){
     m.b.forEach(x=>{const o=t[x];o.pj++;o.jf+=r.gb;o.jc+=r.ga;r.gb>r.ga?o.pg++:o.pp++})});
   const max=Math.max(0,...Object.values(t).map(x=>x.pj)),min=Math.ceil(max*(K.meta.minPct||0)/100);
   const rows=Object.values(t).map(x=>({...x,dj:x.jf-x.jc,prom:x.pj?x.pg/x.pj:0,ok:x.pj>0&&x.pj>=min}));
-  rows.sort((x,y)=>(y.ok-x.ok)||y.prom-x.prom||y.dj-x.dj||dz(x,y)||nom(x.id).localeCompare(nom(y.id)));
-  return{rows,min};
+  rows.sort((x,y)=>(y.ok-x.ok)||y.prom-x.prom||y.dj-x.dj||nom(x.id).localeCompare(nom(y.id)));
+  return{rows:resolver(rows,r=>r.ok+'|'+r.prom+'|'+r.dj,null,false),min};
 }
 function clasificacionGeneral(){
   if(esInd())return tablaInd().rows;
@@ -887,13 +921,13 @@ function reglasPorDefecto(m,n){
   if(ind){
     R.push({i:'🎲',t:'Parejas por sorteo',x:'Las parejas de cada partida se sortean en el lugar de juego entre los presentes, como se acuerde allí. En la app solo se registra quién ha jugado con quién y el resultado.'});
     R.push({i:'📈',t:'Clasificación',x:`Manda el promedio de victorias: partidas ganadas entre partidas jugadas.${m.minPct?` Para entrar en la clasificación hay que haber jugado al menos el ${m.minPct} % de las partidas de quien más haya jugado.`:''}`});
-    R.push({i:'⚖️',t:'Desempates',x:'Si dos jugadores tienen el mismo promedio, va delante el de mejor diferencia de juegos (juegos ganados menos juegos perdidos). Si también coinciden, se juega una partida de desempate y el ganador queda por delante.'});
+    R.push({i:'⚖️',t:'Desempates',x:'Si dos jugadores tienen el mismo promedio, va delante el de mejor diferencia de juegos. Si siguen igualados y está en juego el título, se juega un desempate: una partida si son dos, o una mini-liguilla si son más. Si no está en juego nada, comparten puesto.'});
   }else{
     if(m.formato==='liga')R.push({i:'📋',t:'Formato',x:m.libre?'Liga de partidas libres: las parejas juegan entre sí tantas partidas como quieran mientras el campeonato esté abierto, y cada una se registra en la app. Al cierre gana la pareja con más partidas ganadas.':'Liga todos contra todos a una vuelta. Gana el campeonato la pareja con más partidas ganadas.'});
     if(m.formato==='grupos')R.push({i:'🗂️',t:'Formato',x:`Fase de grupos todos contra todos${m.grupos>1?` en ${m.grupos} grupos sorteados`:''}. ${m.pasan?`Pasan ${m.pasan} por grupo a ${nombreRonda(m.grupos*m.pasan).toLowerCase()}, y desde ahí eliminatoria directa.`:'No hay eliminatoria.'}`});
     if(m.formato==='ko')R.push({i:'⚔️',t:'Formato',x:`Eliminatoria directa: quien pierde, queda fuera. El cuadro se sortea al crear el campeonato.${pot2(n)>n?` Como no es un cuadro completo, ${pot2(n)-n} ${pot2(n)-n>1?'parejas pasan':'pareja pasa'} la primera ronda sin jugar.`:''}`});
     if((m.formato==='ko'||(m.formato==='grupos'&&m.pasan))&&(m.koVueltas||1)===2)R.push({i:'🔁',t:'Cruces a ida y vuelta',x:'Cada cruce de la eliminatoria se juega a ida y vuelta. Pasa la pareja que gane más partidas. Si ganan una cada una, se juega una partida de desempate.'});
-    if(m.formato!=='ko')R.push({i:'🏆',t:'Clasificación',x:'Manda el número de partidas ganadas. Si dos parejas empatan, va delante la de mejor diferencia de juegos (juegos ganados menos juegos perdidos). Si también coinciden, se juega una partida de desempate entre ellas y la ganadora queda por delante.'});
+    if(m.formato!=='ko')R.push({i:'🏆',t:'Clasificación',x:'Manda el número de partidas ganadas. Si hay empate, va delante la de mejor diferencia de juegos. Si siguen igualadas, se mira solo lo que pasó entre ellas (partidas ganadas y diferencia de juegos en sus enfrentamientos). Si aun así siguen empatadas y está en juego el título o el pase a la eliminatoria, se juega un desempate: una partida si son dos, o una mini-liguilla si son más. Si no está en juego nada, comparten puesto.'});
   }
   const c=m.cal;
   if(c.tipo!=='sin')R.push({i:'📅',t:'Calendario',x:c.tipo==='dia'?'Todo el campeonato se juega en un solo día.':c.tipo==='dias'?`El campeonato se juega en ${c.ndias} días.`:'Se juega cuando se queda.'});
@@ -941,6 +975,14 @@ function textoCal(m){const c=m.cal;return c.tipo==='dia'?'Un día':c.tipo==='dia
 function abrirHoja(html){$('sheetIn').innerHTML='<div class="asa"></div>'+html;const d=$('sheet');if(!d.open)d.showModal()}
 function cerrarHoja(){const d=$('sheet');if(d.open)d.close()}
 $('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))cerrarHoja()});
+/* Deslizar hacia abajo para cerrar la hoja */
+(function(){const d=$('sheet');let y0=0,dy=0,act=false;
+  d.addEventListener('touchstart',e=>{const si=$('sheetIn');if(si.scrollTop>2&&!e.target.closest('.asa'))return;if(e.target.closest('input,textarea,select'))return;y0=e.touches[0].clientY;dy=0;act=true;d.style.transition='none'},{passive:true});
+  d.addEventListener('touchmove',e=>{if(!act)return;dy=Math.max(0,e.touches[0].clientY-y0);d.style.transform=dy?`translateY(${dy}px)`:''},{passive:true});
+  const fin=()=>{if(!act)return;act=false;d.style.transition='transform .2s ease-out';
+    if(dy>90){d.style.transform='translateY(110%)';setTimeout(()=>{cerrarHoja();d.style.transform='';d.style.transition=''},190)}else{d.style.transform='';setTimeout(()=>d.style.transition='',200)}};
+  d.addEventListener('touchend',fin);d.addEventListener('touchcancel',fin);
+})();
 
 /* ================= Render raíz ================= */
 function pinta(top,main,extra=''){$('app').innerHTML=top+`<main>${main}</main>`+extra;$('app').classList.toggle('sin-nav',!/class="nav"|pie-asist/.test(extra))}
@@ -1023,16 +1065,16 @@ function hojaPicker(t='yo'){
 function yoFila(){const ops=[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id)));
   return `<div class="yo-fila"><span>${esInd()?'Soy':'Mi pareja'}</span><select id="selYo" aria-label="Elegir participante"><option value="">${esInd()?'Elige quién eres':'Elige tu pareja'}</option>${ops.map(p=>`<option value="${p.id}" ${p.id===S.yo?'selected':''}>${esc(nom(p.id))}</option>`).join('')}</select></div>`}
 function leyenda(){
-  const pasos=esInd()?['Promedio de victorias (ganadas entre jugadas).','Si hay empate, diferencia de juegos.','Si siguen igualados, partida de desempate.']:['Partidas ganadas.','Si hay empate, diferencia de juegos (ganados menos perdidos).','Si siguen igualadas, partida de desempate.'];
+  const pasos=esInd()?['Promedio de victorias (ganadas entre jugadas).','Si hay empate, diferencia de juegos.','Solo si se juegan el título: desempate. Si no, comparten puesto (=).']:['Partidas ganadas.','Si hay empate, diferencia de juegos (ganados menos perdidos).','Si siguen igualadas, lo que pasó entre ellas.','Solo si se juegan el título o el pase: desempate (una partida, o mini-liguilla si son más de dos). Si no, comparten puesto (=).'];
   return `<details class="leyenda-mini"><summary>ℹ️ ¿Cómo se ordena? <span>PJ jugadas · PG ganadas · DJ dif. de juegos</span></summary><ol>${pasos.map(p=>`<li>${p}</li>`).join('')}</ol></details>`;
 }
 
 function clasifCompleta(){
   const m=K.meta;
   const fin=terminado()||(m.formato==='liga'&&!esLibre()&&!esInd()&&gruposTerminados());
-  if(esInd())return tablaHTML(tablaInd().rows,{completa:fin});
-  if(m.formato==='liga')return tablaHTML(standings(K.part.map(p=>p.id),esLibre()?mesas():K.partidos),{completa:fin});
-  let h='';K.grupos.forEach(g=>{const ok=K.partidos.filter(x=>x.grupo===g.nombre).every(x=>RV(x.id));h+=(K.grupos.length>1?`<div class="grupo-cab"><span class="letra">${g.nombre}</span>Grupo ${g.nombre}</div>`:'')+tablaHTML(tablaGrupo(g),{pasa:m.pasan,completa:ok})});
+  if(esInd())return tablaHTML(tablaInd().rows,{completa:fin,titulo:true});
+  if(m.formato==='liga')return tablaHTML(standings(K.part.map(p=>p.id),esLibre()?mesas():K.partidos),{completa:fin,titulo:true});
+  let h='';K.grupos.forEach(g=>{const ok=K.partidos.filter(x=>x.grupo===g.nombre).every(x=>RV(x.id));h+=(K.grupos.length>1?`<div class="grupo-cab"><span class="letra">${g.nombre}</span>Grupo ${g.nombre}</div>`:'')+tablaHTML(tablaGrupo(g),{pasa:m.pasan,completa:ok,titulo:K.grupos.length===1&&!m.pasan})});
 
   return h;
 }
@@ -1059,7 +1101,7 @@ function hojaCasos(){const av=avisosAbiertos();if(!av.length){cerrarHoja();retur
 function tInicio(){
   let h=avisosHTML();const cp=campeon(),m=K.meta;
   if(cp)h+=campeonHTML(cp);
-  else if(terminado()||(m.formato==='liga'&&!porDias()&&gruposTerminados())){const t=m.formato==='grupos'&&K.grupos.length===1?tablaGrupo(K.grupos[0]):clasificacionGeneral();if(igualados(t[0],t[1]))h+=`<div class="aviso-org">⚔️ <span><b>Empate en el primer puesto</b> entre ${esc(nom(t[0].id))} y ${esc(nom(t[1].id))}. El campeón saldrá de una partida de desempate: regístrala desde la clasificación.</span></div>`}
+  else if(terminado()||(m.formato==='liga'&&!porDias()&&gruposTerminados())){const t=m.formato==='grupos'&&K.grupos.length===1?tablaGrupo(K.grupos[0]):clasificacionGeneral();if(igualados(t[0],t[1])){const em=t.filter(r=>r.emp===t[0].emp).map(r=>esc(nom(r.id)));h+=`<div class="aviso-org">⚔️ <span><b>Empate en el primer puesto</b> entre ${em.join(', ').replace(/, ([^,]*)$/,' y $1')}. El campeón saldrá ${em.length>2?'de una mini-liguilla de desempate':'de una partida de desempate'}: regístrala desde la clasificación.</span></div>`}}
   if(false&&porJornadas()&&!gruposTerminados()){const ja=jornadaActual(),tot=rondasGrupo(),ms=K.partidos.filter(x=>x.ronda===ja),hechas=ms.filter(x=>K.res[x.id]).length;
     h+=`<div class="jornada-box"><div class="jb-top"><span class="jb-n">${ja}</span><span><b>Jornada ${ja} de ${tot} en juego</b><small>${ms.length-hechas?`Faltan ${ms.length-hechas} ${ms.length-hechas>1?'partidas':'partida'} para abrir ${ja<tot?'la jornada '+(ja+1):'la fase final'}`:'Completa'}</small></span></div>
     <div class="barra-vic" style="background:var(--card2)"><i style="width:${hechas/ms.length*100}%;background:var(--oro)"></i></div>
@@ -1093,12 +1135,17 @@ function tablaHTML(rows,o={}){
     return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo?'yo':''} ${ind&&!r.ok?'fuera':''}" data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
     <span class="pos ${pos<=3?'p'+pos:''}">${igual?'=':pos}</span>${pt(r.id)}<span class="num">${r.pj}</span><span class="num ${ind?'':'fuerte'}">${r.pg}</span><span class="num dj ${r.dj>0?'pos':r.dj<0?'neg':''}">${signo(r.dj)}</span>${ind?`<span class="num prom">${r.pj?r.prom.toFixed(2).replace('.',','):'–'}</span>`:''}
     ${ab?`<span class="detalle"><span class="mini"><b>${r.pp}</b><span>perdidas</span></span><span class="mini"><b>${r.jf}</b><span>juegos ganados</span></span><span class="mini"><b>${r.jc}</b><span>juegos perdidos</span></span><span class="mini"><span>últimas 5</span>${forma(r.id)}</span></span>`:''}</button>`}).join('')+
-  `</div>${ind&&min?`<p class="nota">En gris, quien aún no llega al mínimo de ${min} ${min===1?'partida':'partidas'} para clasificar.</p>`:''}${o.completa?cajaDesempates(rows):''}`;
+  `</div>${ind&&min?`<p class="nota">En gris, quien aún no llega al mínimo de ${min} ${min===1?'partida':'partidas'} para clasificar.</p>`:''}${o.completa?cajaDesempates(rows,o):''}`;
 }
-function cajaDesempates(rows){
-  const em=empates(rows);if(!em.length)return'';
+function cajaDesempates(rows,o){
+  const em=empates(rows,o);if(!em.length)return'';
   const puede=!K.bloqueado||S.org||S.admin;
-  return em.map(([a,b])=>`<div class="desemp"><span class="de-ic">⚔️</span><span class="de-tx"><b>Empate entre ${esc(nom(a))} y ${esc(nom(b))}</b><small>Están igualados en todo: se juega una partida de desempate.</small></span>${puede?`<button class="btn peq" data-acc="desempate" data-a="${a}" data-b="${b}">Registrar</button>`:''}</div>`).join('');
+  return em.map(ids=>{const enJuego=o.titulo&&rows[0]&&ids.includes(rows[0].id)?'el título':'el pase a la eliminatoria';
+    if(ids.length===2){const[a,b]=ids;return `<div class="desemp"><span class="de-ic">⚔️</span><span class="de-tx"><b>Empate entre ${esc(nom(a))} y ${esc(nom(b))}</b><small>Se juegan ${enJuego}: una partida de desempate.</small></span>${puede?`<button class="btn peq" data-acc="desempate" data-a="${a}" data-b="${b}">Registrar</button>`:''}</div>`}
+    const pares=paresDe(ids),hechos=pares.filter(([x,y])=>desempateGan(x,y)).length;
+    return `<div class="desemp mini"><span class="de-ic">⚔️</span><span class="de-tx"><b>Triple empate: ${ids.map(x=>esc(nom(x))).join(', ')}</b><small>Se juegan ${enJuego}: mini-liguilla de desempate, todos contra todos (${hechos} de ${pares.length} jugadas).</small>
+      <span class="mini-pares">${pares.map(([x,y])=>{const g=desempateGan(x,y);return `<button class="mp ${g?'ok':''}" ${puede&&!g?`data-acc="desempate" data-a="${x}" data-b="${y}"`:'disabled'}>${esc(nomCorto(x))} <i>vs</i> ${esc(nomCorto(y))}${g?` · gana ${esc(nomCorto(g))}`:''}</button>`}).join('')}</span>
+      ${hechos===pares.length&&puede?`<small>Siguen empatados tras la mini-liguilla.</small><button class="btn peq" data-acc="sortearEmp" data-k="${ids.join(',')}">🎲 Sortear el orden</button>`:''}</span></div>`}).join('');
 }
 
 /* ---- Cuadro en forma de árbol ---- */
@@ -1641,6 +1688,7 @@ const ACC={
   apTipo(el){WZ.ap.tipo=el.dataset.v;render()},
   ayuda(){S.vista='ayuda';render();scrollTo(0,0)},
   regSub(el){S.regSub=el.dataset.v;render()},
+  sortearEmp(el){const ids=el.dataset.k.split(',');(K.sorteoEmp=K.sorteoEmp||{})[claveEmp(ids)]=barajar(ids);guardarDB();toast('Orden sorteado');render()},
   desempate(el){hojaDesempate(el.dataset.a,el.dataset.b)},
   desempateGan(el){(K.desempates=K.desempates||[]).push({a:el.dataset.a,b:el.dataset.b,gan:el.dataset.g,ts:Date.now()});guardarDB();cerrarHoja();toast('Desempate registrado');render()},
   cerrarCamp(){K.cerrado=!K.cerrado;guardarDB();cerrarHoja();toast(K.cerrado?'Campeonato cerrado':'Campeonato reabierto');render()},
@@ -1743,10 +1791,10 @@ function vAyuda(){
     <div class="fmt"><b>🔁 Cruces a ida y vuelta</b><p>Pasa quien gane más partidas. Si ganan una cada uno, se juega una partida de desempate.</p></div>
 `)+
   bloque('🏅','Cómo se ordena la clasificación',`
-    <div class="fmt"><b>Por parejas</b><p>1) Partidas ganadas. 2) Si hay empate, diferencia de juegos (ganados menos perdidos). 3) Si siguen igualadas, partida de desempate.</p></div>
+    <div class="fmt"><b>Por parejas</b><p>1) Partidas ganadas. 2) Si hay empate, diferencia de juegos (ganados menos perdidos). 3) Si siguen igualadas, lo que pasó entre ellas: partidas ganadas y diferencia de juegos solo en sus enfrentamientos. 4) Solo si se juegan el título o el pase a la eliminatoria: desempate.</p></div>
 
-    <div class="fmt"><b>Individual</b><p>1) Promedio de victorias (ganadas entre jugadas). 2) Si hay empate, diferencia de juegos. 3) Si siguen igualados, partida de desempate.</p></div>
-    <div class="fmt"><b>Empates</b><p>Al terminar, si dos siguen igualados en todo, la app avisa y pide registrar la partida de desempate. El ganador pasa por delante; si es en el primer puesto, el campeón no se proclama hasta entonces.</p></div>
+    <div class="fmt"><b>Individual</b><p>1) Promedio de victorias (ganadas entre jugadas). 2) Si hay empate, diferencia de juegos. 3) Solo si se juegan el título: desempate.</p></div>
+    <div class="fmt"><b>Empates</b><p>Solo cuando se juegan el título o el pase a la eliminatoria. Si son dos, una partida de desempate. Si son tres o más, una mini-liguilla todos contra todos; si aun así siguen igualados, la app sortea el orden. Si el empate no decide nada, comparten puesto (=).</p></div>
     <p class="nota">PJ: partidas jugadas. PG: partidas ganadas. DJ: diferencia de juegos.</p>`)+
   bloque('⚖️','Si un resultado está mal',`
     ${paso(1,'Si un resultado está mal','Abre la partida, pulsa «Impugnar resultado», marca cuál fue el resultado correcto y explica el motivo. Mientras se revisa no cuenta.')}
