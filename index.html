@@ -1865,21 +1865,30 @@ const irCamp=slugOrId=>{location.href=base()+'?c='+encodeURIComponent(slugOrId)}
 
 /* ---------- Conexión: reintentos, tiempo máximo e indicador ---------- */
 function sync(estado){let e=$('sync');if(!e){e=document.createElement('div');e.id='sync';document.body.appendChild(e)}
-  e.className='sync '+estado;e.textContent={carga:'Conectando…',guarda:'Guardando…',ok:'✓ Guardado',error:'⚠️ Sin conexión, reintentando…'}[estado]||'';
+  e.className='sync '+estado;e.textContent={carga:'Conectando…',guarda:'Guardando…',ok:'✓ Guardado',error:'⏳ Reintentando…'}[estado]||'';
   clearTimeout(e._t);if(estado==='ok')e._t=setTimeout(()=>e.className='sync',1500)}
+function errServidor(txt,status){
+  const t=(txt||'').toLowerCase();
+  if(t.includes('authoriz')||t.includes('autoriz')||t.includes('permiso'))return'El servidor necesita que vuelvas a autorizar el script (Apps Script › Ejecutar › Revisar permisos) y crear una nueva versión de la implementación.';
+  if(t.includes('accounts.google')||t.includes('iniciar sesi')||t.includes('sign in'))return'El servidor no está abierto a todos: en Apps Script, la implementación debe tener «Quién tiene acceso: Cualquier usuario».';
+  if(t.includes('<html')||t.includes('<!doctype'))return'El servidor ha devuelto una página de error en lugar de datos. Revisa la implementación de Apps Script (versión nueva y acceso para cualquier usuario).';
+  if(status>=400)return'El servidor ha respondido con un error ('+status+'). Inténtalo de nuevo en un momento.';
+  return'Respuesta no válida del servidor.';
+}
 async function api(action,body={},intentos=3){
   if(!SCRIPT_URL||SCRIPT_URL.startsWith('__'))throw new Error('Falta conectar el servidor.');
-  let ultimo;
+  let ultimo=null;
   for(let i=0;i<intentos;i++){
-    const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),25000);
-    try{
-      const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...body}),signal:ctl.signal});
-      const j=await r.json();clearTimeout(t);
-      if(j.error){const e=new Error(j.error==='conflicto'?'Alguien ha cambiado el campeonato a la vez. Ya ves la versión actual: revisa y repite.':j.error);e.data=j;e.servidor=true;throw e}
-      return j;
-    }catch(e){clearTimeout(t);if(e.servidor)throw e;ultimo=e;if(i<intentos-1){sync('error');await new Promise(r=>setTimeout(r,800*(i+1)))}}
+    const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),30000);
+    let r,txt;
+    try{r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...body}),signal:ctl.signal,redirect:'follow'});txt=await r.text();clearTimeout(t)}
+    catch(e){clearTimeout(t);ultimo=e.name==='AbortError'?'lento':(navigator.onLine===false?'offline':'red');
+      if(i<intentos-1){sync('error');await new Promise(z=>setTimeout(z,900*(i+1)));continue}break}
+    let j;try{j=JSON.parse(txt)}catch(e){const er=new Error(errServidor(txt,r.status));er.servidor=true;er.config=true;console.warn('Respuesta del servidor:',txt.slice(0,500));throw er}
+    if(j.error){const er=new Error(j.error==='conflicto'?'Alguien ha cambiado el campeonato a la vez. Ya ves la versión actual: revisa y repite.':j.error);er.data=j;er.servidor=true;throw er}
+    return j;
   }
-  const e=new Error('No hay conexión con el servidor. Comprueba tu internet e inténtalo de nuevo.');e.red=true;throw e;
+  const e=new Error(ultimo==='offline'?'Tu móvil no tiene conexión a internet.':ultimo==='lento'?'El servidor está tardando demasiado en responder. Inténtalo de nuevo.':'No se puede contactar con el servidor. Si tienes internet, revisa que la implementación de Apps Script esté activa.');e.red=true;throw e;
 }
 api('ping').catch(()=>{});                          // despierta el servidor mientras carga la página
 
@@ -1902,7 +1911,7 @@ function guardarDB(){
   if(!K||!K.id)return;const c=K,id=c.id;c.resumen=resumenDe(c);guardarCache(id);
   const copia=JSON.parse(JSON.stringify(c));pendiente=true;sync('guarda');
   cola=cola.then(()=>api('save',{id,key:claveDe(id),camp:copia,version:VER[id]},4).then(r=>{VER[id]=r.version;guardarCache(id);pendiente=false;sync('ok')})
-    .catch(e=>{pendiente=false;sync('');if(e.data&&e.data.camp){DB.camps[id]=e.data.camp;VER[id]=e.data.version;guardarCache(id);if(K&&K.id===id)K=e.data.camp;cerrarHoja();render()}toast(e.red?'No se ha podido guardar: revisa tu conexión y vuelve a intentarlo.':e.message)}));
+    .catch(e=>{pendiente=false;sync('');if(e.data&&e.data.camp){DB.camps[id]=e.data.camp;VER[id]=e.data.version;guardarCache(id);if(K&&K.id===id)K=e.data.camp;cerrarHoja();render()}toast(e.red?'No se ha podido guardar: '+e.message:e.message)}));
 }
 window.addEventListener('beforeunload',e=>{if(pendiente){e.preventDefault();e.returnValue=''}});
 
