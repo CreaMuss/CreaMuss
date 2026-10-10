@@ -605,6 +605,16 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .camp-hero .meta-linea i{margin:0 4px}
 .camp-hero .cbs{justify-content:flex-start;margin-top:8px}
 .camp-hero .cb{font-size:.68rem;padding:3px 8px}
+
+.reg-por{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.reg-por button{display:flex;align-items:center;gap:8px;min-width:0;border:2px solid var(--line);background:var(--card2);border-radius:14px;padding:6px 8px;font-weight:800;font-size:.88rem;text-align:left}
+.reg-por button b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reg-por button[aria-pressed="true"]{border-color:var(--oro);background:rgba(231,185,79,.16)}
+.oblig{font-size:.7rem;font-weight:700;color:var(--rojo);margin-left:4px}
+.por-p{font-size:.6rem;color:var(--mute);font-weight:700;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}
+
+.sync{top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140px)}
+.sync.carga,.sync.guarda,.sync.ok,.sync.error{transform:translate(-50%,0)}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -919,7 +929,7 @@ function matchHTML(m,sig){
   const r=K.res[m.id],e=estado(m),gA=r&&r.ga>r.gb,gB=r&&r.gb>r.ga,ind=Array.isArray(m.a),yo=S.yo&&lado(m,S.yo);
   const A=ind?ptInd(m.a,{gana:gA}):pt(m.a,{gana:gA,label:m.la}),B=ind?ptInd(m.b,{der:1,gana:gB}):pt(m.b,{der:1,gana:gB,label:m.lb});
   const ok=ind||jugable(m);
-  return `<button class="match ${yo?'mia':''} ${ok?'':'bye'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${A}<span class="centro">${r?`<span class="res">${r.ga}–${r.gb}</span>`:'<span class="vs">VS</span>'}${sig&&!r?'<span class="est e-sig">▶️ Siguiente</span>':`<span class="est e-${e.c}">${e.t}</span>`}<span class="num-p">${esc(etiqueta(m).replace(/, grupo /,' · '))}</span>${r&&r.corregido?'<span class="est e-corr">✏️ Corregida</span>':''}</span>${B}</button>`;
+  return `<button class="match ${yo?'mia':''} ${ok?'':'bye'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${A}<span class="centro">${r?`<span class="res">${r.ga}–${r.gb}</span>`:'<span class="vs">VS</span>'}${sig&&!r?'<span class="est e-sig">▶️ Siguiente</span>':`<span class="est e-${e.c}">${e.t}</span>`}<span class="num-p">${esc(etiqueta(m).replace(/, grupo /,' · '))}</span>${r&&r.por?`<span class="por-p">✍️ ${esc(r.por)}</span>`:''}${r&&r.corregido?'<span class="est e-corr">✏️ Corregida</span>':''}</span>${B}</button>`;
 }
 function forma(id){const h=historial(id).slice(-5),pad=Array(5-h.length).fill('<i class="N"></i>');return '<span class="forma">'+pad.join('')+h.map(x=>`<i class="${x.v?'V':'D'}">${x.v?'V':'D'}</i>`).join('')+'</span>'}
 function campeonHTML(id){const p=P(id);return `<div class="campeon"><div class="copa">🏆</div><small>Campeones</small><b>${esc(nom(id))}</b>${p.apodo?`<small>${esc(p.j1)} y ${esc(p.j2)}</small>`:''}</div>`}
@@ -1164,7 +1174,7 @@ function filaPareja(m,id){
   if(r){const f=l==='a'?r.ga:r.gb,c=l==='a'?r.gb:r.ga,v=f>c;badge=`<span class="vd ${v?'v':'d'}">${v?'V':'D'}</span>`;score=`<span class="sc"><b>${f}–${c}</b><small>${r.fecha?fmt(r.fecha):''}</small></span>`}
   else{badge=`<span class="vd p">VS</span>`;score=`<span class="sc"><span class="est e-${e.c}">${e.t}</span><small>${m.fecha&&e.t!==fmt(m.fecha)?fmt(m.fecha):''}</small></span>`}
   const rivHTML=Array.isArray(riv)?ptInd(riv):pt(riv);
-  return `<button class="fila-p" data-acc="resultado" data-id="${m.id}">${badge}<span class="fp-mid"><small>${etiqueta(m)}${Array.isArray(riv)?'':''}</small>${Array.isArray(m.a)?`<span class="fp-con">🤝 con ${esc(P((l==='a'?m.a:m.b).find(x=>x!==id)).j1)}, contra:</span>`:''}${rivHTML}</span>${score}${r&&r.corregido?'<span class="corr-dot" title="Corregida">✏️</span>':''}${r&&r.wo?'<span class="corr-dot" title="No presentado">🚫</span>':''}</button>`;
+  return `<button class="fila-p" data-acc="resultado" data-id="${m.id}">${badge}<span class="fp-mid"><small>${etiqueta(m)}${r&&r.por?' · ✍️ '+esc(r.por):''}</small>${Array.isArray(m.a)?`<span class="fp-con">🤝 con ${esc(P((l==='a'?m.a:m.b).find(x=>x!==id)).j1)}, contra:</span>`:''}${rivHTML}</span>${score}${r&&r.corregido?'<span class="corr-dot" title="Corregida">✏️</span>':''}${r&&r.wo?'<span class="corr-dot" title="No presentado">🚫</span>':''}</button>`;
 }
 function tPartidas(){
   const org=S.org||S.admin?`<div class="aviso-org">🔑 <span><b>Modo organizador.</b> Toca cualquier partida ya jugada para corregir o borrar su resultado.</span></div>`:'';
@@ -1251,6 +1261,9 @@ function tReglas(){
 
 /* ================= Hojas ================= */
 let RS=null;
+function jugadoresDe(a,b){const lado=x=>Array.isArray(x)?x.map(id=>P(id).j1):[P(x).j1,P(x).j2].filter(Boolean);return[...lado(a),...lado(b)]}
+function selectorPor(nombres,sel,ctx){return `<label class="lbl">✍️ ¿Quién lo registra? <span class="oblig">obligatorio</span></label><div class="reg-por">${nombres.map(n=>`<button data-acc="porSel" data-ctx="${ctx}" data-v="${esc(n)}" aria-pressed="${sel===n}">${av(n)}<b>${esc(n)}</b></button>`).join('')}</div>`}
+const porInicial=(nombres,previo)=>nombres.includes(previo)?previo:(nombres.includes(ls('cdc-por'))?ls('cdc-por'):null);
 function hojaResultado(id){
   const m=todos().find(x=>x.id===id);if(!m)return;const r=K.res[id];
   const puedeOrg=S.org||S.admin,blq=bloqueada(m),e=estRes(r),ind=Array.isArray(m.a);
@@ -1309,7 +1322,8 @@ function hojaResultado(id){
   h+=`<p class="sub">Al mejor de ${RS.md}: gana quien llegue a ${W} juegos. Marca los juegos de cada ${esInd()?'equipo':'pareja'}.</p>`;
   if(r&&puedeOrg)h+=`<div class="aviso-org">🔑 <span>Resultado registrado: <b>${r.ga}–${r.gb}</b>${r.wo?' (no presentado)':''}${r.por?' por '+esc(r.por):''}${r.fecha?', '+fmtL(r.fecha):''}. Cambia los juegos y pulsa «Guardar corrección», o bórralo. La corrección quedará anotada.</span></div>`;
   h+=`${marc('a',m.a)}${marc('b',m.b)}`;
-  if(editable)h+=`<label class="lbl" for="rPor">Lo registra</label><input id="rPor" value="${esc(r&&r.por||ls('cdc-por')||'')}" placeholder="Tu nombre">`;
+  if(editable&&!r){const ns=jugadoresDe(m.a,m.b);if(RS.por===undefined)RS.por=porInicial(ns);h+=selectorPor(ns,RS.por,'rs')}
+  else if(editable&&r)h+=`<p class="nota">✍️ Registrado por <b>${esc(r.por||'—')}</b>.</p>`;
   else if(r){
     h+=`<div class="aviso-org">ℹ️ <span>Registrado${r.por?' por '+esc(r.por):''}${r.fecha?' el '+fmtL(r.fecha):''}${r.wo?', por no presentarse una pareja':''}.</span></div>`;
     h+=`<div class="wo-box"><b>⚠️ ¿Este resultado no es correcto?</b><small>Marca el resultado correcto y explica el motivo. Lo verán todos y decidirá el organizador.</small><button class="btn peligro" data-acc="impugnar">⚠️ Impugnar resultado</button></div>`}
@@ -1338,7 +1352,7 @@ function hojaRegInd(){
    ${ambosMD()&&lleno?`<div class="seg">${[3,5].map(v=>`<button data-acc="irMd" data-v="${v}" aria-pressed="${IR.md===v}">Al mejor de ${v}</button>`).join('')}</div>`:''}
    ${slot(IR.a,1)}${slot(IR.b,2)}
    ${lleno?'':`<div class="pick-grid">${[...K.part].sort((x,y)=>nom(x.id).localeCompare(nom(y.id))).map(p=>`<button class="tile ${todos.includes(p.id)?'sel':''}" data-acc="irPon" data-id="${p.id}" ${todos.includes(p.id)?'disabled':''}>${esInd()?av(p.j1,'g'):avsDe(p.id,'g')}<b>${esc(nom(p.id))}</b></button>`).join('')}</div>`}
-   <label class="lbl" for="irPor">Lo registra</label><input id="irPor" value="${esc(ls('cdc-por')||'')}" placeholder="Tu nombre">
+   ${lleno?(()=>{const ns=jugadoresDe(esInd()?IR.a:IR.a[0],esInd()?IR.b:IR.b[0]);if(!ns.includes(IR.por))IR.por=porInicial(ns);return selectorPor(ns,IR.por,'ir')})():''}
    <p class="error" id="irErr"></p><div class="acciones"><button class="btn" data-acc="irGuardar" ${lleno?'':'disabled'}>Guardar partida</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
 }
 function hojaDesempate(a,b){
@@ -1569,11 +1583,13 @@ const ACC={
   elegir(){hojaElegir()},
   juego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(RS.md);RS['g'+l]=v;const o=l==='a'?'b':'a';if(v<W&&RS['g'+o]!==W)RS['g'+o]=W;if(v===W&&RS['g'+o]===W)RS['g'+o]=null;hojaResultado(RS.id)},
   guardarRes(){const W=gana(RS.md),{ga,gb}=RS;if(ga==null||gb==null||Math.max(ga,gb)!==W||Math.min(ga,gb)>=W){$('rErr').textContent=`Uno tiene que llegar a ${W} juegos y el otro quedarse por debajo.`;return}
-    const por=$('rPor').value.trim();if(por)ls('cdc-por',por);const ant=K.res[RS.id];
+    const ant=K.res[RS.id];let por=ant?ant.por:RS.por;
+    if(!ant){if(!por){$('rErr').textContent='Elige quién registra la partida: tiene que ser uno de los cuatro jugadores.';return}ls('cdc-por',por)}
     if(ant){const m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': '+ant.ga+'–'+ant.gb+' pasa a '+ga+'–'+gb})}
     K.res[RS.id]={ga,gb,md:RS.md,...(ant&&ant.wo&&ga+gb===Math.max(ga,gb)?{wo:ant.wo}:{}),fecha:(ant&&ant.fecha)||hoy(),por:ant?ant.por:por,ts:ant?ant.ts:Date.now(),...(ant?{corregido:true}:{})};guardarDB();cerrarHoja();toast(ant?'Resultado corregido':'Resultado guardado');render()},
   borrarRes(){const ant=K.res[RS.id],m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se borra el '+ant.ga+'–'+ant.gb});delete K.res[RS.id];guardarDB();cerrarHoja();toast('Resultado borrado');render()},
   cerrar(){cerrarHoja()},
+  porSel(el){const v=el.dataset.v;if(el.dataset.ctx==='ir'){IR.por=v;hojaRegInd()}else{RS.por=v;hojaResultado(RS.id)}},
   regInd(){IR=null;hojaRegInd()},
   irPon(el){const id=el.dataset.id,per=esInd()?2:1;if(IR.a.length<per)IR.a.push(id);else if(IR.b.length<per)IR.b.push(id);hojaRegInd()},
   cruce(el){hojaCruce(el.dataset.id)},
@@ -1631,7 +1647,7 @@ const ACC={
   irQuita(el){const id=el.dataset.id;IR.a=IR.a.filter(x=>x!==id);IR.b=IR.b.filter(x=>x!==id);IR.ga=IR.gb=null;hojaRegInd()},
   irJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(IR.md),o=l==='a'?'gb':'ga';IR['g'+l]=v;if(v<W&&IR[o]!==W)IR[o]=W;if(v===W&&IR[o]===W)IR[o]=null;hojaRegInd()},
   irGuardar(){const W=gana(IR.md),{ga,gb}=IR;if(ga==null||gb==null||Math.max(ga,gb)!==W||Math.min(ga,gb)>=W){$('irErr').textContent=`Una pareja tiene que llegar a ${W} juegos y la otra quedarse por debajo.`;return}
-    const fecha=hoy(),por=$('irPor').value.trim();if(por)ls('cdc-por',por);
+    const fecha=hoy(),por=IR.por;if(!por){$('irErr').textContent='Elige quién registra la partida: tiene que ser uno de los jugadores.';return}ls('cdc-por',por);
     let j=K.jornadas.find(x=>x.fecha===fecha);if(!j){j={fecha,mesas:[],descansan:[]};K.jornadas.push(j);K.jornadas.sort((x,y)=>x.fecha.localeCompare(y.fecha))}
     const id='m'+uid(7);j.mesas.push(esInd()?{id,a:IR.a,b:IR.b}:{id,a:IR.a[0],b:IR.b[0]});K.res[id]={ga,gb,md:IR.md,fecha,por,ts:Date.now()};guardarDB();IR=null;cerrarHoja();toast('Partida guardada');render()},
   sorteo(){SORT=null;hojaSorteo()},
