@@ -657,6 +657,12 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .rep-pct span{font-size:.76rem;font-weight:800;color:var(--mute)}
 .rep-pct input{text-align:center;padding:8px 18px 8px 6px;font-weight:800;font-size:1rem}
 .rep-pct i{position:absolute;right:12px;bottom:17px;font-style:normal;color:var(--mute);font-weight:800}
+
+.clave-in{position:relative;display:block}
+.clave-in input{padding-right:52px}
+.clave-in input.oculta{-webkit-text-security:disc;text-security:disc;font-family:var(--sans)}
+.ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;font-size:1.1rem;border-radius:8px}
+.lock .clave-in input{text-align:center;font-size:1.3rem;letter-spacing:.2em;padding:14px 52px}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -769,7 +775,7 @@ function generar(c){
   if(m.formato==='liga'){c.grupos=[{nombre:'',ids:ord}];if(m.libre)return c;addRR(ord,'',m.vueltas||1)}
   if(m.formato==='grupos'){const G=m.grupos;c.grupos=Array.from({length:G},(_,i)=>({nombre:LETRAS[i],ids:[]}));
     ord.forEach((id,i)=>{const f=Math.floor(i/G),col=f%2?G-1-(i%G):i%G;c.grupos[col].ids.push(id)});
-    c.grupos.forEach(g=>addRR(g.ids,g.nombre,1))}
+    c.grupos.forEach(g=>addRR(g.ids,g.nombre,m.vueltas||1))}
   return c;
 }
 
@@ -953,8 +959,8 @@ function reglasPorDefecto(m,n){
     R.push({i:'📈',t:'Clasificación',x:`Manda el promedio de victorias: partidas ganadas entre partidas jugadas.${m.minPct?` Para entrar en la clasificación hay que haber jugado al menos el ${m.minPct} % de las partidas de quien más haya jugado.`:''}`});
     R.push({i:'⚖️',t:'Desempates',x:'Si dos jugadores tienen el mismo promedio, va delante el de mejor diferencia de juegos. Si siguen igualados y está en juego el título, se juega un desempate: una partida si son dos, o una mini-liguilla si son más. Si no está en juego nada, comparten puesto.'});
   }else{
-    if(m.formato==='liga')R.push({i:'📋',t:'Formato',x:m.libre?'Liga de partidas libres: las parejas juegan entre sí tantas partidas como quieran mientras el campeonato esté abierto, y cada una se registra en la app. Al cierre gana la pareja con más partidas ganadas.':'Liga todos contra todos a una vuelta. Gana el campeonato la pareja con más partidas ganadas.'});
-    if(m.formato==='grupos')R.push({i:'🗂️',t:'Formato',x:`Fase de grupos todos contra todos${m.grupos>1?` en ${m.grupos} grupos sorteados`:''}. ${m.pasan?`Pasan ${m.pasan} por grupo a ${nombreRonda(m.grupos*m.pasan).toLowerCase()}, y desde ahí eliminatoria directa.`:'No hay eliminatoria.'}`});
+    if(m.formato==='liga')R.push({i:'📋',t:'Formato',x:m.libre?'Liga de partidas libres: las parejas juegan entre sí tantas partidas como quieran mientras el campeonato esté abierto, y cada una se registra en la app. Al cierre gana la pareja con más partidas ganadas.':`Liga todos contra todos ${(m.vueltas||1)===2?'a ida y vuelta: cada pareja juega dos veces contra cada rival':'a una vuelta'}. Gana el campeonato la pareja con más partidas ganadas.`});
+    if(m.formato==='grupos')R.push({i:'🗂️',t:'Formato',x:`Fase de grupos todos contra todos${(m.vueltas||1)===2?' a ida y vuelta':''}${m.grupos>1?` en ${m.grupos} grupos sorteados`:''}. ${m.pasan?`Pasan ${m.pasan} por grupo a ${nombreRonda(m.grupos*m.pasan).toLowerCase()}, y desde ahí eliminatoria directa.`:'No hay eliminatoria.'}`});
     if(m.formato==='ko')R.push({i:'⚔️',t:'Formato',x:`Eliminatoria directa: quien pierde, queda fuera. El cuadro se sortea al crear el campeonato.${pot2(n)>n?` Como no es un cuadro completo, ${pot2(n)-n} ${pot2(n)-n>1?'parejas pasan':'pareja pasa'} la primera ronda sin jugar.`:''}`});
     if((m.formato==='ko'||(m.formato==='grupos'&&m.pasan))&&(m.koVueltas||1)===2)R.push({i:'🔁',t:'Cruces a ida y vuelta',x:'Cada cruce de la eliminatoria se juega a ida y vuelta. Pasa la pareja que gane más partidas. Si ganan una cada una, se juega una partida de desempate.'});
     if(m.formato!=='ko')R.push({i:'🏆',t:'Clasificación',x:'Manda el número de partidas ganadas. Si hay empate, va delante la de mejor diferencia de juegos. Si siguen igualadas, se mira solo lo que pasó entre ellas (partidas ganadas y diferencia de juegos en sus enfrentamientos). Si aun así siguen empatadas y está en juego el título o el pase a la eliminatoria, se juega un desempate: una partida si son dos, o una mini-liguilla si son más. Si no está en juego nada, comparten puesto.'});
@@ -997,6 +1003,7 @@ function matchHTML(m,sig){
 }
 function forma(id){const h=historial(id).slice(-5),pad=Array(5-h.length).fill('<i class="N"></i>');return '<span class="forma">'+pad.join('')+h.map(x=>`<i class="${x.v?'V':'D'}">${x.v?'V':'D'}</i>`).join('')+'</span>'}
 function campeonHTML(id){const p=P(id);return `<div class="campeon"><div class="copa">🏆</div><small>Campeones</small><b>${esc(nom(id))}</b>${p.apodo?`<small>${esc(p.j1)} y ${esc(p.j2)}</small>`:''}</div>`}
+function campoClave(id,ph,extra=''){return `<div class="clave-in"><input id="${id}" type="text" class="oculta" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" name="cm-${id}-${Date.now()}" placeholder="${ph}" aria-label="${ph}" ${extra}><button type="button" class="ojo" data-acc="verClave" data-for="${id}" aria-label="Mostrar u ocultar">👁️</button></div>`}
 const vacio=(t,x,btn='')=>`<div class="vacio"><b>${t}</b>${x}${btn?`<div class="acciones" style="justify-content:center">${btn}</div>`:''}</div>`;
 const iconoFormato=c=>c.meta.modalidad==='individual'?'🎲':c.meta.libre?'🃏':{liga:'📋',grupos:'🗂️',ko:'⚔️'}[c.meta.formato];
 function textoCal(m){const c=m.cal;return c.tipo==='dia'?'Un día':c.tipo==='dias'?c.ndias+' días':c.tipo==='jornadas'?'Jornada a jornada':'Temporada libre'}
@@ -1041,7 +1048,7 @@ function vPortal(){
 function vLock(c){
   pinta(`<div class="top"><div class="top-barra"><span></span></div></div>`,
   `<div class="lock"><div class="ic">🔒</div><h2>${esc(c.meta.nombre)}</h2><p class="nota">Este campeonato es privado. Introduce la clave de acceso que te ha pasado el organizador.</p>
-   <form onsubmit="return false"><input id="lockKey" type="password" inputmode="text" autocomplete="off" placeholder="Clave" aria-label="Clave de acceso">
+   <form onsubmit="return false">${campoClave('lockKey','Clave de acceso')}
    <label class="recordar"><input type="checkbox" id="lockRec" checked> Recordar en este dispositivo</label>
    <button class="btn full" data-acc="entrar">Entrar</button><p class="error" id="lockErr"></p></form></div>`);
   setTimeout(()=>$('lockKey')&&$('lockKey').focus(),50);
@@ -1462,7 +1469,7 @@ function hojaOrg(sub){
   if(S.org||S.admin){
     if(sub==='datos'){abrirHoja(`<h3 class="st">🏷️ Nombre y clave de acceso</h3><p class="sub">Cambia el nombre del campeonato o la clave que usan los jugadores para entrar.</p>
       <label class="lbl" for="oNombre">Nombre del campeonato</label><input id="oNombre" value="${esc(K.meta.nombre)}">
-      <label class="lbl" for="oAcc">Nueva clave de acceso</label><input id="oAcc" placeholder="Déjalo vacío para no cambiarla">
+      <label class="lbl" for="oAcc">Nueva clave de acceso</label>${campoClave('oAcc','Déjalo vacío para no cambiarla')}
       <p class="nota">Si cambias la clave, avisa a los jugadores: tendrán que volver a introducirla.</p>
       <div class="acciones"><button class="btn" data-acc="guardarOrg">Guardar</button><button class="btn sec" data-acc="org">‹ Volver</button></div>`);return}
     const op=(i,t,x,acc,extra='',badge='')=>`<button class="org-op" data-acc="${acc}" ${extra}><span class="oo-ic">${i}</span><span class="oo-tx"><b>${t}${badge}</b><small>${x}</small></span><span class="oo-fl">›</span></button>`;
@@ -1479,16 +1486,15 @@ function hojaOrg(sub){
       <div class="acciones">${S.org?`<button class="btn sec" data-acc="salirOrg">🚪 Volver a modo jugador</button>`:''}<button class="btn sec" data-acc="cerrar">Cerrar</button></div>`);
     return;
   }
-  const guardada=typeof kOrg==='function'?(kOrg(S.id)||''):'';
   abrirHoja(`<div class="org-cab"><span class="org-ic">🔑</span><div><h3 class="st">Entrar como organizador</h3><p class="sub" style="margin:2px 0 0">Solo para quien creó el campeonato.</p></div></div>
     <div class="org-pre"><b>Con la clave de organizador podrás:</b>
       <span>⚖️ Resolver impugnaciones</span><span>✏️ Corregir o borrar resultados</span><span>📜 Editar las reglas</span><span>🏷️ Cambiar nombre y clave de acceso</span>${porDias()?'<span>🏁 Cerrar el campeonato</span>':''}<span>⬇️ Descargar una copia</span></div>
     <label class="lbl" for="orgKey">Clave de organizador</label>
-    <input id="orgKey" type="password" value="${esc(guardada)}" placeholder="Escribe la clave" aria-label="Clave de organizador" autocomplete="off">
+    ${campoClave('orgKey','Escribe la clave')}
     <p class="error" id="orgErr"></p>
     <div class="acciones"><button class="btn" data-acc="entrarOrg">Entrar como organizador</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>
     <p class="nota">¿Eres jugador? No necesitas esto: puedes registrar e impugnar partidas sin clave de organizador.</p>`);
-  setTimeout(()=>{const k=$('orgKey');if(k&&!k.value)k.focus()},80);
+  setTimeout(()=>{const k=$('orgKey');if(k){k.value='';k.focus()}},80);
 }
 function hojaRegla(id){const r=K.reglas.find(x=>x.id===id)||{i:'📌',t:'',x:''};
   const iconos=['📌','🃏','🏆','📅','📍','⚖️','⏰','💶','🍺','🚫','✍️','🎲'];
@@ -1543,22 +1549,22 @@ function wzAjustar(){
   while(w.part.length<n)w.part.push({j1:'',j2:'',apodo:''});w.part.length=n;
   const mg=maxGrupos(n);if(!w.tocadoG)w.grupos=n<=6?1:n<=12?2:n<=24?4:8;w.grupos=Math.max(1,Math.min(w.grupos,mg));
   const t=tamanos(n,w.grupos),ops=opcionesPasan(w.grupos,Math.min(...t));if(w.pasan&&!ops.includes(w.pasan))w.pasan=ops.includes(2)?2:(ops[ops.length-1]||0);
-  w.vueltas=1;if(w.modalidad!=='parejas'||w.formato!=='liga')w.libre=0;
+  if(w.libre||w.modalidad!=='parejas'||w.formato==='ko')w.vueltas=1;if(w.modalidad!=='parejas'||w.formato!=='liga')w.libre=0;
   w.cal={tipo:'sin',inicio:hoy()};
 }
 function wzResumen(){
   const w=WZ,n=w.n;
   if(w.modalidad==='individual')return'Las parejas se hacen en el sitio. En la app se apunta quién jugó con quién y el resultado. Cuando el organizador cierra, gana el mejor promedio.';
   if(w.formato==='liga'&&w.libre)return'Sin lista fija: se apuntan todas las partidas que se jueguen. Cuando el organizador cierra, gana quien más partidas haya ganado.';
-  if(w.formato==='liga'){const R=n%2?n:n-1;return `Cada pareja juega ${n-1} partidas: <b>${n*(n-1)/2} partidas en total</b>.`}
+  if(w.formato==='liga'){const v=w.vueltas||1;return `${v===2?'Ida y vuelta: cada pareja juega dos veces contra cada rival. ':''}Cada pareja juega ${(n-1)*v} partidas: <b>${n*(n-1)/2*v} partidas en total</b>.`}
   if(w.formato==='ko'){const p=pot2(n),cr=n-1,tot=cr*(w.koVueltas===2?2:1);return `Cuadro de ${p}${p>n?`, con ${p-n} ${p-n>1?'parejas exentas':'pareja exenta'} en la primera ronda`:''}. ${Math.log2(p)} rondas hasta la final. ${cr} cruces${w.koVueltas===2?' a ida y vuelta':''}: <b>${tot} partidas en total</b>${w.koVueltas===2?' (más los desempates que hagan falta)':''}.`}
-  const t=tamanos(n,w.grupos),mx=Math.max(...t),mn=Math.min(...t),tot=t.reduce((s,x)=>s+x*(x-1)/2,0),N=w.grupos*w.pasan;
+  const v=w.vueltas||1,t=tamanos(n,w.grupos),mx=Math.max(...t),mn=Math.min(...t),tot=t.reduce((s,x)=>s+x*(x-1)/2,0)*v,N=w.grupos*w.pasan;
   const ko=w.pasan?(N-1)*(w.koVueltas===2?2:1):0;
-  return `Cada pareja juega ${mn===mx?mn-1:(mn-1)+' o '+(mx-1)} partidas de grupo (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''} (${ko} partidas más)`:''}. <b>${tot+ko} partidas en total</b>${w.pasan&&w.koVueltas===2?' (más los desempates que hagan falta)':''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
+  return `Cada pareja juega ${mn===mx?(mn-1)*v:((mn-1)*v)+' o '+((mx-1)*v)} partidas de grupo${v===2?' (ida y vuelta)':''} (${tot} en total)${w.pasan?`, y después ${nombreRonda(N).toLowerCase()} con ${N} parejas${w.koVueltas===2?', cruces a ida y vuelta':''} (${ko} partidas más)`:''}. <b>${tot+ko} partidas en total</b>${w.pasan&&w.koVueltas===2?' (más los desempates que hagan falta)':''}.${mn!==mx?' Los grupos no son iguales: no todas jugarán las mismas partidas.':''}`;
 }
-function wzRondas(){const w=WZ,n=w.n;if(w.formato==='liga')return w.libre?1:(n%2?n:n-1);if(w.formato==='ko')return Math.log2(pot2(n));const t=tamanos(n,w.grupos),mx=Math.max(...t);return(mx%2?mx:mx-1)+(w.pasan?Math.log2(w.grupos*w.pasan):0)}
-function wzFirma(){const w=WZ;return JSON.stringify([w.juego,w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
-function wzMeta(){const w=WZ;return{juego:{...w.juego},modalidad:w.modalidad,formato:w.formato,mejorDe:w.mejorDe,vueltas:1,libre:!!w.libre,koVueltas:w.formato==='ko'||(w.formato==='grupos'&&w.pasan)?w.koVueltas:1,grupos:w.grupos,pasan:w.formato==='grupos'?w.pasan:0,minPct:w.minPct,cal:{...w.cal},nombre:w.nombre}}
+function wzRondas(){const w=WZ,n=w.n,v=w.vueltas||1;if(w.formato==='liga')return w.libre?1:(n%2?n:n-1)*v;if(w.formato==='ko')return Math.log2(pot2(n));const t=tamanos(n,w.grupos),mx=Math.max(...t);return(mx%2?mx:mx-1)*v+(w.pasan?Math.log2(w.grupos*w.pasan):0)}
+function wzFirma(){const w=WZ;return JSON.stringify([w.vueltas,w.juego,w.modalidad,w.formato,w.n,w.mejorDe,w.libre,w.koVueltas,w.grupos,w.pasan,w.minPct,w.cal])}
+function wzMeta(){const w=WZ;return{juego:{...w.juego},modalidad:w.modalidad,formato:w.formato,mejorDe:w.mejorDe,vueltas:w.formato==='ko'||w.libre||w.modalidad!=='parejas'?1:(w.vueltas||1),libre:!!w.libre,koVueltas:w.formato==='ko'||(w.formato==='grupos'&&w.pasan)?w.koVueltas:1,grupos:w.grupos,pasan:w.formato==='grupos'?w.pasan:0,minPct:w.minPct,cal:{...w.cal},nombre:w.nombre}}
 const op=(acc,k,v,actual,icono,t,x,dis=false)=>`<button class="op" data-acc="${acc}" data-k="${k}" data-v="${v}" aria-pressed="${String(actual)===String(v)}" ${dis?'disabled':''}><span class="oi">${icono}</span><span><b>${t}</b><small>${x}</small></span><span class="check">✓</span></button>`;
 function wzPaso(){
   const w=WZ,ind=w.modalidad==='individual',quien=ind?'jugadores':'parejas';
@@ -1579,8 +1585,9 @@ function wzPaso(){
   case 3:{const dots=k=>`<span class="juegos-dots">${Array.from({length:k},(_,i)=>`<i class="${i<Math.ceil(k/2)?'w':''}"></i>`).join('')}</span>`;
     let h=op('wz','mejorDe',3,w.mejorDe,'3️⃣','Al mejor de 3 juegos','Gana quien llegue a 2. Partidas rápidas.'+dots(3))+op('wz','mejorDe',5,w.mejorDe,'5️⃣','Al mejor de 5 juegos','Gana quien llegue a 3. Más largas y justas.'+dots(5))+op('wz','mejorDe',0,w.mejorDe,'🔀','Al mejor de 3 o de 5','Se elige en cada partida al registrarla. Todas cuentan igual: partida ganada y sus juegos.');
     if(ind)h+=`<label class="lbl">Mínimo de partidas para entrar en la clasificación</label><div class="cuantos">${[0,20,30,50].map(v=>`<button data-acc="wz" data-k="minPct" data-v="${v}" aria-pressed="${w.minPct===v}" style="padding:10px 12px">${v?v+' %':'Sin mínimo'}</button>`).join('')}</div><p class="nota">Porcentaje respecto a quien más partidas haya jugado. Evita que alguien con 3 de 3 lidere la tabla.</p>`;
+    else if(w.formato==='liga'&&!w.libre)h+=`<label class="lbl">Partidas entre cada pareja</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="vueltas" data-v="${v}" aria-pressed="${(w.vueltas||1)===v}">${t}</button>`).join('')}</div>`;
     else if(w.formato==='grupos'){const mg=maxGrupos(w.n),t=tamanos(w.n,w.grupos),ops=opcionesPasan(w.grupos,Math.min(...t));
-      h+=`<label class="lbl">Número de grupos</label><div class="stepper"><button data-acc="wzG" data-v="-1" ${w.grupos<=1?'disabled':''}>−</button><div><b>${w.grupos}</b><span>${w.grupos>1?'grupos':'grupo'} (máximo ${mg})</span></div><button data-acc="wzG" data-v="1" ${w.grupos>=mg?'disabled':''}>＋</button></div>
+      h+=`<label class="lbl">Fase de grupos</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="vueltas" data-v="${v}" aria-pressed="${(w.vueltas||1)===v}">${t}</button>`).join('')}</div><label class="lbl">Número de grupos</label><div class="stepper"><button data-acc="wzG" data-v="-1" ${w.grupos<=1?'disabled':''}>−</button><div><b>${w.grupos}</b><span>${w.grupos>1?'grupos':'grupo'} (máximo ${mg})</span></div><button data-acc="wzG" data-v="1" ${w.grupos>=mg?'disabled':''}>＋</button></div>
       <div class="preview-grupos">${t.map((x,i)=>`<div><b>${LETRAS[i]}</b><span>${x} parejas</span></div>`).join('')}</div>
       <label class="lbl">¿Cuántas pasan de cada grupo?</label><div class="cuantos">${ops.map(v=>`<button data-acc="wz" data-k="pasan" data-v="${v}" aria-pressed="${w.pasan===v}" style="padding:10px 14px">${v}</button>`).join('')}<button data-acc="wz" data-k="pasan" data-v="0" aria-pressed="${w.pasan===0}" style="padding:10px 14px">Ninguna</button></div>${w.pasan?`<label class="lbl">Cruces de la eliminatoria</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="koVueltas" data-v="${v}" aria-pressed="${w.koVueltas===v}">${t}</button>`).join('')}</div>`:''}`}
     else{const p=pot2(w.n);h+=`<div class="card pad"><div class="kpis"><div class="kpi"><b>${p}</b><span>plazas en el cuadro</span></div><div class="kpi"><b>${p-w.n}</b><span>exentas en 1.ª ronda</span></div><div class="kpi"><b>${Math.log2(p)}</b><span>rondas</span></div></div><p class="nota" style="margin-bottom:0">El cuadro se sortea al crear el campeonato. Las exentas pasan directamente a la segunda ronda.</p></div><label class="lbl">Cruces de la eliminatoria</label><div class="seg">${[[1,'Solo ida'],[2,'Ida y vuelta']].map(([v,t])=>`<button data-acc="wz" data-k="koVueltas" data-v="${v}" aria-pressed="${w.koVueltas===v}">${t}</button>`).join('')}</div>`}
@@ -1610,8 +1617,8 @@ function wzPaso(){
     <div class="card pad" style="margin-top:12px"><b>＋ Añadir una regla propia</b><input id="wzRT" placeholder="Título, por ejemplo: Apuesta" style="margin-top:8px"><textarea id="wzRX" placeholder="Por ejemplo: los cuatro últimos invitan a cenar a los cuatro primeros." style="margin-top:6px"></textarea><div class="acciones"><button class="btn sec" data-acc="wzAddRegla">Añadir</button></div></div>`}
   case 6:{const s=slug(w.nombre||'mi-campeonato');
     return `<label class="lbl" for="wNombre">Nombre del campeonato</label><input id="wNombre" data-w="nombre" value="${esc(w.nombre)}" placeholder="Campeonato de Mus de Navidad"><div class="slug" id="wSlug">Su dirección será <b>${location.host}/${esc(s)}</b></div>
-    <label class="lbl" for="wAcc">🔒 Clave de acceso (para los jugadores)</label><input id="wAcc" data-w="acceso" value="${esc(w.acceso)}" placeholder="Por ejemplo: sota2026">
-    <label class="lbl" for="wOrg">🔑 Clave de organizador (solo para ti)</label><input id="wOrg" data-w="org" type="password" value="${esc(w.org)}" placeholder="Para corregir resultados y editar reglas">
+    <label class="lbl" for="wAcc">🔒 Clave de acceso (para los jugadores)</label>${campoClave('wAcc','Por ejemplo: sota2026',`data-w="acceso" value="${esc(w.acceso)}"`)}
+    <label class="lbl" for="wOrg">🔑 Clave de organizador (solo para ti)</label>${campoClave('wOrg','Para corregir resultados y editar reglas',`data-w="org" value="${esc(w.org)}"`)}
     <label class="recordar" style="justify-content:flex-start"><input type="checkbox" id="wOculto" ${w.oculto?'checked':''}> No mostrarlo en la portada del creador</label>
     <h2 class="sec">Resumen</h2><div class="resumen">
       <div data-acc="wzIr" data-p="1"><span>Tipo</span><b>${TIPOS[tipoDe(w)].i} ${TIPOS[tipoDe(w)].t}</b></div>
@@ -1708,6 +1715,7 @@ const ACC={
     if(ant){const m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': '+ant.ga+'–'+ant.gb+' pasa a '+ga+'–'+gb})}
     K.res[RS.id]={ga,gb,md:RS.md,...(ant&&ant.wo&&ga+gb===Math.max(ga,gb)?{wo:ant.wo}:{}),fecha:(ant&&ant.fecha)||hoy(),por:ant?ant.por:por,ts:ant?ant.ts:Date.now(),...(ant?{corregido:true}:{})};guardarDB();cerrarHoja();toast(ant?'Resultado corregido':'Resultado guardado');render()},
   borrarRes(){const ant=K.res[RS.id],m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se borra el '+ant.ga+'–'+ant.gb});delete K.res[RS.id];guardarDB();cerrarHoja();toast('Resultado borrado');render()},
+  verClave(el){const i=$(el.dataset.for);if(i){i.classList.toggle('oculta');el.textContent=i.classList.contains('oculta')?'👁️':'🙈';i.focus()}},
   cerrar(){cerrarHoja()},
   porSel(el){const v=el.dataset.v,c=el.dataset.ctx;if(c==='ir'){IR.por=v;hojaRegInd()}else if(c==='imp'){const t=$('fMot');RS.imot=t?t.value:RS.imot;RS.ipor=v;hojaResultado(RS.id)}else{RS.por=v;hojaResultado(RS.id)}},
   regInd(){IR=null;hojaRegInd()},
@@ -1800,12 +1808,12 @@ const ACC={
     else{K.reglas.push({id:uid(),i,t,x,propia:true});K.reglasLog.push({ts:Date.now(),txt:'Se añade la regla «'+t+'»'})}
     guardarDB();cerrarHoja();render()},
   delRegla(el){const r=K.reglas.find(r=>r.id===el.dataset.id);if(!confirm('¿Borrar la regla «'+r.t+'»?'))return;K.reglas=K.reglas.filter(x=>x!==r);K.reglasLog.push({ts:Date.now(),txt:'Se elimina la regla «'+r.t+'»'});guardarDB();render()},
-  adminLogin(){abrirHoja(`<h3 class="st">🛡️ Administración</h3><p class="sub">Acceso solo para el administrador de la plataforma.</p><input id="admKey" type="password" placeholder="Clave de administrador" aria-label="Clave de administrador"><p class="error" id="admErr"></p><div class="acciones"><button class="btn" data-acc="entrarAdmin">Entrar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);setTimeout(()=>$('admKey').focus(),60)},
+  adminLogin(){abrirHoja(`<h3 class="st">🛡️ Administración</h3><p class="sub">Acceso solo para el administrador de la plataforma.</p>${campoClave('admKey','Clave de administrador')}<p class="error" id="admErr"></p><div class="acciones"><button class="btn" data-acc="entrarAdmin">Entrar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);setTimeout(()=>$('admKey').focus(),60)},
   entrarAdmin(){if($('admKey').value.trim()!==ADMIN_KEY){$('admErr').textContent='Clave incorrecta.';return}S.admin=true;cerrarHoja();S.vista='admin';render()},
   salirAdmin(){S.admin=false;S.vista='portal';render()},
   admOcultar(el){const c=DB.camps[el.dataset.id];c.oculto=!c.oculto;guardarDB();toast(c.oculto?'Oculto de la portada':'Visible en la portada');render()},
   admBloq(el){const c=DB.camps[el.dataset.id];c.bloqueado=!c.bloqueado;guardarDB();toast(c.bloqueado?'Registro cerrado':'Registro abierto');render()},
-  admClaves(el){const c=DB.camps[el.dataset.id];abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.meta.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label><input id="aAcc"><label class="lbl" for="aOrg">Nueva clave de organizador</label><input id="aOrg"><div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)},
+  admClaves(el){const c=DB.camps[el.dataset.id];abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.meta.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label>${campoClave('aAcc','Nueva clave de acceso')}<label class="lbl" for="aOrg">Nueva clave de organizador</label>${campoClave('aOrg','Nueva clave de organizador')}<div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)},
   admGuardarClaves(el){const c=DB.camps[el.dataset.id],a=$('aAcc').value.trim(),o=$('aOrg').value.trim();if(a)c.claveAcceso=a;if(o)c.claveOrg=o;guardarDB();cerrarHoja();toast(a||o?'Claves restablecidas':'Sin cambios')},
   admBorrar(el){const c=DB.camps[el.dataset.id];abrirHoja(`<h3 class="st">Eliminar campeonato</h3><p class="sub">Se borrará «${esc(c.meta.nombre)}» con todos sus resultados. No se puede deshacer.</p><div class="acciones"><button class="btn peligro" data-acc="admBorrarOk" data-id="${c.id}">Eliminar definitivamente</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)},
   admBorrarOk(el){delete DB.camps[el.dataset.id];guardarDB();cerrarHoja();toast('Campeonato eliminado');render()},
@@ -1941,7 +1949,8 @@ const APODOS=['Los del Órdago','Treinta y una','La Chica','Duples','Los Reyes',
 const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
-const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id),kOrg=id=>SES['o'+id]||ls('cm-org-'+id);
+try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
+const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
 function linkCamp(c){return base()+c.slug}
@@ -1981,8 +1990,8 @@ const cacheKey=id=>'cm-cache-'+id;
 function guardarCache(id){try{localStorage.setItem(cacheKey(id),JSON.stringify({camp:DB.camps[id],version:VER[id]}))}catch(e){}}
 function leerCache(id){try{return JSON.parse(localStorage.getItem(cacheKey(id)))}catch(e){return null}}
 
-async function cargarCamp(id,key,{slug}={}){
-  const r=await api('get',{id,slug,key,version:id&&DB.camps[id]?VER[id]:undefined});
+async function cargarCamp(id,key,{slug,completo}={}){
+  const r=await api('get',{id,slug,key,version:!completo&&id&&DB.camps[id]?VER[id]:undefined});
   const cid=r.id||id;
   if(!r.igual){DB.camps[cid]=r.camp;VER[cid]=r.version;BASE[cid]=JSON.parse(JSON.stringify(r.camp))}
   guardarCache(cid);return r;
@@ -2051,7 +2060,7 @@ function cargarDB(){
 }
 async function abrirPorSlug(q){
   const id=S.id,key=id?claveDe(id):(S.admin?ADMKEY:'');
-  try{const r=await cargarCamp(id,key,{slug:q});localStorage.setItem('cm-slug-'+q,JSON.stringify(r.id));S.id=r.id;document.title=DB.camps[r.id].meta.nombre+' · CreaMus'}
+  try{const r=await cargarCamp(id,key,{slug:q,completo:true});localStorage.setItem('cm-slug-'+q,JSON.stringify(r.id));S.id=r.id;document.title=DB.camps[r.id].meta.nombre+' · CreaMus'}
   catch(e){if(e.data&&e.data.bloqueado){S.id=e.data.id;CAMP_INFO={nombre:e.data.nombre};localStorage.setItem('cm-slug-'+q,JSON.stringify(e.data.id));document.title=(e.data.nombre||'Campeonato')+' · CreaMus';if(key){ls('cm-acc-'+S.id,null);ls('cm-org-'+S.id,null)}}
     else if(e.data&&e.data.noExiste){CAMP_INFO={noExiste:true}}else if(!DB.camps[S.id])CAMP_INFO={sinRed:e.message};else toast(e.message)}
   render();
@@ -2094,17 +2103,17 @@ ACC.reintentar=()=>{CAMP_INFO=null;render();abrirPorSlug(Q.get('c'))};
 ACC.entrar=async function(){
   const id=S.id,k=$('lockKey').value.trim();if(!k)return;
   const b=document.querySelector('[data-acc="entrar"]');b.disabled=true;b.textContent='Comprobando…';
-  try{const r=await cargarCamp(id,k);const tipo=r.rol==='org'?'cm-org-':'cm-acc-';if($('lockRec').checked)ls(tipo+id,k);else SES[(r.rol==='org'?'o':'a')+id]=k;CAMP_INFO=null;document.title=DB.camps[id].meta.nombre+' · CreaMus';render()}
+  try{const r=await cargarCamp(id,k);if(r.rol==='org'){SES['o'+id]=k}else if($('lockRec').checked)ls('cm-acc-'+id,k);else SES['a'+id]=k;CAMP_INFO=null;document.title=DB.camps[id].meta.nombre+' · CreaMus';render()}
   catch(e){b.disabled=false;b.textContent='Entrar';$('lockErr').textContent=e.message}
 };
 ACC.entrarOrg=async function(){
   const id=S.id,k=$('orgKey').value.trim();
   try{const r=await api('rol',{id,key:k});if(r.rol!=='org'&&r.rol!=='admin')throw new Error('Clave de organizador incorrecta.');
-    ls('cm-org-'+id,k);S.org=true;S.orgDe=id;toast('Modo organizador activado');render();hojaOrg();
+    SES['o'+id]=k;S.org=true;S.orgDe=id;toast('Modo organizador activado');render();hojaOrg();
     if(S.trasOrg){const x=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(x),50)}}
   catch(e){$('orgErr').textContent=e.message}
 };
-ACC.salirOrg=function(){S.org=false;cerrarHoja();toast('Has vuelto al modo jugador');render()};
+ACC.salirOrg=function(){delete SES['o'+S.id];S.org=false;cerrarHoja();toast('Has vuelto al modo jugador');render()};
 const _hojaOrg=ACC.org;
 ACC.org=function(){hojaOrg()};
 ACC.guardarOrg=async function(){
@@ -2125,7 +2134,7 @@ function crearCamp(){
   const acc=w.acceso.trim(),org=w.org.trim();
   const btn=document.querySelector('[data-acc="wzSig"]');if(btn){btn.disabled=true;btn.textContent='Creando…'}
   api('create',{camp:c,acceso:acc,org},2).then(r=>{
-    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;ls('cm-acc-'+r.id,acc);ls('cm-org-'+r.id,org);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));guardarCache(r.id);
+    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;ls('cm-acc-'+r.id,acc);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));guardarCache(r.id);
     S.nuevo={id:r.id,acc,org};WZ=null;S.vista='exito';render();scrollTo(0,0);
   }).catch(e=>{if(btn){btn.disabled=false;btn.textContent='Crear campeonato'}const x=$('wErr');if(x)x.textContent=e.message;else toast(e.message)});
 }
@@ -2160,7 +2169,7 @@ async function admOp(id,op,valor,msg){try{await api('admin',{key:ADMKEY,id,op,va
 const itemDe=id=>(LISTA||[]).find(x=>x.id===id)||{};
 ACC.admOcultar=el=>{const c=itemDe(el.dataset.id);admOp(c.id,'oculto',!c.oculto,c.oculto?'Visible en la portada':'Oculto de la portada')};
 ACC.admBloq=el=>{const c=itemDe(el.dataset.id);admOp(c.id,'bloqueado',!c.bloqueado,c.bloqueado?'Registro abierto':'Registro cerrado')};
-ACC.admClaves=el=>{const c=itemDe(el.dataset.id);abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label><input id="aAcc"><label class="lbl" for="aOrg">Nueva clave de organizador</label><input id="aOrg"><div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)};
+ACC.admClaves=el=>{const c=itemDe(el.dataset.id);abrirHoja(`<h3 class="st">Restablecer claves</h3><p class="sub">${esc(c.nombre)}. Escribe solo las que quieras cambiar.</p><label class="lbl" for="aAcc">Nueva clave de acceso</label>${campoClave('aAcc','Nueva clave de acceso')}<label class="lbl" for="aOrg">Nueva clave de organizador</label>${campoClave('aOrg','Nueva clave de organizador')}<div class="acciones"><button class="btn" data-acc="admGuardarClaves" data-id="${c.id}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)};
 ACC.admGuardarClaves=async el=>{const a=$('aAcc').value.trim(),o=$('aOrg').value.trim();if(!a&&!o)return cerrarHoja();try{await api('claves',{key:ADMKEY,id:el.dataset.id,acceso:a||undefined,org:o||undefined});toast('Claves restablecidas')}catch(e){toast(e.message)}cerrarHoja()};
 ACC.admBorrar=el=>{const c=itemDe(el.dataset.id);abrirHoja(`<h3 class="st">Eliminar campeonato</h3><p class="sub">Se borrará «${esc(c.nombre)}» con todos sus resultados. No se puede deshacer.</p><div class="acciones"><button class="btn peligro" data-acc="admBorrarOk" data-id="${c.id}">Eliminar definitivamente</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`)};
 ACC.admBorrarOk=el=>{cerrarHoja();admOp(el.dataset.id,'borrar',null,'Campeonato eliminado')};
@@ -2231,7 +2240,8 @@ function crearCamp(){
   const acc=w.acceso.trim(),org=w.org.trim();
   const btn=document.querySelector('[data-acc="wzSig"],[data-acc="srCrear"]');if(btn){btn.disabled=true;btn.textContent='Creando…'}
   api('create',{camp:c,acceso:acc,org},2).then(r=>{
-    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;BASE[r.id]=JSON.parse(JSON.stringify(c));ls('cm-acc-'+r.id,acc);ls('cm-org-'+r.id,org);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));guardarCache(r.id);
+    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;BASE[r.id]=JSON.parse(JSON.stringify(c));ls('cm-acc-'+r.id,acc);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));
+    cargarCamp(r.id,acc,{completo:true}).catch(()=>{});
     S.nuevo={id:r.id,acc,org};WZ=null;SR=null;S.vista='exito';render();scrollTo(0,0);
   }).catch(e=>{if(btn){btn.disabled=false;btn.textContent='✅ Crear campeonato'}toast(e.message)});
 }
