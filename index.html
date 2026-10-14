@@ -1032,7 +1032,7 @@ function tablaInd(){
     m.a.forEach(x=>{const o=t[x];if(!o)return;o.pj++;o.jf+=r.ga;o.jc+=r.gb;r.ga>r.gb?o.pg++:o.pp++});
     m.b.forEach(x=>{const o=t[x];if(!o)return;o.pj++;o.jf+=r.gb;o.jc+=r.ga;r.gb>r.ga?o.pg++:o.pp++})});
   const max=Math.max(0,...Object.values(t).map(x=>x.pj)),min=K.meta.minPartidas!=null?K.meta.minPartidas:Math.ceil(max*(K.meta.minPct||0)/100);
-  const rows=Object.values(t).map(x=>({...x,dj:x.jf-x.jc,prom:x.pj?x.pg/x.pj:0,ok:x.pj>0&&x.pj>=min}));
+  const rows=Object.values(t).map(x=>({...x,dj:x.jf-x.jc,prom:x.pj?x.pg/x.pj:0,ok:x.pj>0,cumple:x.pj>0&&x.pj>=min}));
   rows.sort((x,y)=>(y.ok-x.ok)||y.prom-x.prom||y.dj-x.dj||nom(x.id).localeCompare(nom(y.id)));
   return{rows:resolver(rows,r=>r.ok+'|'+r.prom+'|'+r.dj,null,false),min};
 }
@@ -1318,7 +1318,7 @@ function tablaHTML(rows,o={}){
   const ind=esInd(),min=ind?tablaInd().min:0;
   return `<div class="tabla ${ind?'ind':''}"><div class="tabla-cab"><span>#</span><span>${ind?'Jugador':'Pareja'}</span><span>PJ</span><span>PG</span><span>DJ</span>${ind?'<span>Prom.</span>':''}</div>`+
   rows.map((r,i)=>{const ab=S.exp===r.id;const prev=rows[i-1];const igual=igualados(prev,r);if(!igual)o._p=i+1;const pos=o._p;
-    return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo?'yo':''} ${ind&&!r.ok?'fuera':''}" data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
+    return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo?'yo':''} " data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
     <span class="pos ${pos<=3?'p'+pos:''}">${igual?'=':pos}</span>${pt(r.id)}<span class="num">${r.pj}</span><span class="num ${ind?'':'fuerte'}">${r.pg}</span><span class="num dj ${r.dj>0?'pos':r.dj<0?'neg':''}">${signo(r.dj)}</span>${ind?`<span class="num prom">${r.pj?r.prom.toFixed(2).replace('.',','):'–'}</span>`:''}
     ${ab?`<span class="detalle"><span class="mini"><b>${r.pp}</b><span>perdidas</span></span><span class="mini"><b>${r.jf}</b><span>juegos ganados</span></span><span class="mini"><b>${r.jc}</b><span>juegos perdidos</span></span><span class="mini"><span>últimas 5</span>${forma(r.id)}</span></span>`:''}</button>`}).join('')+
   `</div>${o.completa?cajaDesempates(rows,o):''}`;
@@ -2077,7 +2077,7 @@ function tInicioInd(){
   if(cp)h+=campeonHTML(cp);
   if(!terminado())h+=`<div class="pill-info">🏁 Abierto: lo cierra el organizador</div>`;
   const pr=podioRows();
-  h+=`<h2 class="sec">🥇 Podio ${terminado()?'final':'en este momento'}</h2>`+(pr.length>=2?`<div class="card pad">${podioHTML(pr,r=>r.pg+' de '+r.pj)}</div>`:`<p class="nota">El podio aparecerá en cuanto haya jugadores que cumplan el mínimo de partidas.</p>`);
+  h+=`<h2 class="sec">🥇 Podio ${terminado()?'final':'en este momento'}</h2>`+(pr.length>=2?`<div class="card pad">${podioHTML(pr,r=>r.pg+' de '+r.pj)}</div>`:`<p class="nota">El podio aparecerá en cuanto se jueguen las primeras partidas.</p>`);
   h+=`<h2 class="sec">🏆 Clasificación</h2>`+tablaHTML(tablaInd().rows,{completa:terminado(),titulo:true})+leyenda();
   return h;
 }
@@ -2177,7 +2177,7 @@ function tEstadJugador(){
   const s=statsJug(id),e=estadoJug(id),pos=rows.findIndex(r=>r.id===id)+1,pc=x=>s.pj?Math.round(x/s.pj*100):0;
   const lista=(o,tipo)=>Object.entries(o).sort((a,b)=>b[1].pj-a[1].pj||b[1].v-a[1].v).slice(0,8).map(([x,v])=>`<button class="rel-fila" data-acc="verFiltro" data-j="${id}" data-${tipo}="${x}">${av(nom(x))}<b>${esc(nom(x))}</b><span class="rel-n">${v.pj} ${v.pj===1?'partida':'partidas'}</span><span class="rel-vd"><i class="v">${v.v}V</i> <i class="d">${v.pj-v.v}D</i></span><span class="oo-fl">›</span></button>`).join('')||'<p class="nota">Todavía no hay datos.</p>';
   return selector()+`<div class="ficha-j">
-    <div class="fj-cab">${av(nom(id))}<div><b>${esc(nom(id))}</b><small>${pos?pos+'.º en la clasificación':''}${e.min?(e.ok?' · ✅ Cumple el mínimo':' · ⏳ Le faltan '+e.falta+' para el mínimo'):''}</small></div></div>
+    <div class="fj-cab">${av(nom(id))}<div><b>${esc(nom(id))}</b><small>${pos?pos+'.º en la clasificación':''}</small></div></div>
     <div class="fj-kpis"><button data-acc="verFiltro" data-j="${id}"><b>${s.pj}</b><span>jugadas</span></button><button data-acc="verFiltro" data-j="${id}" data-res="v"><b class="v">${s.v}</b><span>victorias · ${pc(s.v)} %</span></button><button data-acc="verFiltro" data-j="${id}" data-res="d"><b class="d">${s.d}</b><span>derrotas · ${pc(s.d)} %</span></button><div><b>${s.pj?(s.v/s.pj).toFixed(2).replace('.',','):'–'}</b><span>promedio</span></div><div><b>${signo(s.jf-s.jc)}</b><span>dif. de juegos</span></div><div><b>${e.castigos.length}</b><span>castigos</span></div></div>
     ${s.forma.length?`<div class="fj-forma"><small>Últimas partidas</small><span>${s.forma.slice(-12).map(f=>`<i class="${f.cast?'c':f.g?'v':'d'}" title="${f.cast?'Castigo':f.g?'Victoria':'Derrota'}">${f.cast?'⚖':f.g?'V':'D'}</i>`).join('')}</span></div>`:''}
   </div>
@@ -2195,10 +2195,10 @@ function participacionHTML(){
     const estado=cfg?(e.toca?'<span class="ia-est riesgo">⚠️ Toca sanción</span>':e.castigado?`<span class="ia-est cast">⚖️ Castigo aplicado</span>`:e.vence!=null&&e.vence<=7?`<span class="ia-est aviso">⏳ Sanción en ${e.vence} ${e.vence===1?'día':'días'}</span>`:''):'';
     return `<div class="ia-fila ${e.toca?'riesgo':''}"><div class="ia-top">${av(nom(e.id))}<b>${esc(nom(e.id))}</b><span class="ia-min ${e.ok?'ok':''}">${min?(e.ok?'✅':'⏳')+' '+e.pj+'/'+min:e.pj+' PJ'}</span></div>
       ${cfg?`<div class="ia-barra">${seg}</div><div class="ia-sem">${Array.from({length:cfg.semanas},(_,i)=>`<span>${i+1} sem</span>`).join('')}</div>`:''}<div class="ia-pie"><small>${txt}${e.castigos.length?` · ${e.castigos.length} ${e.castigos.length===1?'castigo':'castigos'}`:''}</small>${estado}</div>
-      ${org&&e.toca?`<button class="btn peligro peq" data-acc="castigo" data-j="${e.id}">⚖️ Aplicar sanción (3 partidas 0–3)</button>`:''}
+      ${e.toca?`<button class="btn peligro peq" data-acc="castigo" data-j="${e.id}">⚖️ Ejecutar sanción${org?'':' (organizador)'}</button>`:''}
       ${e.castigos.length?`<button class="link-btn" data-acc="verCastigos" data-j="${e.id}">Ver partidas de castigo ›</button>`:''}</div>`}).join('')}</div>`;
   if(cfg)h=h.replace('<div class="part-lista">',`<div class="ia-ley"><span><i class="on"></i>Semana completa sin jugar</span><span><i class="mitad"></i>Semana en curso</span></div><div class="part-lista">`);
-  if(cfg)h+=`<p class="nota">Cada tramo de la barra es una semana. La barra marca las semanas sin jugar una partida normal (las de castigo no cuentan para esto). Al llegar a ${cfg.semanas} semanas, el organizador puede aplicar la sanción: 3 partidas perdidas 0–3 con jugadores ficticios «Castigo», que cuentan como jugadas.</p>`;
+  if(cfg)h+=`<p class="nota">Cada tramo de la barra es una semana. La barra marca las semanas sin jugar una partida normal (las de castigo no cuentan para esto). Al llegar a ${cfg.semanas} semanas aparece el botón «Ejecutar sanción»: solo el organizador, con su clave, puede aplicarla: 3 partidas perdidas 0–3 con jugadores ficticios «Castigo», que cuentan como jugadas.</p>`;
   return h;
 }
 function aplicarCastigo(id){
@@ -2241,7 +2241,8 @@ Object.assign(ACC,{
   diaRes(el){hojaDiaRes(el.dataset.j,el.dataset.r)},
   verFiltro(el){S.filtroP={jug:el.dataset.j,con:el.dataset.con,vs:el.dataset.vs,res:el.dataset.res};S.tab='partidas';S.parSub='reg';render();scrollTo(0,0)},
   quitaFiltroP(){S.filtroP=null;render()},
-  castigo(el){const id=el.dataset.j;if(!confirm(`¿Aplicar la sanción a ${nom(id)}? Se registrarán 3 partidas perdidas 0–3.`))return;aplicarCastigo(id)},
+  castigo(el){const id=el.dataset.j;if(!(S.org||S.admin)){S.trasCastigo=id;return hojaOrg()}
+    if(!confirm(`¿Ejecutar la sanción a ${nom(id)}? Se registrarán 3 partidas jugadas y perdidas 0–3 contra los jugadores «Castigo».`))return;aplicarCastigo(id)},
   verCastigos(el){const id=el.dataset.j,cs=(K.castigos||[]).filter(c=>c.jug===id);
     abrirHoja(`<h3 class="st">⚖️ Castigos de ${esc(nom(id))}</h3>${cs.map(c=>`<p class="sub" style="margin:10px 0 6px">${new Date(c.ts).toLocaleDateString('es-ES',{day:'numeric',month:'long'})} · ${c.dias} días sin jugar</p><div class="lista">${c.partidas.map(mid=>{const m=mesas().find(x=>x.id===mid);return m?matchHTML(m):''}).join('')}</div>`).join('')}<div class="acciones"><button class="btn sec" data-acc="cerrar">Cerrar</button></div>`)},
   ajustesInd(){AJ={min:K.meta.minPartidas!=null?K.meta.minPartidas:0,inact:{...(K.meta.inact||{on:true,semanas:3})}};hojaAjustesInd2()},
@@ -2350,7 +2351,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v23 · 14 oct';
+const APP_VER='v24 · 14 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
@@ -2510,7 +2511,9 @@ ACC.entrar=async function(){
 ACC.entrarOrg=async function(){
   const id=S.id,k=$('orgKey').value.trim();
   try{const r=await api('rol',{id,key:k});if(r.rol!=='org'&&r.rol!=='admin')throw new Error('Clave de organizador incorrecta.');
-    SES['o'+id]=k;S.org=true;S.orgDe=id;toast('Modo organizador activado');render();hojaOrg();
+    SES['o'+id]=k;S.org=true;S.orgDe=id;toast('Modo organizador activado');render();
+    if(S.trasCastigo){const j=S.trasCastigo;S.trasCastigo=null;cerrarHoja();setTimeout(()=>ACC.castigo({dataset:{j}}),80);return}
+    hojaOrg();
     if(S.trasOrg){const x=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(x),50)}}
   catch(e){$('orgErr').textContent=e.message}
 };
