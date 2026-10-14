@@ -701,6 +701,12 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .tabs-camp button{display:flex;align-items:center;justify-content:center;gap:6px}
 .tabs-camp .pill-n{background:var(--card2);color:var(--txt);min-width:22px;height:22px;border-radius:11px;display:inline-grid;place-items:center;font-size:.75rem;padding:0 6px}
 .tabs-camp button[aria-pressed="true"] .pill-n{background:#1A1A10;color:var(--oro2)}
+
+.tabs-camp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.tabs-camp button{display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-weight:800;font-size:.9rem}
+.tabs-camp button[aria-expanded="true"]{border-color:var(--oro);background:rgba(231,185,79,.12)}
+.tabs-camp .fl{color:var(--oro2)}
+.tabs-camp button[aria-expanded="true"] .pill-n{background:var(--oro);color:#1A1A10}
 .sr-top{text-align:center}
 .sr-hero{margin-top:-4px}
 .sr-dado{display:inline-block;font-size:2.4rem;animation:dado 2.4s ease-in-out infinite}
@@ -2250,20 +2256,24 @@ function vPortal(){
     <div class="feat"><span>🗂️</span><b>Por parejas o individual</b><small>Liga, liguilla, cuadro, marcador o promedio</small></div>
     <div class="feat"><span>📲</span><b>Lo apuntan ellos</b><small>Comparte un enlace y una clave, y listo</small></div>
     <div class="feat"><span>🏆</span><b>Al momento</b><small>Clasificación, cuadro y estadísticas en vivo</small></div></div>`;
-  const fin=lista.filter(c=>(c.resumen||{}).terminado),marcha=lista.filter(c=>!(c.resumen||{}).terminado),tab=S.portalTab||'marcha',ver=tab==='fin'?fin:marcha;
+  const fin=lista.filter(c=>(c.resumen||{}).terminado),marcha=lista.filter(c=>!(c.resumen||{}).terminado),tab=S.portalTab||'',ver=tab==='fin'?fin:tab==='marcha'?marcha:[];
+  const tarj=c=>tarjetaCamp(c).replace('class="camp"',`class="camp" data-n="${esc((c.nombre||'').toLowerCase())}"`);
   const camps=LISTA===null?'<div class="cargando"><span class="spin"></span>Cargando campeonatos…</div>'
     :`<div class="busca"><span>🔍</span><input id="buscaCamp" type="search" placeholder="Buscar un campeonato por su nombre" autocomplete="off" aria-label="Buscar campeonato"></div>
-      <div class="seg tabs-camp"><button data-acc="portalTab" data-v="marcha" aria-pressed="${tab==='marcha'}">🃏 En marcha <span class="pill-n">${marcha.length}</span></button><button data-acc="portalTab" data-v="fin" aria-pressed="${tab==='fin'}">🏆 Finalizados <span class="pill-n">${fin.length}</span></button></div>
-      <div id="listaCamps">${ver.map(c=>tarjetaCamp(c).replace('class="camp"',`class="camp" data-n="${esc((c.nombre||'').toLowerCase())}"`)).join('')||vacio(tab==='fin'?'Todavía no hay campeonatos finalizados':'No hay campeonatos en marcha',tab==='fin'?'':'Crea uno con el botón de arriba.')}</div>
-      <p class="nota" id="sinRes" style="display:none;text-align:center">No hay ningún campeonato con ese nombre${tab==='fin'?' entre los finalizados':' en marcha'}.</p>`;
+      <div id="listaBusca" style="display:none">${lista.map(tarj).join('')}<p class="nota" id="sinRes" style="display:none;text-align:center">No hay ningún campeonato con ese nombre.</p></div>
+      <div id="bloqueTabs"><div class="tabs-camp">
+        <button data-acc="portalTab" data-v="marcha" aria-expanded="${tab==='marcha'}"><span>🃏 En marcha</span><span class="pill-n">${marcha.length}</span><span class="fl">${tab==='marcha'?'▴':'▾'}</span></button>
+        <button data-acc="portalTab" data-v="fin" aria-expanded="${tab==='fin'}"><span>🏆 Finalizados</span><span class="pill-n">${fin.length}</span><span class="fl">${tab==='fin'?'▴':'▾'}</span></button></div>
+      ${tab?`<div id="listaCamps">${ver.map(tarj).join('')||vacio(tab==='fin'?'Todavía no hay campeonatos finalizados':'No hay campeonatos en marcha','')}</div>`:''}</div>`;
   pinta('',hero+feats+camps+`<div class="pie-portal"><button class="admin-link" data-acc="adminLogin">🛡️ Administración</button><span>CreaMus · Campeonatos de mus</span></div>`);
   $('app').classList.add('sin-nav');
 }
 
-ACC.portalTab=el=>{S.portalTab=el.dataset.v;render()};
-document.addEventListener('input',e=>{if(e.target.id!=='buscaCamp')return;const q=e.target.value.toLowerCase().trim();let n=0;
-  document.querySelectorAll('#listaCamps .camp').forEach(c=>{const ok=!q||c.dataset.n.includes(q);c.style.display=ok?'':'none';if(ok)n++});
-  const sr=$('sinRes');if(sr)sr.style.display=q&&!n?'':'none'});
+ACC.portalTab=el=>{S.portalTab=S.portalTab===el.dataset.v?'':el.dataset.v;render()};
+document.addEventListener('input',e=>{if(e.target.id!=='buscaCamp')return;const q=e.target.value.toLowerCase().trim(),lb=$('listaBusca'),bt=$('bloqueTabs');
+  if(!lb)return;lb.style.display=q?'':'none';bt.style.display=q?'none':'';let n=0;
+  lb.querySelectorAll('.camp').forEach(c=>{const ok=q&&c.dataset.n.includes(q);c.style.display=ok?'':'none';if(ok)n++});
+  $('sinRes').style.display=q&&!n?'':'none'});
 /* ---------- Sorteo en directo (parejas, grupos y cuadro) ---------- */
 let SR=null;
 const nomPar=p=>p.apodo||(p.j2?p.j1+' y '+p.j2:p.j1);
