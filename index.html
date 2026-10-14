@@ -663,6 +663,10 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .clave-in input.oculta{-webkit-text-security:disc;text-security:disc;font-family:var(--sans)}
 .ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;font-size:1.1rem;border-radius:8px}
 .lock .clave-in input{text-align:center;font-size:1.3rem;letter-spacing:.2em;padding:14px 52px}
+
+.comp-prev{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:12px}
+.comp-prev b{font-size:.78rem;color:var(--oro2)}
+.comp-prev pre{white-space:pre-wrap;word-break:break-word;font-family:var(--sans);font-size:.84rem;margin:6px 0 0;color:#D7E6DC}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -689,6 +693,14 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .rey{width:56px;height:84px;margin:10px auto 6px;border-radius:6px;overflow:hidden;border:1px solid #CFC6AE;box-shadow:0 8px 18px rgba(0,0,0,.55),0 0 28px rgba(231,185,79,.22)}
 .rey img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 @media (prefers-reduced-motion:no-preference){.rey{animation:reyIn .6s ease-out both}@keyframes reyIn{from{opacity:0}}}
+
+.busca{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 12px;margin:18px 0 10px}
+.busca input{border:0;background:transparent;padding:10px 0}
+.busca input:focus{outline:none}
+.busca:focus-within{border-color:var(--oro)}
+.tabs-camp button{display:flex;align-items:center;justify-content:center;gap:6px}
+.tabs-camp .pill-n{background:var(--card2);color:var(--txt);min-width:22px;height:22px;border-radius:11px;display:inline-grid;place-items:center;font-size:.75rem;padding:0 6px}
+.tabs-camp button[aria-pressed="true"] .pill-n{background:#1A1A10;color:var(--oro2)}
 .sr-top{text-align:center}
 .sr-hero{margin-top:-4px}
 .sr-dado{display:inline-block;font-size:2.4rem;animation:dado 2.4s ease-in-out infinite}
@@ -1504,9 +1516,27 @@ function hojaRegla(id){const r=K.reglas.find(x=>x.id===id)||{i:'📌',t:'',x:''}
     <p class="error" id="gErr"></p><div class="acciones"><button class="btn" data-acc="guardarRegla" data-id="${id||''}">Guardar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
 }
 function linkCamp(c){return 'https://creadordecampeonatos.es/'+c.slug}
-async function compartir(c){const url=linkCamp(c),txt='🃏 '+c.meta.nombre+'. Entra, consulta tus partidas y registra resultados';
-  if(navigator.share){try{await navigator.share({title:c.meta.nombre,text:txt,url})}catch(e){}return}
-  try{await navigator.clipboard.writeText(txt+': '+url);toast('Enlace copiado')}catch(e){toast(url)}}
+function textoInvitacion(c){
+  const t=con(c,()=>esInd()?'al torneo individual':c.meta.libre?'al marcador de partidas':{liga:'a la liga',grupos:'a la liguilla con eliminatoria',ko:'al cuadro eliminatorio'}[c.meta.formato]||'al campeonato');
+  return `🏆 Has sido invitado ${t} «${c.meta.nombre}».\n\nPulsa el enlace para ver las partidas, la clasificación y toda la información del campeonato, y para apuntar tus resultados:`;
+}
+let COMP=null;
+function compartir(c,clave){COMP={c,clave:clave||(typeof kAcc==='function'?(kAcc(c.id)||''):''),modo:'con'};hojaCompartir()}
+function hojaCompartir(){const{c,modo}=COMP;
+  abrirHoja(`<h3 class="st">📤 Invitar al campeonato</h3><p class="sub">Se enviará el enlace con la invitación. ¿Incluyes la clave de acceso?</p>
+    <div class="seg"><button data-acc="compModo" data-v="con" aria-pressed="${modo==='con'}">🔓 Con la clave</button><button data-acc="compModo" data-v="sin" aria-pressed="${modo==='sin'}">🔒 Sin la clave</button></div>
+    ${modo==='con'?`<label class="lbl" for="compClave">Clave de acceso de los jugadores</label>${campoClave('compClave','Escribe la clave de acceso',`value="${esc(COMP.clave)}"`)}<p class="nota">Se añadirá al mensaje para que entren directamente. Útil para un grupo de confianza.</p>`
+      :`<p class="nota">El mensaje dirá que la clave se la das tú en persona. Más seguro si el enlace puede reenviarse.</p>`}
+    <div class="comp-prev"><b>Vista previa</b><pre>${esc(textoCompartir())}</pre></div>
+    <p class="error" id="compErr"></p>
+    <div class="acciones"><button class="btn" data-acc="compEnviar">📤 Enviar invitación</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
+}
+function textoCompartir(){const{c,modo}=COMP,k=((($('compClave')||{}).value??COMP.clave)||'').trim();
+  return textoInvitacion(c)+'\n'+linkCamp(c)+'\n\n'+(modo==='con'?`🔒 Clave de acceso: ${k||'…'}`:'🔒 Para entrar necesitas la clave de acceso: te la paso yo en persona.')}
+async function enviarCompartir(){const{c,modo}=COMP;if(modo==='con'){const k=($('compClave').value||'').trim();if(!k){$('compErr').textContent='Escribe la clave de acceso o elige «Sin la clave».';return}COMP.clave=k}
+  const txt=textoCompartir();cerrarHoja();
+  if(navigator.share){try{await navigator.share({title:c.meta.nombre,text:txt})}catch(e){}return}
+  try{await navigator.clipboard.writeText(txt);toast('Invitación copiada: pégala en el grupo')}catch(e){toast(linkCamp(c))}}
 
 /* ================= Administración ================= */
 function vAdmin(){
@@ -1799,7 +1829,9 @@ const ACC={
   salirOrg(){S.org=false;cerrarHoja();render()},
   guardarOrg(){const n=$('oNombre').value.trim(),a=$('oAcc').value.trim();if(n)K.meta.nombre=n;if(a){K.claveAcceso=a;toast('Clave de acceso cambiada')}guardarDB();cerrarHoja();render()},
   compartir(){compartir(K)},
-  compartirNuevo(){compartir(DB.camps[S.nuevo.id])},
+  compartirNuevo(){compartir(DB.camps[S.nuevo.id],S.nuevo.acc)},
+  compModo(el){const k=$('compClave');if(k)COMP.clave=k.value;COMP.modo=el.dataset.v;hojaCompartir()},
+  compEnviar(){enviarCompartir()},
   editRegla(el){S.reglaIcono=null;hojaRegla(el.dataset.id)},
   icono(el){document.querySelectorAll('#iconos button').forEach(b=>b.setAttribute('aria-pressed',b===el));S.reglaIcono=el.dataset.v},
   guardarRegla(el){const t=$('gT').value.trim(),x=$('gX').value.trim();if(!t||!x){$('gErr').textContent='Escribe el título y el texto.';return}
@@ -1837,6 +1869,7 @@ const ACC={
 };
 document.addEventListener('click',e=>{const el=e.target.closest('[data-acc]');if(!el||el.disabled)return;const f=ACC[el.dataset.acc];if(f){e.preventDefault();f(el,e)}});
 document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='compClave'){COMP.clave=t.value;const pr=document.querySelector('.comp-prev pre');if(pr)pr.textContent=textoCompartir();return}
   if(t.id==='pickQ'){const q=t.value.toLowerCase().trim();document.querySelectorAll('.pick-grid .tile').forEach(b=>b.hidden=q&&!b.dataset.n.includes(q));return}
   if(t.dataset.jg!==undefined){const i=+t.dataset.jg;WZ.jug[i]=t.value;const a=document.querySelector(`[data-avj="${i}"]`);if(a)a.innerHTML=av(t.value||'?');return}
   if(t.dataset.p!==undefined){const i=+t.dataset.p;WZ.part[i][t.dataset.f]=t.value;const a=document.querySelector(`[data-avi="${i}"]`);if(a){const p=WZ.part[i];a.innerHTML=WZ.modalidad==='individual'?av(p.j1||'?'):av(p.j1||'?')+av(p.j2||'?')}}
@@ -2217,11 +2250,20 @@ function vPortal(){
     <div class="feat"><span>🗂️</span><b>Por parejas o individual</b><small>Liga, liguilla, cuadro, marcador o promedio</small></div>
     <div class="feat"><span>📲</span><b>Lo apuntan ellos</b><small>Comparte un enlace y una clave, y listo</small></div>
     <div class="feat"><span>🏆</span><b>Al momento</b><small>Clasificación, cuadro y estadísticas en vivo</small></div></div>`;
+  const fin=lista.filter(c=>(c.resumen||{}).terminado),marcha=lista.filter(c=>!(c.resumen||{}).terminado),tab=S.portalTab||'marcha',ver=tab==='fin'?fin:marcha;
   const camps=LISTA===null?'<div class="cargando"><span class="spin"></span>Cargando campeonatos…</div>'
-    :`<h2 class="sec">🃏 Campeonatos en marcha <span class="chip">${lista.length}</span></h2>${lista.map(tarjetaCamp).join('')||vacio('Todavía no hay ninguno','Sé el primero en crear uno.')}`;
+    :`<div class="busca"><span>🔍</span><input id="buscaCamp" type="search" placeholder="Buscar un campeonato por su nombre" autocomplete="off" aria-label="Buscar campeonato"></div>
+      <div class="seg tabs-camp"><button data-acc="portalTab" data-v="marcha" aria-pressed="${tab==='marcha'}">🃏 En marcha <span class="pill-n">${marcha.length}</span></button><button data-acc="portalTab" data-v="fin" aria-pressed="${tab==='fin'}">🏆 Finalizados <span class="pill-n">${fin.length}</span></button></div>
+      <div id="listaCamps">${ver.map(c=>tarjetaCamp(c).replace('class="camp"',`class="camp" data-n="${esc((c.nombre||'').toLowerCase())}"`)).join('')||vacio(tab==='fin'?'Todavía no hay campeonatos finalizados':'No hay campeonatos en marcha',tab==='fin'?'':'Crea uno con el botón de arriba.')}</div>
+      <p class="nota" id="sinRes" style="display:none;text-align:center">No hay ningún campeonato con ese nombre${tab==='fin'?' entre los finalizados':' en marcha'}.</p>`;
   pinta('',hero+feats+camps+`<div class="pie-portal"><button class="admin-link" data-acc="adminLogin">🛡️ Administración</button><span>CreaMus · Campeonatos de mus</span></div>`);
   $('app').classList.add('sin-nav');
 }
+
+ACC.portalTab=el=>{S.portalTab=el.dataset.v;render()};
+document.addEventListener('input',e=>{if(e.target.id!=='buscaCamp')return;const q=e.target.value.toLowerCase().trim();let n=0;
+  document.querySelectorAll('#listaCamps .camp').forEach(c=>{const ok=!q||c.dataset.n.includes(q);c.style.display=ok?'':'none';if(ok)n++});
+  const sr=$('sinRes');if(sr)sr.style.display=q&&!n?'':'none'});
 /* ---------- Sorteo en directo (parejas, grupos y cuadro) ---------- */
 let SR=null;
 const nomPar=p=>p.apodo||(p.j2?p.j1+' y '+p.j2:p.j1);
