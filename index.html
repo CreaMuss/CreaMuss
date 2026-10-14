@@ -627,6 +627,36 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 
 .desemp.mini{grid-template-columns:auto minmax(0,1fr)}
 .desemp .de-tx{text-align:left}
+
+.rep-ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.rep-ops button{border:2px solid var(--line);background:var(--card2);border-radius:12px;padding:8px 6px;text-align:center}
+.rep-ops button b{display:block;font-size:.86rem}.rep-ops button small{color:var(--mute);font-size:.74rem;font-weight:700}
+.rep-ops button[aria-pressed="true"]{border-color:var(--oro);background:rgba(231,185,79,.14)}
+.rep-calc{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin-top:8px}
+.rep-calc div{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center}
+.rep-calc span{display:block;font-size:.76rem;color:var(--mute);font-weight:700}
+.rep-calc b{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--oro2)}
+.rep-calc small{font-size:.7rem;color:var(--mute)}
+
+.org-cab{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.org-ic{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#F3D488,#C9962C);display:grid;place-items:center;font-size:1.5rem;flex:0 0 auto}
+.org-ops{display:flex;flex-direction:column;gap:8px}
+.org-op{display:grid;grid-template-columns:40px minmax(0,1fr) 14px;gap:10px;align-items:center;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.org-op:active{transform:scale(.99);border-color:var(--oro)}
+.oo-ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:1.2rem}
+.oo-tx b{display:block;font-size:.95rem}.oo-tx small{display:block;color:var(--mute);font-size:.78rem;line-height:1.3}
+.oo-fl{color:var(--oro2);font-weight:800}
+.oo-n{background:var(--rojo);color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:6px}
+.org-pre{display:flex;flex-direction:column;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:.88rem;margin-bottom:6px}
+.org-pre b{color:var(--oro2);margin-bottom:2px}
+
+.rep-aviso{background:rgba(231,185,79,.10);border:1px solid rgba(231,185,79,.35);border-radius:10px;padding:8px 10px;margin:8px 0 0}
+
+.rep-pct{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.rep-pct label{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 6px;position:relative}
+.rep-pct span{font-size:.76rem;font-weight:800;color:var(--mute)}
+.rep-pct input{text-align:center;padding:8px 18px 8px 6px;font-weight:800;font-size:1rem}
+.rep-pct i{position:absolute;right:12px;bottom:17px;font-style:normal;color:var(--mute);font-weight:800}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1350,7 +1380,7 @@ function hojaResultado(id){
     const Wd=gana(r.md);
     const fila=(l,id)=>`<div class="marcador">${ind?ptInd(id):pt(id)}<div class="juegos">${Array.from({length:Wd+1},(_,v)=>`<button data-acc="pJuego" data-l="${l}" data-v="${v}" aria-pressed="${RS['pg'+l]===v}">${v}</button>`).join('')}</div></div>`;
     h+=`<div class="form-box"><b>⚠️ Este resultado no es correcto</b><p class="nota" style="margin:4px 0 8px">Se registró <b>${r.ga}–${r.gb}</b>. Marca cuál fue el resultado correcto:</p>${fila('a',m.a)}${fila('b',m.b)}
-      <label class="lbl" for="fMot">Motivo (obligatorio)</label><textarea id="fMot" placeholder="Por ejemplo: ganamos nosotros 3–1, se registró al revés"></textarea><label class="lbl" for="fPor">Tu nombre</label><input id="fPor" value="${porN}">
+      <label class="lbl" for="fMot">Motivo (obligatorio)</label><textarea id="fMot" placeholder="Por ejemplo: ganamos nosotros 3–1, se registró al revés">${esc(RS.imot||'')}</textarea>${(()=>{const ns=jugadoresDe(m.a,m.b);if(RS.ipor===undefined)RS.ipor=porInicial(ns);return selectorPor(ns,RS.ipor,'imp').replace('¿Quién lo registra?','¿Quién lo impugna?')})()}
       <p class="error" id="rErr"></p><div class="acciones"><button class="btn" data-acc="enviarImpugnar">Impugnar</button><button class="btn sec" data-acc="modoNo">Volver</button></div></div>`;
     abrirHoja(h);return;
   }
@@ -1427,20 +1457,38 @@ function hojaSorteo(){
    <label class="lbl" for="sFecha">Fecha</label><input type="date" id="sFecha" value="${SORT.fecha}">
    <div class="acciones"><button class="btn" data-acc="hacerSorteo" ${mesasN?'':'disabled'}>Sortear parejas</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
 }
-function hojaOrg(){
-  if(S.org||S.admin){const cs=(K.cambios||[]).slice(-5).reverse();abrirHoja(`<h3 class="st">🔑 Gestión del organizador</h3>
-    <div class="ayuda-org"><b>Qué puedes hacer</b><ul><li><b>Corregir un resultado:</b> ve a Partidas (o al cuadro), toca la partida ya jugada, cambia los juegos y pulsa «Guardar corrección». También puedes borrarlo.</li><li><b>Editar reglas:</b> en Reglas, con ✏️ y 🗑️, o «Añadir regla».</li><li><b>Datos del campeonato:</b> aquí abajo.</li></ul></div>
-    ${cs.length?`<b style="display:block;margin-top:12px">Últimas correcciones</b><div class="card pad" style="margin-top:6px">${cs.map(c=>`<div class="log">${new Date(c.ts).toLocaleDateString('es-ES',{day:'numeric',month:'short'})}: ${esc(c.txt)}</div>`).join('')}</div>`:''}
-    <label class="lbl" for="oNombre">Nombre del campeonato</label><input id="oNombre" value="${esc(K.meta.nombre)}">
-    <label class="lbl" for="oAcc">Nueva clave de acceso para los jugadores</label><input id="oAcc" placeholder="Déjalo vacío para no cambiarla">
-    <div class="acciones"><button class="btn" data-acc="guardarOrg">Guardar cambios</button></div>
-    ${porDias()?`<div class="acciones"><button class="btn ${K.cerrado?'sec':'peligro'}" data-acc="cerrarCamp">${K.cerrado?'🔓 Reabrir el campeonato':'🏁 Cerrar el campeonato ahora'}</button></div><p class="nota">${K.cerrado?'Está cerrado: no se pueden registrar más partidas.':'Al cerrarlo se proclama ganador a quien vaya primero y ya no se registran más partidas.'}</p>`:''}
-    <div class="form-box"><b>📦 Archivo del campeonato</b><small style="display:block;color:var(--mute);font-size:.82rem;margin:4px 0 8px">Descarga toda su configuración y resultados en un archivo. Puedes pasárselo a Claude para cambiar lo que quieras y luego el administrador lo vuelve a cargar.</small><button class="btn sec peq" data-acc="descargar">⬇️ Descargar archivo</button></div>
-    <div class="acciones"><button class="btn sec" data-acc="salirOrg">Salir del modo organizador</button></div>`);return}
-  abrirHoja(`<h3 class="st">🔑 Modo organizador</h3><p class="sub">Introduce la clave de organizador de este campeonato para corregir resultados, editar reglas o cambiar la clave de acceso.</p>
-    <input id="orgKey" type="password" placeholder="Clave de organizador" aria-label="Clave de organizador"><p class="error" id="orgErr"></p>
-    <div class="acciones"><button class="btn" data-acc="entrarOrg">Entrar</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>`);
-  setTimeout(()=>$('orgKey')&&$('orgKey').focus(),60);
+function hojaOrg(sub){
+  const casos=avisosAbiertos().length,cs=(K.cambios||[]).slice(-5).reverse();
+  if(S.org||S.admin){
+    if(sub==='datos'){abrirHoja(`<h3 class="st">🏷️ Nombre y clave de acceso</h3><p class="sub">Cambia el nombre del campeonato o la clave que usan los jugadores para entrar.</p>
+      <label class="lbl" for="oNombre">Nombre del campeonato</label><input id="oNombre" value="${esc(K.meta.nombre)}">
+      <label class="lbl" for="oAcc">Nueva clave de acceso</label><input id="oAcc" placeholder="Déjalo vacío para no cambiarla">
+      <p class="nota">Si cambias la clave, avisa a los jugadores: tendrán que volver a introducirla.</p>
+      <div class="acciones"><button class="btn" data-acc="guardarOrg">Guardar</button><button class="btn sec" data-acc="org">‹ Volver</button></div>`);return}
+    const op=(i,t,x,acc,extra='',badge='')=>`<button class="org-op" data-acc="${acc}" ${extra}><span class="oo-ic">${i}</span><span class="oo-tx"><b>${t}${badge}</b><small>${x}</small></span><span class="oo-fl">›</span></button>`;
+    abrirHoja(`<div class="org-cab"><span class="org-ic">🔑</span><div><h3 class="st">Panel del organizador</h3><p class="sub" style="margin:2px 0 0">${S.admin&&!S.org?'Estás como administrador: tienes todos los permisos.':'Tienes permisos para gestionar este campeonato.'}</p></div></div>
+      <div class="org-ops">
+        ${op('⚖️','Impugnaciones','Revisa y resuelve los resultados impugnados por los jugadores.','orgIr','data-v="casos"',casos?` <span class="oo-n">${casos}</span>`:'')}
+        ${op('✏️','Corregir un resultado','Te llevo a las partidas jugadas: toca una, cambia los juegos y guarda, o bórrala.','orgIr','data-v="corregir"')}
+        ${op('📜','Editar reglas','Cambia, borra o añade reglas. Los cambios quedan en el historial.','orgIr','data-v="reglas"')}
+        ${op('🏷️','Nombre y clave de acceso','Cambia el nombre del campeonato o la clave de los jugadores.','orgIr','data-v="datos"')}
+        ${porDias()?op(K.cerrado?'🔓':'🏁',K.cerrado?'Reabrir el campeonato':'Cerrar el campeonato',K.cerrado?'Está cerrado: no se registran partidas.':'Proclama ganador al primero y ya no se registran más partidas.','cerrarCamp'):''}
+        ${op('⬇️','Descargar archivo','Copia de seguridad con toda la configuración y los resultados.','descargar')}
+      </div>
+      ${cs.length?`<details class="como" style="margin-top:12px"><summary>🕓 Últimas correcciones (${cs.length})</summary><div class="card pad" style="margin-top:6px">${cs.map(c=>`<div class="log">${new Date(c.ts).toLocaleDateString('es-ES',{day:'numeric',month:'short'})}: ${esc(c.txt)}</div>`).join('')}</div></details>`:''}
+      <div class="acciones">${S.org?`<button class="btn sec" data-acc="salirOrg">🚪 Volver a modo jugador</button>`:''}<button class="btn sec" data-acc="cerrar">Cerrar</button></div>`);
+    return;
+  }
+  const guardada=typeof kOrg==='function'?(kOrg(S.id)||''):'';
+  abrirHoja(`<div class="org-cab"><span class="org-ic">🔑</span><div><h3 class="st">Entrar como organizador</h3><p class="sub" style="margin:2px 0 0">Solo para quien creó el campeonato.</p></div></div>
+    <div class="org-pre"><b>Con la clave de organizador podrás:</b>
+      <span>⚖️ Resolver impugnaciones</span><span>✏️ Corregir o borrar resultados</span><span>📜 Editar las reglas</span><span>🏷️ Cambiar nombre y clave de acceso</span>${porDias()?'<span>🏁 Cerrar el campeonato</span>':''}<span>⬇️ Descargar una copia</span></div>
+    <label class="lbl" for="orgKey">Clave de organizador</label>
+    <input id="orgKey" type="password" value="${esc(guardada)}" placeholder="Escribe la clave" aria-label="Clave de organizador" autocomplete="off">
+    <p class="error" id="orgErr"></p>
+    <div class="acciones"><button class="btn" data-acc="entrarOrg">Entrar como organizador</button><button class="btn sec" data-acc="cerrar">Cancelar</button></div>
+    <p class="nota">¿Eres jugador? No necesitas esto: puedes registrar e impugnar partidas sin clave de organizador.</p>`);
+  setTimeout(()=>{const k=$('orgKey');if(k&&!k.value)k.focus()},80);
 }
 function hojaRegla(id){const r=K.reglas.find(x=>x.id===id)||{i:'📌',t:'',x:''};
   const iconos=['📌','🃏','🏆','📅','📍','⚖️','⏰','💶','🍺','🚫','✍️','🎲'];
@@ -1467,7 +1515,7 @@ function vAdmin(){
 }
 /* ================= Asistente de creación ================= */
 let WZ=null;
-function nuevoWZ(){return{juego:{real:true,perete:false,deje:false},sorteoP:false,jug:[],ap:{on:false,tipo:'dinero',cuota:'',premio:'',texto:''},paso:1,modalidad:'parejas',formato:'liga',n:4,mejorDe:5,vueltas:1,libre:0,tocadoLibre:false,koVueltas:1,grupos:2,pasan:2,minPct:30,tocadoG:false,cal:{tipo:'dia',inicio:hoy(),ndias:3,fin:sumar(hoy(),180)},part:[],reglas:null,firma:'',nombre:'',acceso:'',org:'',oculto:false}}
+function nuevoWZ(){return{juego:{real:true,perete:false,deje:false},sorteoP:false,jug:[],ap:{on:false,tipo:'dinero',cuota:'',premio:'',texto:'',reparto:''},paso:1,modalidad:'parejas',formato:'liga',n:4,mejorDe:5,vueltas:1,libre:0,tocadoLibre:false,koVueltas:1,grupos:2,pasan:2,minPct:30,tocadoG:false,cal:{tipo:'dia',inicio:hoy(),ndias:3,fin:sumar(hoy(),180)},part:[],reglas:null,firma:'',nombre:'',acceso:'',org:'',oculto:false}}
 const PASOS=['','Tipo de campeonato','Participantes','Partidas y estructura','Calendario','Reglas','Nombre y claves'];
 const AYUDA=['','A la derecha verás si es por parejas o individual.','Cuántos son y cómo se llaman. Puedes rellenar un ejemplo para probar.','Cuántos juegos tiene cada partida y cómo se organiza la competición.','Cuándo se juega: en un día o en unos pocos días.','Reglas que verán los jugadores. Las que añadas son informativas: no cambian cómo funciona la app.','Nombre, enlace y claves. Repasa el resumen: toca cualquier dato para cambiarlo.'];
 function wzChips(){const w=WZ,ind=w.modalidad==='individual',c=[];
@@ -1488,6 +1536,7 @@ const TIPOS={
 const opTipo=(k,o,act)=>`<button class="op op-tipo" data-acc="wzTipo" data-v="${k}" aria-pressed="${act===k}"><span class="oi">${o.i}</span><span><b>${o.t}</b><small>${o.x}</small></span><span class="tipo-badge ${o.mod==='individual'?'ind':'par'}">${o.mod==='individual'?'🎲<br>Individual':'👥<br>Parejas'}</span></button>`;
 const tipoDe=w=>w.modalidad==='individual'?'individual':w.formato==='liga'?(w.libre?'marcador':'liga'):w.formato;
 function wzAjustar(){
+  if(WZ&&WZ.ap&&WZ.ap.reparto&&!repDisponibles(WZ).includes(WZ.ap.reparto))WZ.ap.reparto='';
   const w=WZ,n=w.n;
   if(w.modalidad==='individual')w.formato='liga';
   if(w.formato==='grupos'&&n<4)w.formato='liga';
@@ -1547,13 +1596,17 @@ function wzPaso(){
   case 5:{if(!w.reglas||w.firma!==wzFirma()){const propias=(w.reglas||[]).filter(r=>r.propia);w.reglas=[...reglasPorDefecto(wzMeta(),w.n),...propias];w.firma=wzFirma()}
     return `<div class="card pad" style="margin-bottom:14px"><b>🃏 Reglas de juego</b><p class="nota" style="margin:4px 0 8px">Las que estén en «Con» se añaden a las reglas del campeonato.</p>
      ${[['real','👑','La real','Tres sietes y una figura: la mejor 31'],['perete','🙅','Perete','4, 5, 6 y 7 de primeras: descarte para su pareja y una piedra para el rival'],['deje','✋','Deje','']].map(([k,i,t,x])=>`<div class="fila-sw"><span class="sw-ic">${i}</span><span class="sw-tx"><b>${t}</b>${x?`<small>${x}</small>`:''}</span><span class="sw-est">${w.juego[k]?'Con':'Sin'}</span><button class="switch ${w.juego[k]?'on':''}" data-acc="wzJuego" data-k="${k}" aria-pressed="${w.juego[k]}" aria-label="${t}"><i></i></button></div>`).join('')}</div>
-    <p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.filter(r=>!r.juego).map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
-    <div class="card pad ap-card" style="margin-top:12px"><div class="fila-flex" style="justify-content:space-between"><b>💶 Apuesta (opcional)</b><button class="switch ${w.ap.on?'on':''}" data-acc="apOn" aria-pressed="${w.ap.on}" aria-label="Activar apuesta"><i></i></button></div>
+    <div class="card pad ap-card" style="margin-bottom:14px"><div class="fila-flex" style="justify-content:space-between"><b>💶 Apuesta (opcional)</b><button class="switch ${w.ap.on?'on':''}" data-acc="apOn" aria-pressed="${w.ap.on}" aria-label="Activar apuesta"><i></i></button></div>
      ${w.ap.on?`<div class="seg" style="margin-top:10px">${[['dinero','💶 Dinero'],['extra','🍽️ Otra cosa']].map(([k,t])=>`<button data-acc="apTipo" data-v="${k}" aria-pressed="${w.ap.tipo===k}">${t}</button>`).join('')}</div>
       ${w.ap.tipo==='dinero'?`<div class="dos"><div><label class="lbl" for="apC">Pone cada ${w.modalidad==='individual'?'jugador':'pareja'} (€)</label><input id="apC" data-ap="cuota" inputmode="decimal" value="${esc(w.ap.cuota)}" placeholder="30"></div><div><label class="lbl">Bote total</label><div class="bote">${w.ap.cuota&&!isNaN(+w.ap.cuota.replace(',','.'))?(+w.ap.cuota.replace(',','.')*w.n).toLocaleString('es-ES')+' €':'–'}</div></div></div>
-      <label class="lbl" for="apP">Reparto del premio</label><input id="apP" data-ap="premio" value="${esc(w.ap.premio)}" placeholder="Por ejemplo: 1.º 180 €, 2.º 60 €">`
+      <label class="lbl">Reparto del bote <span class="oblig" style="color:var(--mute)">opcional</span></label><div class="rep-ops">${[['100','Todo al 1.º','100 %'],['80-20','1.º y 2.º','80 / 20 %'],['3rec','1.º, 2.º y 3.º','el 3.º recupera lo suyo'],['otro','Otro','a mano']].filter(([k])=>repDisponibles(w).includes(k)).map(([k,t,x])=>`<button data-acc="apRep" data-v="${k}" aria-pressed="${w.ap.reparto===k}"><b>${t}</b><small>${x}</small></button>`).join('')}</div>
+      <div id="repCalc">${repartoHTML(w)}</div>
+      ${w.ap.reparto==='otro'?`<div class="seg" style="margin-top:8px">${[['pct','% Por porcentajes'],['texto','✍️ Por escrito']].map(([k,t])=>`<button data-acc="apManual" data-v="${k}" aria-pressed="${(w.ap.manual||'pct')===k}">${t}</button>`).join('')}</div>
+        ${(w.ap.manual||'pct')==='pct'?`<div class="rep-pct">${[1,2,3].map(i=>`<label><span>${['🥇','🥈','🥉'][i-1]} ${i}.º</span><input data-ap="p${i}" inputmode="numeric" value="${esc(w.ap['p'+i]||'')}" placeholder="${i===1?'100':'0'}"><i>%</i></label>`).join('')}</div><div id="repMan">${repManualHTML(w)}</div>`
+        :`<input id="apP" data-ap="premio" value="${esc(w.ap.premio)}" placeholder="Por ejemplo: 1.º 180 €, 2.º 60 €">`}`:''}`
       :`<label class="lbl" for="apT">¿Qué se apuesta?</label><textarea id="apT" data-ap="texto" placeholder="Por ejemplo: los cuatro últimos invitan a comer a los cuatro primeros">${esc(w.ap.texto)}</textarea>`}
       <p class="nota" style="margin:8px 0 0">Aparecerá destacada en las reglas del campeonato.</p>`:'<p class="nota" style="margin:6px 0 0">Actívala si os jugáis dinero o algo extra, como una comida.</p>'}</div>
+    <p class="nota">Reglas generadas según lo que has elegido. Quita las que no quieras o añade las tuyas; después podrás editarlas como organizador.</p><div class="lista">${w.reglas.filter(r=>!r.juego).map(r=>`<div class="regla"><span class="ri">${r.i}</span><div><h3>${esc(r.t)}</h3><p>${esc(r.x)}</p></div><button class="mini-btn" data-acc="wzQuita" data-id="${r.id}" aria-label="Quitar">✕</button></div>`).join('')}</div>
     <div class="card pad" style="margin-top:12px"><b>＋ Añadir una regla propia</b><input id="wzRT" placeholder="Título, por ejemplo: Apuesta" style="margin-top:8px"><textarea id="wzRX" placeholder="Por ejemplo: los cuatro últimos invitan a cenar a los cuatro primeros." style="margin-top:6px"></textarea><div class="acciones"><button class="btn sec" data-acc="wzAddRegla">Añadir</button></div></div>`}
   case 6:{const s=slug(w.nombre||'mi-campeonato');
     return `<label class="lbl" for="wNombre">Nombre del campeonato</label><input id="wNombre" data-w="nombre" value="${esc(w.nombre)}" placeholder="Campeonato de Mus de Navidad"><div class="slug" id="wSlug">Su dirección será <b>${location.host}/${esc(s)}</b></div>
@@ -1584,9 +1637,29 @@ function wzValidar(){
     if((LISTA||[]).some(c=>c.slug===slug(w.nombre)))return $('wErr').textContent='Ya existe un campeonato con ese nombre. Prueba con otro.',false}
   return true;
 }
+const euros=x=>(Math.round(x*100)/100).toLocaleString('es-ES',{maximumFractionDigits:2})+' €';
+function cuotaDe(w){const c=+String(w.ap.cuota||'').replace(',','.');return c>0?c:0}
+function boteDe(w){return cuotaDe(w)*w.n}
+/* Devuelve los premios [{pct, imp, nota}] según el reparto elegido */
+function calcReparto(w){
+  const b=boteDe(w),c=cuotaDe(w),r=w.ap.reparto;
+  if(r==='100')return[{pct:100,imp:b}];
+  if(r==='80-20'){const s=Math.round(b*0.2);return[{pct:80,imp:b-s},{pct:20,imp:s}]}
+  if(r==='3rec'){const seg=Math.round((b-c)*0.25),pri=b-c-seg;return[{imp:pri},{imp:seg},{imp:c,nota:'recupera lo que puso'}].map(x=>({...x,pct:b?Math.round(x.imp/b*100):null}))}
+  return null;
+}
+/* Opciones posibles: nadie que cobre puede llevarse menos de lo que puso, y cada puesto cobra más que el siguiente */
+function repDisponibles(w){const n=w.n,o=['100'];if(0.2*n>=1)o.push('80-20');if(0.25*(n-1)>1)o.push('3rec');o.push('otro');return o}
+function pctsManual(w){return[1,2,3].map(i=>+String(w.ap['p'+i]||'').replace(',','.')||0)}
+function repManualHTML(w){const p=pctsManual(w),s=p.reduce((a,x)=>a+x,0),b=boteDe(w);
+  return `<div class="rep-calc">${p.map((x,i)=>x?`<div><span>${['🥇','🥈','🥉'][i]} ${i+1}.º</span><b>${b?euros(b*x/100):'–'}</b><small>${x} %</small></div>`:'').join('')}</div>${s&&s!==100?`<p class="error" style="margin-top:6px">Los porcentajes suman ${s} %: tienen que sumar 100 %.</p>`:''}`}
+function repartoTexto(w){if(w.ap.reparto==='otro'&&(w.ap.manual||'pct')==='pct'){const p=pctsManual(w),b=boteDe(w);if(p.reduce((a,x)=>a+x,0)!==100)return'';return p.map((x,i)=>x?`${i+1}.º ${b?euros(b*x/100)+' ('+x+' %)':x+' %'}`:'').filter(Boolean).join(', ')}const p=calcReparto(w);if(!p)return(w.ap.premio||'').trim();const b=boteDe(w);
+  return p.map((x,i)=>`${i+1}.º ${b?euros(x.imp):(x.pct!=null?x.pct+' %':'')}${x.nota?' ('+x.nota+')':b&&x.pct!=null?` (${x.pct} %)`:''}`).join(', ')}
+function repartoHTML(w){const p=calcReparto(w),b=boteDe(w);if(!p)return'';
+  return `<div class="rep-calc">${p.map((x,i)=>`<div><span>${['🥇','🥈','🥉'][i]} ${i+1}.º</span><b>${b?euros(x.imp):'–'}</b><small>${x.nota?x.nota:(x.pct!=null?x.pct+' %':'')}</small></div>`).join('')}</div>`}
 function apuestaRegla(w){const a=w.ap;if(!a.on)return[];
-  if(a.tipo==='dinero'){const c=+String(a.cuota).replace(',','.');if(!c&&!a.premio)return[];const bote=c?c*w.n:0;
-    return[{id:uid(),i:'💶',t:'Apuesta',x:`${c?`Cada ${w.modalidad==='individual'?'jugador':'pareja'} pone ${c.toLocaleString('es-ES')} € (bote de ${bote.toLocaleString('es-ES')} €). `:''}${a.premio?'Reparto: '+a.premio.trim()+'.':''}`.trim(),propia:true,apuesta:true}]}
+  if(a.tipo==='dinero'){const c=+String(a.cuota).replace(',','.'),rep=repartoTexto(w);if(!c&&!rep)return[];const bote=c?c*w.n:0;
+    return[{id:uid(),i:'💶',t:'Apuesta',x:`${c?`Cada ${w.modalidad==='individual'?'jugador':'pareja'} pone ${euros(c)} (bote de ${euros(bote)}). `:''}${rep?'Reparto: '+rep+'.':''}`.trim(),propia:true,apuesta:true}]}
   return a.texto.trim()?[{id:uid(),i:'🍽️',t:'Apuesta',x:a.texto.trim(),propia:true,apuesta:true}]:[]}
 function crearCamp(){
   const w=WZ,id=uid(8);
@@ -1636,7 +1709,7 @@ const ACC={
     K.res[RS.id]={ga,gb,md:RS.md,...(ant&&ant.wo&&ga+gb===Math.max(ga,gb)?{wo:ant.wo}:{}),fecha:(ant&&ant.fecha)||hoy(),por:ant?ant.por:por,ts:ant?ant.ts:Date.now(),...(ant?{corregido:true}:{})};guardarDB();cerrarHoja();toast(ant?'Resultado corregido':'Resultado guardado');render()},
   borrarRes(){const ant=K.res[RS.id],m=todos().find(x=>x.id===RS.id);(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se borra el '+ant.ga+'–'+ant.gb});delete K.res[RS.id];guardarDB();cerrarHoja();toast('Resultado borrado');render()},
   cerrar(){cerrarHoja()},
-  porSel(el){const v=el.dataset.v;if(el.dataset.ctx==='ir'){IR.por=v;hojaRegInd()}else{RS.por=v;hojaResultado(RS.id)}},
+  porSel(el){const v=el.dataset.v,c=el.dataset.ctx;if(c==='ir'){IR.por=v;hojaRegInd()}else if(c==='imp'){const t=$('fMot');RS.imot=t?t.value:RS.imot;RS.ipor=v;hojaResultado(RS.id)}else{RS.por=v;hojaResultado(RS.id)}},
   regInd(){IR=null;hojaRegInd()},
   irPon(el){const id=el.dataset.id,per=esInd()?2:1;if(IR.a.length<per)IR.a.push(id);else if(IR.b.length<per)IR.b.push(id);hojaRegInd()},
   cruce(el){hojaCruce(el.dataset.id)},
@@ -1645,8 +1718,8 @@ const ACC={
   wo(el){const m=todos().find(x=>x.id===RS.id),l=el.dataset.l,W=gana(RS.md);if(!confirm('¿Dar la partida por perdida a '+nom(m[l])+' por no presentarse?'))return;
     K.res[RS.id]={ga:l==='a'?0:W,gb:l==='a'?W:0,md:RS.md,wo:l,fecha:hoy(),por:'Organizador',ts:Date.now()};(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': '+nom(m[l])+' no se presenta ('+(l==='a'?'0–'+W:W+'–0')+')'});guardarDB();cerrarHoja();toast('Partida dada por perdida a quien no se presentó');render()},
   wzIr(el){WZ.paso=+el.dataset.p;render();scrollTo(0,0)},
-  impugnar(){RS.modo='impugnar';RS.pga=RS.pgb=null;hojaResultado(RS.id)},
-  pJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(K.res[RS.id].md),o=l==='a'?'pgb':'pga';const mot=$('fMot').value,por=$('fPor').value;RS['pg'+l]=v;if(v<W&&RS[o]!==W)RS[o]=W;if(v===W&&RS[o]===W)RS[o]=null;hojaResultado(RS.id);$('fMot').value=mot;$('fPor').value=por},
+  impugnar(){RS.modo='impugnar';RS.pga=RS.pgb=null;RS.imot='';RS.ipor=undefined;hojaResultado(RS.id)},
+  pJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(K.res[RS.id].md),o=l==='a'?'pgb':'pga';RS.imot=$('fMot').value;RS['pg'+l]=v;if(v<W&&RS[o]!==W)RS[o]=W;if(v===W&&RS[o]===W)RS[o]=null;hojaResultado(RS.id)},
   eJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(K.res[RS.id].md),o=l==='a'?'egb':'ega';RS['eg'+l]=v;if(v<W&&RS[o]!==W)RS[o]=W;if(v===W&&RS[o]===W)RS[o]=null;hojaResultado(RS.id);const dd=document.querySelector('#sheetIn details.como');if(dd)dd.open=true},
   orgProp(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id],p=r.disputa.prop;(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se acepta el resultado propuesto, '+r.ga+'–'+r.gb+' pasa a '+p.ga+'–'+p.gb});r.ga=p.ga;r.gb=p.gb;r.corregido=true;delete r.wo;delete r.disputa;guardarDB();cerrarHoja();toast('Resultado corregido y resuelto');render();if(avisosAbiertos().length)setTimeout(hojaCasos,60)},
   orgEdita(){const m=todos().find(x=>x.id===RS.id),r=K.res[RS.id],W=gana(r.md),{ega,egb}=RS;if(ega==null||egb==null||Math.max(ega,egb)!==W||Math.min(ega,egb)>=W){$('eErr').textContent=`Uno tiene que llegar a ${W} juegos y el otro quedarse por debajo.`;return}
@@ -1663,10 +1736,11 @@ const ACC={
   rechazar(){RS.modo='rechazar';hojaResultado(RS.id)},
   modoNo(){RS.modo=null;hojaResultado(RS.id)},
   noVino(el){RS.noVino=el.dataset.l;hojaResultado(RS.id)},
-  enviarImpugnar(){const mot=$('fMot').value.trim(),por=$('fPor').value.trim(),r=K.res[RS.id],W=gana(r.md),{pga,pgb}=RS;
+  enviarImpugnar(){const mot=$('fMot').value.trim(),por=RS.ipor,r=K.res[RS.id],W=gana(r.md),{pga,pgb}=RS;
     if(pga==null||pgb==null||Math.max(pga,pgb)!==W||Math.min(pga,pgb)>=W){$('rErr').textContent=`Marca el resultado correcto: uno llega a ${W} juegos y el otro se queda por debajo.`;return}
     if(pga===r.ga&&pgb===r.gb){$('rErr').textContent='El resultado que marcas es el mismo que el registrado.';return}
-    if(!mot){$('rErr').textContent='Explica qué no es correcto.';return}if(por)ls('cdc-por',por);
+    if(!mot){$('rErr').textContent='Explica qué no es correcto.';return}
+    if(!por){$('rErr').textContent='Elige quién impugna: tiene que ser uno de los cuatro jugadores.';return}ls('cdc-por',por);
     r.disputa={ts:Date.now(),motivo:mot,por,prop:{ga:pga,gb:pgb}};guardarDB();toast('Resultado impugnado: queda en revisión');RS.modo='avisar';hojaResultado(RS.id);render()},
   enviarReclamar(){const mot=$('fMot').value.trim(),por=$('fPor').value.trim();if(!RS.noVino){$('rErr').textContent='Indica qué pareja no se presentó.';return}if(!mot){$('rErr').textContent='Explica qué pasó (cuándo y dónde habíais quedado).';return}if(por)ls('cdc-por',por);
     const W=gana(RS.md),l=RS.noVino;K.res[RS.id]={ga:l==='a'?0:W,gb:l==='a'?W:0,md:RS.md,wo:l,fecha:hoy(),por,ts:Date.now(),reclamo:{ts:Date.now(),motivo:mot,por}};guardarDB();toast('Aviso registrado: decidirá el organizador');RS.modo='avisar';hojaResultado(RS.id);render()},
@@ -1685,12 +1759,21 @@ const ACC={
   orgAnula(){const m=todos().find(x=>x.id===RS.id);delete K.res[RS.id];(K.cambios=K.cambios||[]).push({ts:Date.now(),txt:etiqueta(m)+': se anula y vuelve a quedar pendiente'});guardarDB();cerrarHoja();toast('Anulada: la partida vuelve a estar pendiente');render()},
   plazo(el){WZ.plazoH=+el.dataset.v;render()},
   apOn(){WZ.ap.on=!WZ.ap.on;render()},
+  apManual(el){WZ.ap.manual=el.dataset.v;render()},
+  apRep(el){WZ.ap.reparto=WZ.ap.reparto===el.dataset.v?'':el.dataset.v;render()},
   apTipo(el){WZ.ap.tipo=el.dataset.v;render()},
   ayuda(){S.vista='ayuda';render();scrollTo(0,0)},
   regSub(el){S.regSub=el.dataset.v;render()},
   sortearEmp(el){const ids=el.dataset.k.split(',');(K.sorteoEmp=K.sorteoEmp||{})[claveEmp(ids)]=barajar(ids);guardarDB();toast('Orden sorteado');render()},
   desempate(el){hojaDesempate(el.dataset.a,el.dataset.b)},
   desempateGan(el){(K.desempates=K.desempates||[]).push({a:el.dataset.a,b:el.dataset.b,gan:el.dataset.g,ts:Date.now()});guardarDB();cerrarHoja();toast('Desempate registrado');render()},
+  orgIr(el){const v=el.dataset.v;
+    if(v==='datos')return hojaOrg('datos');
+    cerrarHoja();
+    if(v==='casos'){if(avisosAbiertos().length){RS=null;return hojaCasos()}return toast('No hay impugnaciones pendientes')}
+    if(v==='corregir'){S.tab='partidas';S.filtro='jugadas';render();scrollTo(0,0);return toast('Toca la partida que quieras corregir')}
+    if(v==='reglas'){S.tab='reglas';S.regSub='reglas';render();scrollTo(0,0);return toast('Usa ✏️ y 🗑️ en cada regla, o «Añadir regla»')}
+  },
   cerrarCamp(){K.cerrado=!K.cerrado;guardarDB();cerrarHoja();toast(K.cerrado?'Campeonato cerrado':'Campeonato reabierto');render()},
   irQuita(el){const id=el.dataset.id;IR.a=IR.a.filter(x=>x!==id);IR.b=IR.b.filter(x=>x!==id);IR.ga=IR.gb=null;hojaRegInd()},
   irJuego(el){const l=el.dataset.l,v=+el.dataset.v,W=gana(IR.md),o=l==='a'?'gb':'ga';IR['g'+l]=v;if(v<W&&IR[o]!==W)IR[o]=W;if(v===W&&IR[o]===W)IR[o]=null;hojaRegInd()},
@@ -1751,7 +1834,8 @@ document.addEventListener('input',e=>{const t=e.target;
   if(t.dataset.p!==undefined){const i=+t.dataset.p;WZ.part[i][t.dataset.f]=t.value;const a=document.querySelector(`[data-avi="${i}"]`);if(a){const p=WZ.part[i];a.innerHTML=WZ.modalidad==='individual'?av(p.j1||'?'):av(p.j1||'?')+av(p.j2||'?')}}
   if(t.dataset.w){WZ[t.dataset.w]=t.value;if(t.dataset.w==='nombre')$('wSlug').innerHTML='Su dirección será <b>'+location.host+'/'+esc(slug(t.value||'mi-campeonato'))+'</b>'}
   if(t.dataset.c){WZ.cal[t.dataset.c]=t.value}
-  if(t.dataset.ap){WZ.ap[t.dataset.ap]=t.value;if(t.dataset.ap==='cuota'){const b=document.querySelector('.bote');const c=+t.value.replace(',','.');if(b)b.textContent=c?(c*WZ.n).toLocaleString('es-ES')+' €':'–'}}
+  if(t.dataset.ap){WZ.ap[t.dataset.ap]=t.value;if(t.dataset.ap==='cuota'){const b=document.querySelector('.bote');const c=+t.value.replace(',','.');if(b)b.textContent=c>0?euros(c*WZ.n):'–';const rc=$('repCalc');if(rc)rc.innerHTML=repartoHTML(WZ)}
+    if(/^p[123]$/.test(t.dataset.ap)||t.dataset.ap==='cuota'){const rm=$('repMan');if(rm)rm.innerHTML=repManualHTML(WZ)}}
 });
 document.addEventListener('change',e=>{const t=e.target;
   if(t.id==='impCamp'){prodImport(t.files[0]);t.value='';return}
@@ -1855,7 +1939,7 @@ const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzoANzkVAMMYzcO3Dj3qwk
 const NOMBRES=['Luis','Pablo','Javi','Nacho','Carlos','Íñigo','Álvaro','Jorge','Dani','Rubén','Mario','Sergio','Andrés','Víctor','Raúl','Hugo','Miguel','Óscar','Diego','Iván','Alberto','Fernando','Marcos','Rafa','Toni','Guille','Paco','Manu','Quique','Jaime','Pedro','Luismi','Chema','Kike','Gonzalo','Borja','Lucas','Adrián','Samuel','Bruno','Héctor','Ángel','Tomás','Félix','Ramón','Emilio','Julián','Santi','Nico','Alex'];
 const APODOS=['Los del Órdago','Treinta y una','La Chica','Duples','Los Reyes','Pares y juego','Los Caballos','Mus corrido'];
 const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
-let VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
+let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id),kOrg=id=>SES['o'+id]||ls('cm-org-'+id);
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
@@ -1900,18 +1984,55 @@ function leerCache(id){try{return JSON.parse(localStorage.getItem(cacheKey(id)))
 async function cargarCamp(id,key,{slug}={}){
   const r=await api('get',{id,slug,key,version:id&&DB.camps[id]?VER[id]:undefined});
   const cid=r.id||id;
-  if(!r.igual){DB.camps[cid]=r.camp;VER[cid]=r.version}
+  if(!r.igual){DB.camps[cid]=r.camp;VER[cid]=r.version;BASE[cid]=JSON.parse(JSON.stringify(r.camp))}
   guardarCache(cid);return r;
 }
 function resumenDe(c){return con(c,()=>({n:c.part.length,progreso:Math.round(progreso()*100),terminado:!!terminado(),formato:resumenTexto()}))}
 
 /* ---------- Guardado: en cola, con reintentos ---------- */
 let cola=Promise.resolve(),pendiente=false;
+const J=x=>JSON.stringify(x===undefined?null:x),copiaP=x=>JSON.parse(JSON.stringify(x));
+/* Fusiona mis cambios (mio respecto a base) sobre la versión del servidor (srv). Devuelve {camp, choques} */
+function fusionar(base,mio,srv){
+  const out=copiaP(srv),choques=[];base=base||{};
+  const bR=base.res||{},mR=mio.res||{};out.res=out.res||{};
+  for(const id in mR){if(J(mR[id])===J(bR[id]))continue;
+    if(!(id in bR)){if(id in out.res&&J(out.res[id])!==J(mR[id]))choques.push(id);else out.res[id]=mR[id]}
+    else if(J(out.res[id])===J(bR[id]))out.res[id]=mR[id];else choques.push(id)}
+  for(const id in bR)if(!(id in mR)){if(J(out.res[id])===J(bR[id]))delete out.res[id];else choques.push(id)}
+  const mesasDe=c=>{const m={};(c.jornadas||[]).forEach(d=>(d.mesas||[]).forEach(x=>m[x.id]={...x,fecha:d.fecha}));return m};
+  const bM=mesasDe(base),oM=mesasDe(out);out.jornadas=out.jornadas||[];
+  Object.values(mesasDe(mio)).forEach(x=>{if(bM[x.id]||oM[x.id])return;let d=out.jornadas.find(z=>z.fecha===x.fecha);if(!d){d={fecha:x.fecha,mesas:[],descansan:[]};out.jornadas.push(d);out.jornadas.sort((a,b)=>a.fecha.localeCompare(b.fecha))}const{fecha,...m}=x;d.mesas.push(m)});
+  ['desempates','cambios','reglasLog'].forEach(f=>{const b=base[f]||[],m=mio[f]||[];if(m.length>b.length){out[f]=out[f]||[];m.slice(b.length).forEach(x=>{if(!out[f].some(y=>J(y)===J(x)))out[f].push(x)})}});
+  const bS=base.sorteoEmp||{},mS=mio.sorteoEmp||{};for(const k in mS)if(!(k in bS)){out.sorteoEmp=out.sorteoEmp||{};if(!(k in out.sorteoEmp))out.sorteoEmp[k]=mS[k]}
+  const hechos=new Set(['res','jornadas','desempates','cambios','reglasLog','sorteoEmp','resumen','_num','_numLen']);
+  new Set([...Object.keys(mio),...Object.keys(base)]).forEach(f=>{if(hechos.has(f))return;if(J(mio[f])===J(base[f]))return;if(J(out[f])===J(base[f]))out[f]=copiaP(mio[f]===undefined?null:mio[f]);else choques.push(f)});
+  return{camp:out,choques};
+}
 function guardarDB(){
   if(!K||!K.id)return;const c=K,id=c.id;c.resumen=resumenDe(c);guardarCache(id);
-  const copia=JSON.parse(JSON.stringify(c));pendiente=true;sync('guarda');
-  cola=cola.then(()=>api('save',{id,key:claveDe(id),camp:copia,version:VER[id]},4).then(r=>{VER[id]=r.version;guardarCache(id);pendiente=false;sync('ok')})
-    .catch(e=>{pendiente=false;sync('');if(e.data&&e.data.camp){DB.camps[id]=e.data.camp;VER[id]=e.data.version;guardarCache(id);if(K&&K.id===id)K=e.data.camp;cerrarHoja();render()}toast(e.red?'No se ha podido guardar: '+e.message:e.message)}));
+  pendiente=true;sync('guarda');
+  cola=cola.then(async()=>{
+    let envio=copiaP(DB.camps[id]||c);
+    for(let intento=0;intento<4;intento++){
+      try{const r=await api('save',{id,key:claveDe(id),camp:envio,version:VER[id]},4);VER[id]=r.version;BASE[id]=copiaP(envio);guardarCache(id);pendiente=false;sync('ok');return}
+      catch(e){
+        if(e.data&&e.data.error==='conflicto'&&e.data.camp){
+          const f=fusionar(BASE[id],envio,e.data.camp);
+          BASE[id]=copiaP(e.data.camp);VER[id]=e.data.version;envio=f.camp;
+          envio.resumen=con(envio,()=>resumenDe(envio));
+          DB.camps[id]=copiaP(envio);if(K&&K.id===id)K=DB.camps[id];guardarCache(id);
+          if(f.choques.length){toast('Otra persona registró la misma partida a la vez. Revisa el resultado que ha quedado.');}
+          if(!$('sheet').open)render();
+          continue;
+        }
+        pendiente=false;sync('');
+        if(e.data&&e.data.camp){DB.camps[id]=e.data.camp;VER[id]=e.data.version;BASE[id]=copiaP(e.data.camp);guardarCache(id);if(K&&K.id===id)K=e.data.camp;cerrarHoja();render()}
+        toast(e.red?'No se ha podido guardar: '+e.message:e.message);return;
+      }
+    }
+    pendiente=false;sync('');toast('Hay mucho movimiento en el campeonato: vuelve a intentarlo en unos segundos.');
+  });
 }
 window.addEventListener('beforeunload',e=>{if(pendiente){e.preventDefault();e.returnValue=''}});
 
@@ -1922,7 +2043,7 @@ function cargarDB(){
   if(MODO_CAMP){
     const q=Q.get('c'),c0=JSON.parse(localStorage.getItem('cm-slug-'+q)||'null');
     S.vista='camp';S.id=c0||null;
-    if(c0){const x=leerCache(c0);if(x&&x.camp&&claveDe(c0)){DB.camps[c0]=x.camp;VER[c0]=x.version}}
+    if(c0){const x=leerCache(c0);if(x&&x.camp&&claveDe(c0)){DB.camps[c0]=x.camp;VER[c0]=x.version;BASE[c0]=JSON.parse(JSON.stringify(x.camp))}}
     abrirPorSlug(q);return;
   }
   if(ADMKEY&&Q.get('admin')!==null)S.vista='admin';
@@ -1979,13 +2100,13 @@ ACC.entrar=async function(){
 ACC.entrarOrg=async function(){
   const id=S.id,k=$('orgKey').value.trim();
   try{const r=await api('rol',{id,key:k});if(r.rol!=='org'&&r.rol!=='admin')throw new Error('Clave de organizador incorrecta.');
-    ls('cm-org-'+id,k);S.org=true;S.orgDe=id;cerrarHoja();toast('Modo organizador activado');render();
+    ls('cm-org-'+id,k);S.org=true;S.orgDe=id;toast('Modo organizador activado');render();hojaOrg();
     if(S.trasOrg){const x=S.trasOrg;S.trasOrg=null;RS=null;setTimeout(()=>hojaResultado(x),50)}}
   catch(e){$('orgErr').textContent=e.message}
 };
 ACC.salirOrg=function(){S.org=false;cerrarHoja();toast('Has vuelto al modo jugador');render()};
 const _hojaOrg=ACC.org;
-ACC.org=function(){if(S.org||S.admin)return hojaOrg();const k=kOrg(S.id);if(k){S.org=true;S.orgDe=S.id;toast('Modo organizador activado');return render()}hojaOrg()};
+ACC.org=function(){hojaOrg()};
 ACC.guardarOrg=async function(){
   const n=$('oNombre').value.trim(),a=$('oAcc').value.trim();
   if(n&&n!==K.meta.nombre){K.meta.nombre=n;guardarDB()}
@@ -2110,7 +2231,7 @@ function crearCamp(){
   const acc=w.acceso.trim(),org=w.org.trim();
   const btn=document.querySelector('[data-acc="wzSig"],[data-acc="srCrear"]');if(btn){btn.disabled=true;btn.textContent='Creando…'}
   api('create',{camp:c,acceso:acc,org},2).then(r=>{
-    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;ls('cm-acc-'+r.id,acc);ls('cm-org-'+r.id,org);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));guardarCache(r.id);
+    c.id=r.id;DB.camps[r.id]=c;VER[r.id]=r.version;BASE[r.id]=JSON.parse(JSON.stringify(c));ls('cm-acc-'+r.id,acc);ls('cm-org-'+r.id,org);localStorage.setItem('cm-slug-'+c.slug,JSON.stringify(r.id));guardarCache(r.id);
     S.nuevo={id:r.id,acc,org};WZ=null;SR=null;S.vista='exito';render();scrollTo(0,0);
   }).catch(e=>{if(btn){btn.disabled=false;btn.textContent='✅ Crear campeonato'}toast(e.message)});
 }
