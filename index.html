@@ -778,6 +778,13 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .duo{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto minmax(0,1fr);gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;text-align:left}
 .duo b{font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.duo small{font-size:.7rem;color:var(--mute)}
 .duo b.v{color:var(--verde)}.duo b.d{color:var(--rojo)}
+
+.pos-row.mitad-g{border:1px solid rgba(127,217,156,.45)}
+.pos-row.mitad-r{border:1px solid rgba(230,107,96,.45)}
+
+.sg .sc.full{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;text-align:left}
+.sg .sc.full>div{text-align:left}
+.sg .sc.full span{display:block}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1147,7 +1154,7 @@ function matchHTML(m,sig){
   const r=K.res[m.id],e=estado(m),gA=r&&r.ga>r.gb,gB=r&&r.gb>r.ga,ind=Array.isArray(m.a),yo=S.yo&&lado(m,S.yo);
   const A=ind?ptInd(m.a,{gana:gA}):pt(m.a,{gana:gA,label:m.la}),B=ind?ptInd(m.b,{der:1,gana:gB}):pt(m.b,{der:1,gana:gB,label:m.lb});
   const ok=ind||jugable(m);
-  return `<button class="match ${yo?'mia':''} ${ok?'':'bye'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${A}<span class="centro">${r?`<span class="res">${r.ga}–${r.gb}</span>`:'<span class="vs">VS</span>'}${r&&r.castigo?'<span class="est e-cast">⚖️ Castigo</span>':sig&&!r?'<span class="est e-sig">▶️ Siguiente</span>':`<span class="est e-${e.c}">${e.t}</span>`}<span class="num-p">${esc(etiqueta(m).replace(/, grupo /,' · '))}</span>${r&&r.corregido?'<span class="est e-corr">✏️ Corregida</span>':''}</span>${B}${r?`<span class="reg-line"><span>📅 Registrada el ${fechaReg(r)}</span>${r.por?`<span>✍️ ${esc(r.por)}</span>`:''}</span>`:''}</button>`;
+  return `<button class="match ${yo&&!esInd()?'mia':''} ${ok?'':'bye'}" ${ok?`data-acc="resultado" data-id="${m.id}"`:'disabled'}>${A}<span class="centro">${r?`<span class="res">${r.ga}–${r.gb}</span>`:'<span class="vs">VS</span>'}${r&&r.castigo?'<span class="est e-cast">⚖️ Castigo</span>':sig&&!r?'<span class="est e-sig">▶️ Siguiente</span>':`<span class="est e-${e.c}">${e.t}</span>`}<span class="num-p">${esc(etiqueta(m).replace(/, grupo /,' · '))}</span>${r&&r.corregido?'<span class="est e-corr">✏️ Corregida</span>':''}</span>${B}${r?`<span class="reg-line"><span>📅 Registrada el ${fechaReg(r)}</span>${r.por?`<span>✍️ ${esc(r.por)}</span>`:''}</span>`:''}</button>`;
 }
 function forma(id){const h=historial(id).slice(-5),pad=Array(5-h.length).fill('<i class="N"></i>');return '<span class="forma">'+pad.join('')+h.map(x=>`<i class="${x.v?'V':'D'}">${x.v?'V':'D'}</i>`).join('')+'</span>'}
 function campeonHTML(id){const p=P(id);return `<div class="campeon"><div class="copa">🏆</div><small>Campeones</small><b>${esc(nom(id))}</b>${p.apodo?`<small>${esc(p.j1)} y ${esc(p.j2)}</small>`:''}</div>`}
@@ -1314,11 +1321,13 @@ function tInicio(){
 }
 
 /* ---- Tabla clara: PJ, PG y DJ ---- */
+/* liga individual: mitad de arriba en verde, mitad de abajo en rojo (los de abajo invitan a comer) */
+const mitadCls=(i,n)=>{const h=Math.floor(n/2);return i<h?'mitad-g':i>=n-h?'mitad-r':''};
 function tablaHTML(rows,o={}){
   const ind=esInd(),min=ind?tablaInd().min:0;
   return `<div class="tabla ${ind?'ind':''}"><div class="tabla-cab"><span>#</span><span>${ind?'Jugador':'Pareja'}</span><span>PJ</span><span>PG</span><span>DJ</span>${ind?'<span>Prom.</span>':''}</div>`+
   rows.map((r,i)=>{const ab=S.exp===r.id;const prev=rows[i-1];const igual=igualados(prev,r);if(!igual)o._p=i+1;const pos=o._p;
-    return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo?'yo':''} " data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
+    return `<button class="pos-row ${o.pasa&&i<o.pasa?'pasa':''} ${r.id===S.yo&&!esInd()?'yo':''} ${esInd()?mitadCls(i,rows.length):''}" data-acc="exp" data-id="${r.id}" aria-expanded="${ab}">
     <span class="pos ${pos<=3?'p'+pos:''}">${igual?'=':pos}</span>${pt(r.id)}<span class="num">${r.pj}</span><span class="num ${ind?'':'fuerte'}">${r.pg}</span><span class="num dj ${r.dj>0?'pos':r.dj<0?'neg':''}">${signo(r.dj)}</span>${ind?`<span class="num prom">${r.pj?r.prom.toFixed(2).replace('.',','):'–'}</span>`:''}
     ${ab?`<span class="detalle"><span class="mini"><b>${r.pp}</b><span>perdidas</span></span><span class="mini"><b>${r.jf}</b><span>juegos ganados</span></span><span class="mini"><b>${r.jc}</b><span>juegos perdidos</span></span><span class="mini"><span>últimas 5</span>${forma(r.id)}</span></span>`:''}</button>`}).join('')+
   `</div>${o.completa?cajaDesempates(rows,o):''}`;
@@ -2133,10 +2142,10 @@ const avsPar=ids=>`<span class="avs">${ids.map(x=>av(nom(x))).join('')}</span>`;
 function tEstadGeneral(){
   const rows=tablaInd().rows.filter(r=>r.pj),ps=partidasInd().filter(m=>!RV(m.id).castigo);
   if(!rows.length)return vacio('Aún no hay estadísticas','Aparecerán con las primeras partidas.');
-  const lider=rows[0],maxP=Math.max(...rows.map(r=>r.prom),.01),n=rows.length;
+  const lider=rows[0],maxP=Math.max(...rows.map(r=>r.prom),.01),n=tablaInd().rows.length;
   let h=`<div class="sg"><div class="sc"><b>${ps.length}</b><span>partidas jugadas</span></div><div class="sc"><b>${K.part.length}</b><span>jugadores</span></div>
     <div class="sc full">${av(nom(lider.id))}<div><b>${esc(nom(lider.id))}</b><span>Líder · ${pctS(lider.pg,lider.pj)} · ${lider.pg}/${lider.pj}</span></div></div></div>`;
-  h+=`<h2 class="sec">📈 Porcentaje de victorias</h2><div class="barras">${rows.map((r,i)=>{const col=i<3?'v':(i>=n-3&&n>6?'d':'n');return `<button class="bar-it" data-acc="verJug" data-j="${r.id}"><span class="bn">${esc(nom(r.id))}</span><span class="bt"><i class="${col}" style="width:${Math.max(8,r.prom/maxP*100)}%">${pctS(r.pg,r.pj)}</i></span><span class="br">${r.pg}/${r.pj}</span></button>`}).join('')}</div>`;
+  h+=`<h2 class="sec">📈 Porcentaje de victorias</h2><div class="barras">${rows.map((r,i)=>{const col=mitadCls(i,n)==='mitad-g'?'v':mitadCls(i,n)==='mitad-r'?'d':'n';return `<button class="bar-it" data-acc="verJug" data-j="${r.id}"><span class="bn">${esc(nom(r.id))}</span><span class="bt"><i class="${col}" style="width:${Math.max(8,r.prom/maxP*100)}%">${pctS(r.pg,r.pj)}</i></span><span class="br">${r.pg}/${r.pj}</span></button>`}).join('')}</div>`;
   const F=S.fPar||'',pares=parejasStats().filter(p=>!F||p.ids.includes(F));
   const ord=[...pares].sort((a,b)=>b.p-a.p||b.j-a.j),porJ=[...pares].sort((a,b)=>b.j-a.j||b.p-a.p);
   const chips=(acc,sel)=>`<div class="chips-f"><button data-acc="${acc}" data-v="" aria-pressed="${!sel}">Todos</button>${[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id))).map(p=>`<button data-acc="${acc}" data-v="${p.id}" aria-pressed="${sel===p.id}">${esc(nom(p.id))}</button>`).join('')}</div>`;
@@ -2351,7 +2360,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v24 · 14 oct';
+const APP_VER='v25 · 14 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
