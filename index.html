@@ -882,6 +882,78 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sd-step button{-webkit-appearance:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:1.1rem;font-weight:800;color:var(--oro2)}
 .sd-step button:disabled{opacity:.35}
 .sd-mesas-op button:disabled{opacity:.35}
+
+/* ---------- pestañas: caben 6 ---------- */
+.tabs [data-t]{min-width:0}
+.tabs [data-t] span,.tabs [data-t] small{font-size:.66rem}
+/* ---------- contador ---------- */
+.ct-intro{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.ct-ic{font-size:2rem}.ct-intro b{display:block;font-family:var(--serif);font-size:1.2rem}.ct-intro small{color:var(--mute);font-size:.86rem;line-height:1.35;display:block}
+.ct-par>b{display:block;font-family:var(--serif);font-size:1.05rem;margin-bottom:2px}
+.ct-sel{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--crema,#F4EDD8);border-radius:12px;padding:12px;font:inherit;font-size:1rem;margin-top:4px}
+.ct-vs{text-align:center;color:var(--oro2);font-weight:800;margin:12px 0 6px}
+.ct-sigue b{font-family:var(--serif);font-size:1.1rem}
+body.ct-abierto{overflow:hidden}
+#ctOv{position:fixed;inset:0;z-index:60;background:#0D2016;color:#F4EDD8;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.ct-mesa{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr)}
+.ct-mitad{display:flex;flex-direction:column;justify-content:space-between;padding:12px 14px;background:#3A1C1A;border-top:3px solid #B0574C;min-height:0}
+.ct-mitad.arriba{transform:rotate(180deg);background:#14321F;border-top-color:#3F8A5E}
+.ct-envt{font-size:.62rem;opacity:.7;font-weight:700;margin-bottom:3px}
+.ct-envs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.ct-env{border:1px solid rgba(244,237,216,.16);border-radius:10px;padding:2px 3px;display:flex;flex-direction:column;align-items:center;opacity:.75;background:rgba(0,0,0,.15)}
+.ct-env.lleno{opacity:1;border-color:#E7B94F}
+.ct-env small{font-size:.6rem;font-weight:800;opacity:.85}
+.ct-paso{display:flex;align-items:center;width:100%;gap:2px}.ct-paso b{flex:1;text-align:center;font-family:var(--serif);font-size:1rem}
+.ct-paso button{width:24px;height:24px;border-radius:7px;border:1px solid rgba(244,237,216,.2);background:rgba(0,0,0,.2);color:#F4EDD8;font-weight:800;padding:0}
+.ct-zona{display:flex;flex-direction:column;align-items:center;gap:8px}
+.ct-nombre{font-weight:800;font-size:1.05rem;text-align:center}
+.ct-puntos{display:flex;align-items:center;justify-content:center;gap:16px}
+.ct-num{font-family:var(--serif);font-weight:800;font-size:clamp(3.2rem,18vw,6rem);line-height:.9;min-width:2ch;text-align:center}
+.ct-num small{display:block;font-family:inherit;font-size:.8rem;opacity:.7;font-weight:700;line-height:1.4}
+.ct-r{width:54px;height:54px;border-radius:50%;border:1px solid rgba(244,237,216,.2);background:rgba(0,0,0,.2);color:#F4EDD8;font-size:1.6rem;font-weight:800}
+.ct-r.mas{background:#F3D488;color:#1A1A10;border-color:#F3D488}
+.ct-fin{display:flex;align-items:center;gap:10px;width:100%}
+.ct-barra{flex:1;height:10px;border-radius:5px;background:rgba(244,237,216,.15);overflow:hidden}.ct-barra i{display:block;height:100%;background:#E7B94F;transition:width .3s}
+.ct-jg{border:0;border-radius:12px;padding:10px 12px;font-weight:800;font-size:.9rem;background:#F3D488;color:#1A1A10;white-space:nowrap}
+.ct-franja{background:#0A1A11;display:flex;flex-direction:column;gap:5px;padding:6px 10px}
+.ct-ctrl{display:flex;justify-content:space-between;gap:6px}
+.ct-fb{border:1px solid rgba(244,237,216,.3);background:transparent;color:#F4EDD8;border-radius:12px;padding:7px 10px;font-weight:800;font-size:.82rem;white-space:nowrap}
+.ct-fb.oro{background:#F3D488;color:#1A1A10;border-color:#F3D488}
+.ct-tenis{display:flex;flex-direction:column;gap:2px;background:rgba(244,237,216,.06);border:1px solid rgba(244,237,216,.14);border-radius:10px;padding:4px 8px}
+.ct-tenis.girado{transform:rotate(180deg)}
+.ct-tenis .tr{display:grid;grid-template-columns:minmax(0,1fr) repeat(var(--n),30px) 52px;gap:4px;align-items:center}
+.ct-tenis .nm{font-size:.82rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ct-tenis .c{text-align:center;font-family:var(--serif);font-size:1rem;opacity:.6}
+.ct-tenis .c.gana{opacity:1;font-weight:800}
+.ct-tenis .c.vivo{opacity:1;font-weight:800;background:#F3D488;color:#1A1A10;border-radius:6px}
+.ct-tenis .tot{text-align:center;font-family:var(--serif);font-weight:800;font-size:1.1rem;color:#F3D488}
+.ct-tenis .cab span{font-family:inherit;font-size:.6rem;font-weight:800;opacity:.6;color:#F4EDD8}
+.ct-capa{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:61}
+.ct-capa.girada{align-items:flex-start}.ct-capa.girada .ct-vent{transform:rotate(180deg);background:#14321F}
+.ct-vent{background:#3A1C1A;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.ct-vent h2{font-family:var(--serif);margin:0 0 4px;font-size:1.35rem}.ct-vent p{margin:0 0 12px;opacity:.8;font-size:.92rem}
+.ct-pie{display:flex;gap:8px}.ct-pie button{flex:1;border:1px solid rgba(244,237,216,.25);background:transparent;color:#F4EDD8;border-radius:12px;padding:13px;font-weight:800}
+.ct-pie button.si{background:#F3D488;color:#1A1A10;border-color:#F3D488}
+.ct-aviso{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:#F3D488;color:#1A1A10;padding:14px 20px;border-radius:16px;font-weight:800;opacity:0;transition:.25s;pointer-events:none;z-index:62;text-align:center;max-width:86%}
+.ct-aviso.ver{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.ct-final{height:100%;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:6px}
+.ct-final h2{font-family:var(--serif);font-size:1.6rem;margin:0}.ct-res{font-family:var(--serif);font-size:3.2rem;font-weight:800;color:#F3D488}
+.ct-lista{width:100%;max-width:380px;display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.ct-lista div{display:flex;justify-content:space-between;gap:8px;background:rgba(244,237,216,.06);border:1px solid rgba(244,237,216,.14);border-radius:12px;padding:10px 12px;font-size:.9rem;text-align:left}
+.ct-btns{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px}
+@media (max-height:720px){.ct-num{font-size:3rem}.ct-r{width:46px;height:46px}.ct-zona{gap:5px}.ct-mitad{padding:8px 12px}.ct-franja{gap:3px;padding:4px 10px}}
+
+.ct-num{position:relative}
+.ct-delta{position:absolute;top:-6px;right:-34px;font-family:var(--serif);font-size:1.05rem;font-weight:800;background:#F3D488;color:#1A1A10;border-radius:10px;padding:1px 7px;animation:ctPop .25s ease-out;transition:opacity .3s}
+.ct-delta.neg{background:rgba(244,237,216,.85)}
+.ct-msg{min-height:26px;font-size:.82rem;font-weight:700;background:rgba(243,212,136,.16);border:1px solid rgba(243,212,136,.45);border-radius:20px;padding:3px 12px;text-align:center;animation:ctPop .25s ease-out;transition:opacity .3s}
+.ct-msg b{color:#F3D488;font-family:var(--serif);font-size:1rem}
+.ct-msg.vacio{background:none;border-color:transparent;animation:none}
+.ct-delta.fuera,.ct-msg.fuera{opacity:0}
+@keyframes ctPop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.ct-delta,.ct-msg{animation:none}}
+
+.ct-pie button.si.peligro{background:#C9574A;border-color:#C9574A;color:#fff}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1309,7 +1381,7 @@ function vLock(c){
 }
 
 /* ================= Vista de campeonato ================= */
-const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['sorteo','🎲','Sorteo'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']];
+const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['sorteo','🎲','Sorteo'],['estad','📊','Estadís.'],['reglas','📜','Reglas'],['contador','🧮','Contador']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Estadís.'],['reglas','📜','Reglas'],['contador','🧮','Contador']];
 function vCamp(){
   K=DB.camps[S.id];if(!K){S.vista='portal';return render()}
   if(esInd()&&S.tab==='tabla')S.tab='inicio';
@@ -1323,7 +1395,7 @@ function vCamp(){
     <p class="meta-linea">${resumenTexto()}<i>·</i>${n} ${esInd()?'jugadores':'parejas'}<i>·</i>${txtMD(m).replace('Mejor','al mejor')}</p>
     <div class="cbs">${est}${K.bloqueado?'<span class="cb est-off">⛔ Registro cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="cb est-ap">💶 Con apuesta</span>':''}</div></div></div>
     <nav class="tabs"><div class="in">${TABS().map(([k,i,t])=>`<button data-acc="tab" data-t="${k}" ${k===S.tab?'aria-current="page"':''}><span>${i}</span>${t}</button>`).join('')}</div></nav>`;
-  const cuerpo=({inicio:tInicio,tabla:tTabla,partidas:tPartidas,sorteo:()=>tSorteoInd(),estad:tEstad,reglas:tReglas}[S.tab]||tInicio)();
+  const cuerpo=({inicio:tInicio,tabla:tTabla,partidas:tPartidas,sorteo:()=>tSorteoInd(),estad:tEstad,reglas:tReglas,contador:()=>tContador()}[S.tab]||tInicio)();
   let fab='';
   if((S.tab==='partidas'||S.tab==='inicio')&&!terminado()&&(!K.bloqueado||S.org||S.admin)){
     if(porDias())fab=`<button class="fab" data-acc="regInd">＋ Registrar partida</button>`;
@@ -2467,6 +2539,106 @@ Object.assign(ACC,{
   async sdCompartir(){const s=K.sorteoHoy,t=`🎲 Sorteo de hoy · ${K.meta.nombre}\n\n`+s.mesas.map((m,i)=>`🃏 Mesa ${i+1}: ${m.a.map(nom).join(' y ')} vs ${m.b.map(nom).join(' y ')}`).join('\n')+(s.fuera.length?`\n🪑 Descansa: ${s.fuera.map(nom).join(', ')}`:'')+`\n\n${linkCamp(K)}`;
     if(navigator.share){try{await navigator.share({text:t})}catch(e){}}else{try{await navigator.clipboard.writeText(t);toast('Copiado: pégalo en el grupo')}catch(e){toast('No se pudo copiar')}}},
 });
+/* =====================================================================
+   🧮 Contador: «¿No tienes amarracos?» — marcador de la partida en vivo
+   ===================================================================== */
+const CT_META=40,CT_LANCES=[['grande','Grande'],['chica','Chica'],['pares','Pares'],['juego','Juego']];
+let CT=null,CTV={c:null};
+const ctKey=()=>'cm-ct-'+K.id;
+const ctGuardar=()=>{try{CT?localStorage.setItem(ctKey(),JSON.stringify(CT)):localStorage.removeItem(ctKey())}catch(e){}};
+const ctCargar=()=>{try{const x=localStorage.getItem(ctKey());return x?JSON.parse(x):null}catch(e){return null}};
+const ctEnv=()=>({grande:0,chica:0,pares:0,juego:0});
+const ctGan=l=>CT.juegos.filter(j=>j.g===l).length;
+const ctNecesita=()=>Math.floor(CT.mejorDe/2)+1;
+const ctNom=l=>l==='a'?CT.na:CT.nb;
+let CTSEL=null;
+
+function tContador(){
+  if(!CT||CT.camp!==K.id)CT=ctCargar();
+  const ind=esInd();
+  let h=`<div class="ct-intro"><span class="ct-ic">🧮</span><div><b>Contador</b><small>¿No tenéis amarracos? Llevad aquí la puntuación de la partida, juego a juego, y al terminar se registra en el campeonato.</small></div></div>`;
+  if(CT){h+=`<div class="card pad ct-sigue"><b>Hay una partida a medias</b><p class="sub">${esc(CT.na)} <b>${ctGan('a')}–${ctGan('b')}</b> ${esc(CT.nb)} · puntos ${CT.pa}–${CT.pb}</p>
+      <div class="acciones"><button class="btn" data-acc="ctAbrir">▶️ Seguir con el contador</button><button class="btn sec" data-acc="ctDescartar">Descartar</button></div></div>`;return h}
+  if(!CTSEL)CTSEL={a:['',''],b:['',''],md:K.meta.mejorDe||3};
+  const ops=sel=>{const lista=[...K.part].sort((x,y)=>nom(x.id).localeCompare(nom(y.id)));
+    return `<option value="">Elige…</option>${lista.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>${esc(nom(p.id))}</option>`).join('')}${ind?`<option value="EXT" ${sel==='EXT'?'selected':''}>👤 Externo (no es de la liga)</option>`:''}`};
+  const bloque=(l,n)=>`<div class="ct-par"><b>Pareja ${n}</b>${ind?[0,1].map(i=>`<label class="lbl">Jugador ${i+1}</label><select class="ct-sel" data-ct="${l}${i}">${ops(CTSEL[l][i])}</select>`).join(''):`<select class="ct-sel" data-ct="${l}0">${ops(CTSEL[l][0])}</select>`}</div>`;
+  h+=`<div class="card pad">${bloque('a',1)}<div class="ct-vs">contra</div>${bloque('b',2)}
+    <label class="lbl">Partida</label><div class="seg">${[3,5].map(v=>`<button data-acc="ctMd" data-v="${v}" aria-pressed="${CTSEL.md===v}">Al mejor de ${v}</button>`).join('')}</div>
+    <p class="nota">Cada juego se gana al llegar a ${CT_META} puntos. Deja el móvil en medio de la mesa: cada pareja tendrá su mitad de la pantalla.</p>
+    <p class="error" id="ctErr"></p>
+    <button class="btn" data-acc="ctEmpezar" style="width:100%;margin-top:6px">Empezar el contador</button></div>`;
+  return h;
+}
+function ctValidar(){const ind=esInd(),per=ind?2:1,a=CTSEL.a.slice(0,per),b=CTSEL.b.slice(0,per),todos=[...a,...b];
+  if(todos.some(x=>!x))return 'Elige '+(ind?'los cuatro jugadores':'las dos parejas')+'.';
+  if(todos.filter(x=>x==='EXT').length>1)return 'Solo puede jugar un externo por partida.';
+  if(new Set(todos.filter(x=>x!=='EXT')).size!==todos.filter(x=>x!=='EXT').length)return ind?'Un jugador no puede estar dos veces.':'Elige dos parejas distintas.';
+  return null}
+function ctEmpezar(){const e=ctValidar();if(e){$('ctErr').textContent=e;return}
+  const ind=esInd(),per=ind?2:1,fix=x=>x==='EXT'?'EXT1_'+uid(4):x;
+  const a=CTSEL.a.slice(0,per).map(fix),b=CTSEL.b.slice(0,per).map(fix),nm=ids=>ind?ids.map(x=>nom(x)).join(' y '):nom(ids[0]);
+  CT={camp:K.id,a,b,na:nm(a),nb:nm(b),mejorDe:CTSEL.md,pa:0,pb:0,juegos:[],env:ctEnv(),hist:[],fase:'mesa'};CTSEL=null;ctGuardar();ctPintar()}
+function ctApuntar(){CT.hist.push(JSON.stringify({pa:CT.pa,pb:CT.pb,juegos:CT.juegos,env:CT.env,fase:CT.fase}));if(CT.hist.length>60)CT.hist.shift()}
+function ctRacha(l,v){const b=CTV.burst;clearTimeout(ctRacha.t);clearTimeout(ctRacha.f);
+  CTV.burst=b&&b.l===l?{l,d:b.d+v}:{l,d:v};
+  ctRacha.t=setTimeout(()=>{document.querySelectorAll('.ct-delta,.ct-msg').forEach(x=>x.classList.add('fuera'));ctRacha.f=setTimeout(()=>{CTV.burst=null;ctPintar()},350)},2600)}
+function ctSumar(l,v,directo){ctApuntar();if(!directo&&v)ctRacha(l,v);else{CTV.burst=null}const k=l==='a'?'pa':'pb';CT[k]=Math.max(0,CT[k]+v);
+  if(directo||CT[k]>=CT_META){CT.juegos.push({g:l,pa:Math.min(CT.pa,CT_META),pb:Math.min(CT.pb,CT_META)});ctAviso(`Juego para ${ctNom(l)} · ${ctGan('a')}–${ctGan('b')}`);CT.pa=0;CT.pb=0;CT.env=ctEnv();if(ctGan(l)>=ctNecesita())CT.fase='fin'}
+  ctGuardar();ctPintar()}
+function ctAviso(t){let a=$('ctAviso');if(!a)return;a.textContent=t;a.classList.add('ver');clearTimeout(ctAviso.t);ctAviso.t=setTimeout(()=>a.classList.remove('ver'),1800)}
+function ctMitad(l,arriba){const v=l==='a'?CT.pa:CT.pb;
+  return `<section class="ct-mitad ${arriba?'arriba':''}">
+    <div><div class="ct-envt">Envites de la mano · opcional</div><div class="ct-envs">${CT_LANCES.map(([k,n])=>`<div class="ct-env ${CT.env[k]?'lleno':''}"><small>${n}</small><div class="ct-paso"><button data-ct-a="env" data-k="${k}" data-v="-1" aria-label="Menos a ${n}">−</button><b>${CT.env[k]||'—'}</b><button data-ct-a="env" data-k="${k}" data-v="1" aria-label="Más a ${n}">+</button></div></div>`).join('')}</div></div>
+    <div class="ct-zona">${(()=>{const b=CTV.burst;if(!b||!b.d||b.l===l)return '<div class="ct-msg vacio"></div>';const o=b.l,n=Math.abs(b.d);return `<div class="ct-msg">${esc(ctNom(o))} ${b.d>0?'se han sumado':'se han quitado'} <b>${n}</b> ${n===1?'punto':'puntos'}</div>`})()}<div class="ct-nombre">${esc(ctNom(l))}</div>
+      <div class="ct-puntos"><button class="ct-r" data-ct-a="sumar" data-l="${l}" data-v="-1" aria-label="Restar un punto">−</button><div class="ct-num">${v}<small>de ${CT_META}</small>${CTV.burst&&CTV.burst.l===l&&CTV.burst.d?`<span class="ct-delta ${CTV.burst.d<0?'neg':''}">${CTV.burst.d>0?'+':'−'}${Math.abs(CTV.burst.d)}</span>`:''}</div><button class="ct-r mas" data-ct-a="sumar" data-l="${l}" data-v="1" aria-label="Sumar un punto">+</button></div>
+      <div class="ct-fin"><div class="ct-barra"><i style="width:${Math.min(100,v/CT_META*100)}%"></i></div><button class="ct-jg" data-ct-a="juego" data-l="${l}" data-arriba="${arriba?1:0}">🏁 Juego ganado</button></div></div></section>`}
+function ctTenis(girado){const n=Math.min(CT.juegos.length+1,CT.mejorDe),cols=[...Array(n).keys()];
+  const celda=(l,i)=>{const j=CT.juegos[i];return j?`<span class="c ${j.g===l?'gana':''}">${l==='a'?j.pa:j.pb}</span>`:`<span class="c vivo">${l==='a'?CT.pa:CT.pb}</span>`};
+  const fila=l=>`<div class="tr"><span class="nm">${esc(ctNom(l))}</span>${cols.map(i=>celda(l,i)).join('')}<span class="tot">${ctGan(l)}</span></div>`;
+  return `<div class="ct-tenis ${girado?'girado':''}" style="--n:${n}"><div class="tr cab"><span></span>${cols.map(i=>`<span class="c">J${i+1}</span>`).join('')}<span class="tot">Juegos</span></div>${fila('a')}${fila('b')}</div>`}
+function ctPintar(){
+  let ov=$('ctOv');if(!CT||CT.cerrado){if(ov)ov.remove();document.body.classList.remove('ct-abierto');return}
+  if(!ov){ov=document.createElement('div');ov.id='ctOv';document.body.appendChild(ov)}document.body.classList.add('ct-abierto');
+  if(CT.fase==='fin'){const g=ctGan('a')>ctGan('b')?'a':'b';let x=0,y=0;
+    ov.innerHTML=`<div class="ct-final"><div style="font-size:3rem">🏆</div><h2>Ganan ${esc(ctNom(g))}</h2><div class="ct-res">${ctGan('a')}–${ctGan('b')}</div>
+      <div class="ct-lista">${CT.juegos.map((j,i)=>{j.g==='a'?x++:y++;return `<div><span>Juego ${i+1}: ${esc(ctNom(j.g))} (${j.pa}–${j.pb})</span><b>${x}–${y}</b></div>`}).join('')}</div>
+      <div class="ct-btns"><button class="btn" data-ct-a="registrar">📝 Registrar la partida</button><button class="btn sec" data-ct-a="deshacer">↩️ Deshacer el último juego</button><button class="btn sec" data-ct-a="salir">Salir sin registrar</button></div></div><div class="ct-aviso" id="ctAviso"></div>${ctSalirHTML()}`;return}
+  ov.innerHTML=`<div class="ct-mesa">${ctMitad('a',true)}<div class="ct-franja">${ctTenis(true)}
+      <div class="ct-ctrl"><button class="ct-fb" data-ct-a="deshacer" ${CT.hist.length?'':'disabled'}>↩️ Deshacer</button><button class="ct-fb" data-ct-a="cerrar">✕ Salir</button><button class="ct-fb oro" data-ct-a="ronda">Nueva ronda</button></div>${ctTenis(false)}</div>${ctMitad('b',false)}</div>
+    ${CTV.c?`<div class="ct-capa ${CTV.c.arriba?'girada':''}"><div class="ct-vent"><h2>¿Habéis ganado el juego?</h2><p>Se apuntará el juego a <b>${esc(ctNom(CTV.c.l))}</b> y el siguiente empezará a 0.</p><div class="ct-pie"><button data-ct-a="noJuego">No</button><button class="si" data-ct-a="siJuego">Sí, juego ganado</button></div></div></div>`:''}
+
+    <div class="ct-aviso" id="ctAviso"></div>${ctSalirHTML()}`;
+}
+function ctSalirHTML(){return CTV.salir?`<div class="ct-capa"><div class="ct-vent"><h2>¿Salir de la partida?</h2><p>No se guardará nada: se perderán los puntos y los juegos, y esta partida no se podrá continuar.</p><div class="ct-pie"><button data-ct-a="noSalir">Cancelar</button><button class="si peligro" data-ct-a="siSalir">Salir y borrar</button></div></div></div>`:''}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ct-a]');if(!t||t.disabled||!CT)return;const a=t.dataset.ctA;
+  if(a==='sumar')return ctSumar(t.dataset.l,+t.dataset.v);
+  if(a==='env'){ctApuntar();const k=t.dataset.k;CT.env[k]=Math.max(0,(CT.env[k]||0)+ +t.dataset.v);ctGuardar();return ctPintar()}
+  if(a==='juego'){CTV.c={l:t.dataset.l,arriba:t.dataset.arriba==='1'};return ctPintar()}
+  if(a==='siJuego'){const l=CTV.c.l;CTV.c=null;return ctSumar(l,0,true)}
+  if(a==='noJuego'){CTV.c=null;return ctPintar()}
+  if(a==='ronda'){ctApuntar();CT.env=ctEnv();ctGuardar();ctAviso('Nueva ronda: envites a cero');return ctPintar()}
+  if(a==='deshacer'){CTV.burst=null;const f=CT.hist.pop();if(f)Object.assign(CT,JSON.parse(f));ctGuardar();return ctPintar()}
+  if(a==='cerrar'){CTV.salir=true;return ctPintar()}
+  if(a==='noSalir'){CTV.salir=false;return ctPintar()}
+  if(a==='salir'){CTV.salir=true;return ctPintar()}
+  if(a==='siSalir'){CTV.salir=false;CTV.burst=null;CT=null;try{localStorage.removeItem(ctKey())}catch(e){}ctPintar();render();return toast('Partida descartada')}
+  if(a==='registrar')return ctRegistrar();
+});
+function ctRegistrar(){const c=CT,ga=ctGan('a'),gb=ctGan('b');CT=null;ctPintar();try{localStorage.removeItem(ctKey())}catch(e){}
+  if(esInd()||esLibre()){IR={a:[...c.a],b:[...c.b],ga,gb,md:c.mejorDe,fecha:hoy()};S.tab='partidas';render();hojaRegInd();return}
+  const A=c.a[0],B=c.b[0],lista=[...(K.partidos||[]),...(K.meta.formato!=='liga'&&typeof cuadro==='function'?[].concat(...cuadro()):[])];
+  const m=lista.find(x=>x&&!K.res[x.id]&&((x.a===A&&x.b===B)||(x.a===B&&x.b===A)));
+  if(!m){render();return toast('No hay ninguna partida pendiente entre estas parejas. Apunta el '+ga+'–'+gb+' en Partidas.')}
+  const inv=m.a===B;RS={id:m.id,ga:inv?gb:ga,gb:inv?ga:gb,md:c.mejorDe,modo:null,ega:null,egb:null,pga:null,pgb:null};S.tab='partidas';render();hojaResultado(m.id);
+}
+document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.ct||!CTSEL)return;const l=t.dataset.ct[0],i=+t.dataset.ct[1];CTSEL[l][i]=t.value;const er=$('ctErr');if(er)er.textContent=''});
+Object.assign(ACC,{
+  ctMd(el){CTSEL.md=+el.dataset.v;render()},
+  ctEmpezar(){ctEmpezar()},
+  ctAbrir(){ctPintar()},
+  ctDescartar(){if(!confirm('¿Descartar la partida a medias?'))return;CT=null;try{localStorage.removeItem(ctKey())}catch(e){}render()},
+});
 /* ================= Instrucciones ================= */
 const paso=(n,t,x)=>`<div class="ps"><span class="ps-n">${n}</span><div><b>${t}</b><p>${x}</p></div></div>`;
 const SUBS={'Qué es y para qué sirve':'La idea en 30 segundos','Crear un campeonato, paso a paso':'El asistente de 5 pasos','Formatos y modalidades':'Liga, liguilla, eliminatoria…','Cómo se ordena la clasificación':'Ganadas, diferencia y desempate','Si un resultado está mal':'Impugnar y corregir','Claves y roles':'Quién puede hacer qué','El administrador, en detalle':'Tu panel de control','Compartir y entrar':'Enlace, clave y tu pareja','Preguntas frecuentes':'Dudas habituales','Lo básico':'Para qué sirve cada pestaña','Registrar una partida':'En tres toques','Cómo se gana':'Criterios de este campeonato','Si un resultado está mal':'Impugnar o avisar','Cierre':'Cuándo termina','Quién puede hacer qué':'Jugadores y organizador','Jornadas':'En orden'};
@@ -2563,7 +2735,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v29 · 15 oct';
+const APP_VER='v32 · 15 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
