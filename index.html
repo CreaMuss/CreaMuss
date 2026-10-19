@@ -785,6 +785,74 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sg .sc.full{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;text-align:left}
 .sg .sc.full>div{text-align:left}
 .sg .sc.full span{display:block}
+
+.sr-hero{background:radial-gradient(circle at 50% 0%,rgba(231,185,79,.22),transparent 65%),var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 16px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.sr-hero b{font-family:var(--serif);font-size:1.25rem}.sr-hero small{color:var(--mute);font-size:.85rem}
+.sr-bombos{display:flex;gap:18px;margin-bottom:4px}
+.sd-mini{width:64px;height:64px;border-radius:50%;position:relative;overflow:hidden;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.3),rgba(255,255,255,.05) 60%),rgba(231,185,79,.1);border:2px solid rgba(231,185,79,.6);box-shadow:inset 0 0 14px rgba(0,0,0,.45)}
+.sd-giro2{position:absolute;inset:6px;display:flex;flex-wrap:wrap;gap:2px;align-content:center;justify-content:center;animation:giro 2.2s linear infinite}
+.sd-mini.b2 .sd-giro2{animation-direction:reverse;animation-duration:2.8s}
+.sd-giro2 i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,hsl(calc(var(--h)*1deg),70%,60%) 50%,hsl(calc(var(--h)*1deg),60%,35%))}
+@keyframes bomboGira{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg) translateY(-3px)}}
+.sr-pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:46vh;overflow:auto}
+.sr-pick button{display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card2);border-radius:12px;padding:8px;text-align:left}
+.sr-pick button b{font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-pick button[aria-pressed="true"]{border-color:var(--oro);background:rgba(231,185,79,.16)}
+.sr-cuenta{margin-top:10px;text-align:center;font-size:.9rem;color:var(--mute);background:var(--bg2);border-radius:12px;padding:10px}
+.sr-cuenta.ok{color:var(--crema);border:1px solid rgba(127,217,156,.4)}
+.sr-escena{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;margin:6px 0 12px}
+.sr-bombo{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.25),rgba(255,255,255,.04) 60%),rgba(231,185,79,.08);border:2px solid rgba(231,185,79,.55);position:relative;overflow:hidden;box-shadow:inset 0 0 20px rgba(0,0,0,.4)}
+.sr-giro{position:absolute;inset:8px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:3px;animation:giro 1.6s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+.sd-bola{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#F3D488 45%,#C9962C);color:#1A1A10;font-size:.55rem;font-weight:800;display:grid;place-items:center;text-transform:uppercase;transition:transform .3s,opacity .3s}
+.sd-bola.fuera{opacity:0;transform:scale(.2)}
+.sd-bola.grande{width:46px;height:46px;font-size:.9rem}
+.sr-sale{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:80px;justify-content:center;text-align:center}
+.sr-sale b{font-family:var(--serif);font-size:1.15rem}
+.sr-sale.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.3) translateY(-20px);opacity:0}100%{transform:scale(1);opacity:1}}
+.sr-mesas{display:flex;flex-direction:column;gap:8px}
+.sr-mesa{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.sr-mt{font-size:.74rem;font-weight:800;color:var(--oro2);text-transform:uppercase;letter-spacing:.04em}
+.sr-vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.sr-vs>i{font-style:normal;font-weight:800;color:var(--oro2);font-size:.8rem}
+.sr-par{display:flex;flex-direction:column;gap:5px}
+.sr-par>span{display:flex;align-items:center;gap:6px;min-width:0}.sr-par b{font-size:.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hueco{min-height:30px;border:1px dashed var(--line);border-radius:10px;padding:2px 6px;color:var(--mute);font-weight:800;justify-content:center}
+.hueco.lleno{border-style:solid;border-color:rgba(231,185,79,.5);color:var(--crema);justify-content:flex-start;animation:pop .4s}
+.sr-fuera{margin-top:8px;background:var(--bg2);border-radius:12px;padding:10px;font-size:.88rem;text-align:center}
+.sr-fuera .hueco{display:inline-flex;align-items:center;gap:6px}
+
+.sd-opc{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--oro2);border:1px solid rgba(231,185,79,.5);border-radius:20px;padding:2px 10px}
+
+.sr-vs{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr)!important}
+.sr-vs>i{text-align:center;background:rgba(231,185,79,.15);border-radius:50%;width:34px;height:34px;display:grid;place-items:center}
+.sr-par.der{align-items:flex-end}.sr-par.der>span{justify-content:flex-end;text-align:right}
+.sr-par.der .hueco{justify-content:center}.sr-par.der .hueco.lleno{justify-content:flex-end}
+.sr-mt{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.sd-ok{font-size:.72rem;font-weight:800;color:var(--verde);text-transform:none;letter-spacing:0}
+.sd-pend{font-size:.72rem;font-weight:800;color:var(--mute);text-transform:none;letter-spacing:0}
+.sr-mesa.hecha{border-color:rgba(127,217,156,.45);opacity:.85}
+.sd-pasos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;margin:4px 0}
+.sd-pasos span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.66rem;color:var(--mute);font-weight:700;line-height:1.15}
+.sd-pasos i{width:22px;height:22px;border-radius:50%;background:var(--oro);color:#1A1A10;font-style:normal;font-weight:800;display:grid;place-items:center;font-size:.72rem}
+.sd-fin{background:rgba(127,217,156,.12);border:1px solid rgba(127,217,156,.45);border-radius:14px;padding:12px;text-align:center;font-weight:700;font-size:.9rem;margin-top:10px}
+
+.sr-par,.sr-par.der{align-items:stretch!important}
+.sr-par>span{width:100%;box-sizing:border-box}
+.sr-par.der>span{justify-content:flex-end}
+.sr-par .hueco{justify-content:center!important}
+.sr-par .hueco.lleno{justify-content:flex-start!important}
+.sr-par.der .hueco.lleno{justify-content:flex-end!important}
+
+.sd-desc{background:rgba(231,185,79,.1);border:1px solid rgba(231,185,79,.45);border-radius:14px;padding:10px 12px;margin-bottom:10px}
+.sd-desc>b{display:block;font-size:.9rem}.sd-desc>small{display:block;color:var(--mute);font-size:.78rem;margin:2px 0 8px}
+.sd-desc-l{display:flex;flex-direction:column;gap:6px}
+.sd-desc-l button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;border:2px solid var(--line);background:var(--card2);border-radius:12px;padding:8px 10px;text-align:left}
+.sd-desc-l button span{font-size:.76rem;font-weight:800;color:var(--oro2)}
+.sd-desc-l button[aria-pressed="true"]{border-color:var(--verde);background:rgba(127,217,156,.14)}
+.sd-desc-l button[aria-pressed="true"] span{color:var(--verde)}
+.sr-pick button{position:relative}.sd-pin{position:absolute;top:2px;right:6px;font-size:.8rem}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1210,7 +1278,7 @@ function vLock(c){
 }
 
 /* ================= Vista de campeonato ================= */
-const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']];
+const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['sorteo','🎲','Sorteo'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Estadísticas'],['reglas','📜','Reglas']];
 function vCamp(){
   K=DB.camps[S.id];if(!K){S.vista='portal';return render()}
   if(esInd()&&S.tab==='tabla')S.tab='inicio';
@@ -1224,7 +1292,7 @@ function vCamp(){
     <p class="meta-linea">${resumenTexto()}<i>·</i>${n} ${esInd()?'jugadores':'parejas'}<i>·</i>${txtMD(m).replace('Mejor','al mejor')}</p>
     <div class="cbs">${est}${K.bloqueado?'<span class="cb est-off">⛔ Registro cerrado</span>':''}${(K.reglas||[]).some(r=>r.apuesta)?'<span class="cb est-ap">💶 Con apuesta</span>':''}</div></div></div>
     <nav class="tabs"><div class="in">${TABS().map(([k,i,t])=>`<button data-acc="tab" data-t="${k}" ${k===S.tab?'aria-current="page"':''}><span>${i}</span>${t}</button>`).join('')}</div></nav>`;
-  const cuerpo={inicio:tInicio,tabla:tTabla,partidas:tPartidas,estad:tEstad,reglas:tReglas}[S.tab]();
+  const cuerpo=({inicio:tInicio,tabla:tTabla,partidas:tPartidas,sorteo:()=>tSorteoInd(),estad:tEstad,reglas:tReglas}[S.tab]||tInicio)();
   let fab='';
   if((S.tab==='partidas'||S.tab==='inicio')&&!terminado()&&(!K.bloqueado||S.org||S.admin)){
     if(porDias())fab=`<button class="fab" data-acc="regInd">＋ Registrar partida</button>`;
@@ -2264,6 +2332,92 @@ Object.assign(ACC,{
 function hojaAjustesInd2(){const m=K.meta,keep={minPartidas:m.minPartidas,inact:m.inact};m.minPartidas=AJ.min;m.inact=AJ.inact;hojaAjustesInd();m.minPartidas=keep.minPartidas;m.inact=keep.inact}
 function textoMin(m){return m.minPartidas?`Para entrar en la clasificación final hay que haber jugado al menos ${m.minPartidas} partidas (las de castigo cuentan como jugadas). Mientras tanto se aparece en la tabla, pero marcado con ⏳.`:'No hay un mínimo de partidas para clasificar.'}
 function textoInact(m){const c=m.inact||{};return c.on===false?'No hay control de inactividad.':`Si un jugador pasa ${c.semanas||3} semanas sin jugar una partida normal, el organizador puede aplicarle una sanción: 3 partidas perdidas 0–3 (con jugadores ficticios «Castigo»), que cuentan como jugadas. La barra de inactividad está en Reglas.`}
+/* =====================================================================
+   🎲 Sorteo del día: quién juega hoy → mesas y parejas al azar
+   ===================================================================== */
+let SD=null;
+function azar(n){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}
+function barajarAzar(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=azar(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+/* ¿ya se ha registrado la partida sorteada? (mismos 4 jugadores, registrada después del sorteo) */
+function registradaDe(m,ts){const set=[...m.a,...m.b].sort().join('|');
+  return partidasInd().find(x=>{const r=RV(x.id);return(r.ts||0)>=ts&&!r.castigo&&[...x.a,...x.b].sort().join('|')===set})}
+function tSorteoInd(){
+  const s=K.sorteoHoy,esHoy=s&&s.fecha===hoy();
+  const hechas=esHoy?s.mesas.filter(m=>registradaDe(m,s.ts)).length:0,todas=esHoy&&hechas===s.mesas.length;
+  let h=`<div class="sr-hero"><div class="sr-bombos">${[1,2].map(k=>`<div class="sd-mini b${k}"><div class="sd-giro2">${Array.from({length:7},(_,j)=>`<i style="--h:${j*51}"></i>`).join('')}</div></div>`).join('')}</div>
+    <span class="sd-opc">Opcional</span><b>Sorteo de partidas</b>
+    <small>Una ayuda para decidir al azar quién juega con quién. No es obligatorio: podéis registrar partidas igual sin sortear.</small>
+    <div class="sd-pasos"><span><i>1</i>Quién está</span><span><i>2</i>Sortear</span><span><i>3</i>Jugar y registrar</span><span><i>4</i>Volver a sortear</span></div>
+    ${!esHoy||todas?`<button class="btn" data-acc="sdNuevo">🎲 ${esHoy?'Sortear nuevas partidas a jugar':'Sortear partidas a jugar'}</button>`:''}</div>`;
+  if(esHoy){
+    h+=`<h2 class="sec">🃏 ${s.mesas.length===1?'Partida a jugar':'Partidas a jugar'} <span class="chip">${hechas}/${s.mesas.length} registradas</span></h2>`+mesasHTML(s,true);
+    if(todas)h+=`<div class="sd-fin">✅ ¡Todas registradas! Cuando queráis, sortead las siguientes con el botón de arriba.</div>`;
+    else h+=`<div class="acciones"><button class="btn sec" data-acc="sdNuevo">🎲 Sortear nuevas partidas a jugar</button></div>`;
+  }else if(s)h+=`<p class="nota" style="text-align:center">Último sorteo: ${etiquetaDia(s.fecha)}.</p>`;
+  return h;
+}
+function mesasHTML(s,acciones){
+  const lado=(ids,der)=>`<div class="sr-par ${der?'der':''}">${ids.map(x=>`<span>${der?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`}</span>`).join('')}</div>`;
+  return `<div class="sr-mesas">${s.mesas.map((m,i)=>{const reg=acciones&&registradaDe(m,s.ts),r=reg&&RV(reg.id);
+    return `<div class="sr-mesa ${reg?'hecha':''}"><div class="sr-mt"><span>🃏 Partida ${i+1}</span>${reg?`<span class="sd-ok">✅ Registrada ${r.ga}–${r.gb}</span>`:acciones?'<span class="sd-pend">Por jugar</span>':''}</div>
+    <div class="sr-vs">${lado(m.a,false)}<i>VS</i>${lado(m.b,true)}</div>
+    ${acciones&&!reg?`<button class="btn peq" data-acc="sdRegistrar" data-i="${i}">📝 Registrar resultado</button>`:''}</div>`}).join('')}</div>
+    ${s.fuera.length?`<div class="sr-fuera">🪑 ${s.fuera.length===1?'Descansa':'Descansan'}: ${s.fuera.map(x=>`<b>${esc(nom(x))}</b>`).join(', ')}</div>`:''}
+    ${acciones?`<div class="acciones"><button class="btn sec" data-acc="sdCompartir">📤 Enviar al grupo</button></div>`:''}`;
+}
+function hojaQuienJuega(){
+  const n=SD.sel.length,mesas=Math.floor(n/4),fuera=n%4,ant=K.sorteoHoy&&K.sorteoHoy.fecha===hoy()?K.sorteoHoy.fuera.filter(x=>P(x)):[];
+  SD.fijos=(SD.fijos||[]).filter(x=>SD.sel.includes(x));
+  abrirHoja(`<h3 class="st">👥 ¿Quién juega ahora?</h3><p class="sub">Toca a los jugadores que están para jugar.</p>
+    ${ant.length?`<div class="sd-desc"><b>🪑 ${ant.length===1?'Descansó':'Descansaron'} en el sorteo anterior</b><small>Toca para que ${ant.length===1?'juegue':'jueguen'} seguro en estas partidas. Los demás se sortean.</small>
+      <div class="sd-desc-l">${ant.map(x=>`<button data-acc="sdFijo" data-id="${x}" aria-pressed="${SD.fijos.includes(x)}">${av(nom(x))}<b>${esc(nom(x))}</b><span>${SD.fijos.includes(x)?'✅ Juega seguro':'Que juegue seguro'}</span></button>`).join('')}</div></div>`:''}
+    <div class="sr-pick">${[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id))).map(p=>`<button data-acc="sdSel" data-id="${p.id}" aria-pressed="${SD.sel.includes(p.id)}">${av(nom(p.id))}<b>${esc(nom(p.id))}</b>${SD.fijos.includes(p.id)?'<span class="sd-pin">📌</span>':''}</button>`).join('')}</div>
+    <div class="sr-cuenta ${mesas?'ok':''}">${n<4?`Faltan ${4-n} para una partida`:`<b>${n} jugadores</b> → ${mesas} ${mesas===1?'partida a jugar':'partidas a la vez'}${fuera?` · ${fuera} ${fuera===1?'descansa':'descansan'}`:''}${SD.fijos.length&&mesas?`<br><small>📌 ${SD.fijos.map(x=>esc(nom(x))).join(' y ')} ${SD.fijos.length===1?'juega':'juegan'} seguro</small>`:''}`}</div>
+    <div class="acciones"><button class="btn" data-acc="sdSortear" ${mesas?'':'disabled'}>🎲 Sortear</button><button class="btn sec" data-acc="sdTodos">${n===K.part.length?'Quitar todos':'Todos'}</button></div>`);
+}
+/* animación tipo bombo: las bolas salen una a una a su hueco */
+function animarSorteo(){
+  const nm=Math.floor(SD.sel.length/4),plazas=nm*4,fijos=(SD.fijos||[]).filter(x=>SD.sel.includes(x)).slice(0,plazas);
+  const resto=barajarAzar(SD.sel.filter(x=>!fijos.includes(x))),juegan=barajarAzar([...fijos,...resto.slice(0,plazas-fijos.length)]);
+  const orden=[...juegan,...resto.slice(plazas-fijos.length)],mesas=[];
+  for(let i=0;i<nm;i++)mesas.push({a:[orden[i*4],orden[i*4+1]],b:[orden[i*4+2],orden[i*4+3]]});
+  const res={fecha:hoy(),ts:Date.now(),mesas,fuera:orden.slice(nm*4)};SD.res=res;SD.paso=0;
+  const huecos=[];mesas.forEach((m,i)=>{huecos.push(['m'+i+'a0',m.a[0]],['m'+i+'a1',m.a[1]],['m'+i+'b0',m.b[0]],['m'+i+'b1',m.b[1]])});res.fuera.forEach((x,k)=>huecos.push(['f'+k,x]));SD.huecos=huecos;
+  abrirHoja(`<h3 class="st">🎲 Sorteando ${nm===1?'la partida':'las partidas'}…</h3><div class="sr-escena"><div class="sr-bombo"><div class="sr-giro">${orden.map(x=>`<span class="sd-bola" data-b="${x}">${esc(nom(x).slice(0,2))}</span>`).join('')}</div></div><div class="sr-sale" id="srSale"></div></div>
+    <div class="sr-mesas">${mesas.map((m,i)=>`<div class="sr-mesa"><div class="sr-mt"><span>🃏 Partida ${i+1}</span></div><div class="sr-vs"><div class="sr-par"><span id="hm${i}a0" class="hueco">?</span><span id="hm${i}a1" class="hueco">?</span></div><i>VS</i><div class="sr-par der"><span id="hm${i}b0" class="hueco">?</span><span id="hm${i}b1" class="hueco">?</span></div></div></div>`).join('')}</div>
+    ${res.fuera.length?`<div class="sr-fuera">🪑 Descansa: ${res.fuera.map((x,k)=>`<span id="hf${k}" class="hueco">?</span>`).join(' ')}</div>`:''}
+    <div class="acciones" id="srAcc"><button class="btn sec" data-acc="sdSaltar">⏩ Saltar animación</button></div>`);
+  clearTimeout(SD.t);SD.t=setTimeout(pasoSorteo,700);
+}
+function pasoSorteo(){
+  if(!SD||!SD.huecos)return;
+  if(SD.paso>=SD.huecos.length)return finSorteo();
+  const[hid,x]=SD.huecos[SD.paso++],el=$('h'+hid),sale=$('srSale'),bola=document.querySelector(`.sd-bola[data-b="${x}"]`);
+  if(bola)bola.classList.add('fuera');
+  if(sale){sale.innerHTML=`<span class="sd-bola grande">${esc(nom(x).slice(0,2))}</span><b>${esc(nom(x))}</b>`;sale.classList.remove('pop');void sale.offsetWidth;sale.classList.add('pop')}
+  if(el){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}
+  SD.t=setTimeout(pasoSorteo,650);
+}
+function finSorteo(){clearTimeout(SD.t);
+  SD.huecos.forEach(([hid,x])=>{const el=$('h'+hid);if(el&&!el.classList.contains('lleno')){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}});
+  document.querySelectorAll('.sd-bola').forEach(b=>b.classList.add('fuera'));
+  const sale=$('srSale');if(sale)sale.innerHTML='<b>✅ ¡Sorteo hecho!</b>';
+  K.sorteoHoy=SD.res;guardarDB();
+  const acc=$('srAcc');if(acc)acc.innerHTML=`<button class="btn" data-acc="sdVer">Ver ${SD.res.mesas.length===1?'la partida':'las partidas'}</button><button class="btn sec" data-acc="sdRepetir">🔁 Repetir</button>`;
+}
+Object.assign(ACC,{
+  sdNuevo(){SD={sel:(K.sorteoHoy&&K.sorteoHoy.fecha===hoy())?[...K.sorteoHoy.mesas.flatMap(m=>[...m.a,...m.b]),...K.sorteoHoy.fuera].filter(x=>P(x)):[]};hojaQuienJuega()},
+  sdSel(el){const id=el.dataset.id;SD.sel=SD.sel.includes(id)?SD.sel.filter(x=>x!==id):[...SD.sel,id];hojaQuienJuega()},
+  sdFijo(el){const id=el.dataset.id;SD.fijos=SD.fijos||[];if(SD.fijos.includes(id))SD.fijos=SD.fijos.filter(x=>x!==id);else{SD.fijos.push(id);if(!SD.sel.includes(id))SD.sel.push(id)}hojaQuienJuega()},
+  sdTodos(){SD.sel=SD.sel.length===K.part.length?[]:K.part.map(p=>p.id);hojaQuienJuega()},
+  sdSortear(){if(SD.sel.length<4)return;animarSorteo()},
+  sdSaltar(){SD.paso=SD.huecos.length;finSorteo()},
+  sdRepetir(){animarSorteo()},
+  sdVer(){cerrarHoja();S.tab='sorteo';render()},
+  sdRegistrar(el){const m=K.sorteoHoy.mesas[+el.dataset.i];IR={a:[...m.a],b:[...m.b],ga:null,gb:null,md:K.meta.mejorDe||3,fecha:hoy()};hojaRegInd()},
+  async sdCompartir(){const s=K.sorteoHoy,t=`🎲 Sorteo de hoy · ${K.meta.nombre}\n\n`+s.mesas.map((m,i)=>`🃏 Mesa ${i+1}: ${m.a.map(nom).join(' y ')} vs ${m.b.map(nom).join(' y ')}`).join('\n')+(s.fuera.length?`\n🪑 Descansa: ${s.fuera.map(nom).join(', ')}`:'')+`\n\n${linkCamp(K)}`;
+    if(navigator.share){try{await navigator.share({text:t})}catch(e){}}else{try{await navigator.clipboard.writeText(t);toast('Copiado: pégalo en el grupo')}catch(e){toast('No se pudo copiar')}}},
+});
 /* ================= Instrucciones ================= */
 const paso=(n,t,x)=>`<div class="ps"><span class="ps-n">${n}</span><div><b>${t}</b><p>${x}</p></div></div>`;
 const SUBS={'Qué es y para qué sirve':'La idea en 30 segundos','Crear un campeonato, paso a paso':'El asistente de 5 pasos','Formatos y modalidades':'Liga, liguilla, eliminatoria…','Cómo se ordena la clasificación':'Ganadas, diferencia y desempate','Si un resultado está mal':'Impugnar y corregir','Claves y roles':'Quién puede hacer qué','El administrador, en detalle':'Tu panel de control','Compartir y entrar':'Enlace, clave y tu pareja','Preguntas frecuentes':'Dudas habituales','Lo básico':'Para qué sirve cada pestaña','Registrar una partida':'En tres toques','Cómo se gana':'Criterios de este campeonato','Si un resultado está mal':'Impugnar o avisar','Cierre':'Cuándo termina','Quién puede hacer qué':'Jugadores y organizador','Jornadas':'En orden'};
@@ -2360,7 +2514,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v25 · 14 oct';
+const APP_VER='v26 · 14 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
