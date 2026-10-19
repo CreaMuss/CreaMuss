@@ -2342,16 +2342,17 @@ function tEstadGeneral(){
   h+=`<h2 class="sec">⚔️ Enfrentamientos</h2>`+chips('fRiv',FR);
   if(FR){const lst=Object.entries(RVs[FR]||{}).map(([y,o])=>({y,...o})).sort((a,b)=>b.j-a.j);
     if(!lst.length)h+=`<p class="nota">${esc(nom(FR))} aún no se ha enfrentado a nadie.</p>`;
-    else{const mas=lst[0],menos=lst[lst.length-1],con2=lst.filter(x=>x.j>=2),dif=[...con2].sort((a,b)=>(a.g/a.j)-(b.g/b.j))[0],fav=[...con2].sort((a,b)=>(b.g/b.j)-(a.g/a.j))[0];
+    else{const mas=lst[0],menos=lst[lst.length-1],con2=lst.filter(x=>x.j>=2),dif=[...con2].filter(x=>x.j>x.g).sort((a,b)=>((b.j-b.g)/b.j)-((a.j-a.g)/a.j)||(b.j-b.g)-(a.j-a.g))[0],fav=[...con2].filter(x=>x.g>0).sort((a,b)=>(b.g/b.j)-(a.g/a.j)||b.g-a.g)[0];
       const rc=(cls,tit,x,val)=>x?`<button class="bw ${cls}" data-acc="verVs" data-j="${FR}" data-v="${x.y}"><span class="bw-l">${tit}</span>${av(nom(x.y))}<b>${esc(nom(x.y))}</b><span class="bw-v">${val}</span></button>`:'';
-      h+=`<div class="bw-grid">${rc('n','🔁 Más enfrentado',mas,mas.j+' veces · '+mas.g+'V '+(mas.j-mas.g)+'D')}${rc('n','🌱 Menos enfrentado',menos,menos.j+(menos.j===1?' vez':' veces'))}${rc('b','😤 Rival más difícil',dif,dif?'le gana el '+pctS(dif.g,dif.j):'')}${rc('g','😎 Rival favorito',fav,fav?'le gana el '+pctS(fav.g,fav.j):'')}</div>
+      h+=`<div class="bw-grid">${rc('n','🔁 Más enfrentado',mas,mas.j+' veces · '+mas.g+'V '+(mas.j-mas.g)+'D')}${rc('n','🌱 Menos enfrentado',menos,menos.j+(menos.j===1?' vez':' veces'))}${rc('b','😤 Rival más difícil',dif,dif?'pierde el '+pctS(dif.j-dif.g,dif.j)+' ('+(dif.j-dif.g)+' de '+dif.j+')':'')}${rc('g','😎 Rival favorito',fav,fav?'gana el '+pctS(fav.g,fav.j)+' ('+fav.g+' de '+fav.j+')':'')}</div>
         <div class="rel-lista" style="margin-top:8px">${lst.map(x=>`<button class="rel-fila" data-acc="verVs" data-j="${FR}" data-v="${x.y}">${av(nom(x.y))}<b>${esc(nom(x.y))}</b><span class="rel-n">${x.j} ${x.j===1?'vez':'veces'}</span><span class="rel-vd"><i class="v">${x.g}V</i> <i class="d">${x.j-x.g}D</i></span><span class="oo-fl">›</span></button>`).join('')}</div>`}}
   else{
     const PS=parejasStats();
-    const mejorComp=K.part.map(p=>{const c=PS.filter(x=>x.ids.includes(p.id)&&x.j>=3).sort((a,b)=>b.p-a.p)[0];return c?{id:p.id,o:c.ids.find(x=>x!==p.id),c}:null}).filter(Boolean);
-    const rivDif=K.part.map(p=>{const l=Object.entries(RVs[p.id]||{}).filter(([y,o])=>o.j>=3).sort((a,b)=>(a[1].g/a[1].j)-(b[1].g/b[1].j))[0];return l?{id:p.id,y:l[0],o:l[1]}:null}).filter(Boolean);
-    h+=`<h3 class="sub-sec">🤝 Mejor compañero de cada uno</h3>${mejorComp.length?`<div class="rel-lista">${mejorComp.map(x=>`<button class="duo" data-acc="verPar" data-a="${x.id}" data-b="${x.o}">${av(nom(x.id))}<b>${esc(nom(x.id))}</b><small>${pctS(x.c.g,x.c.j)} con</small>${av(nom(x.o))}<b class="v">${esc(nom(x.o))}</b></button>`).join('')}</div>`:'<p class="nota">Hace falta haber jugado al menos 3 partidas con el mismo compañero.</p>'}
-      <h3 class="sub-sec">😤 Rival más difícil de cada uno</h3>${rivDif.length?`<div class="rel-lista">${rivDif.map(x=>`<button class="duo" data-acc="verVs" data-j="${x.id}" data-v="${x.y}">${av(nom(x.id))}<b>${esc(nom(x.id))}</b><small>pierde el ${pctS(x.o.j-x.o.g,x.o.j)} vs</small>${av(nom(x.y))}<b class="d">${esc(nom(x.y))}</b></button>`).join('')}</div>`:'<p class="nota">Hacen falta al menos 3 enfrentamientos directos.</p>'}`}
+    const mejorComp=K.part.map(p=>{const c=PS.filter(x=>x.ids.includes(p.id)&&x.j>=3&&x.g>0).sort((a,b)=>b.p-a.p||b.g-a.g||b.j-a.j)[0];return c?{id:p.id,o:c.ids.find(x=>x!==p.id),c}:null}).filter(Boolean).sort((a,b)=>b.c.p-a.c.p);
+    const perd=o=>(o.j-o.g)/o.j;
+    const rivDif=K.part.map(p=>{const l=Object.entries(RVs[p.id]||{}).filter(([y,o])=>o.j>=3&&o.j>o.g).sort((a,b)=>perd(b[1])-perd(a[1])||(b[1].j-b[1].g)-(a[1].j-a[1].g)||b[1].j-a[1].j)[0];return l?{id:p.id,y:l[0],o:l[1]}:null}).filter(Boolean).sort((a,b)=>perd(b.o)-perd(a.o));
+    h+=`<h3 class="sub-sec">🤝 Mejor compañero de cada uno</h3>${mejorComp.length?`<div class="rel-lista">${mejorComp.map(x=>`<button class="duo" data-acc="verPar" data-a="${x.id}" data-b="${x.o}">${av(nom(x.id))}<b>${esc(nom(x.id))}</b><small>gana el ${pctS(x.c.g,x.c.j)} (${x.c.g} de ${x.c.j}) con</small>${av(nom(x.o))}<b class="v">${esc(nom(x.o))}</b></button>`).join('')}</div>`:'<p class="nota">Aparecerá cuando alguien haya jugado al menos 3 partidas con el mismo compañero y haya ganado alguna.</p>'}
+      <h3 class="sub-sec">😤 Rival más difícil de cada uno</h3>${rivDif.length?`<div class="rel-lista">${rivDif.map(x=>`<button class="duo" data-acc="verVs" data-j="${x.id}" data-v="${x.y}">${av(nom(x.id))}<b>${esc(nom(x.id))}</b><small>pierde el ${pctS(x.o.j-x.o.g,x.o.j)} (${x.o.j-x.o.g} de ${x.o.j}) contra</small>${av(nom(x.y))}<b class="d">${esc(nom(x.y))}</b></button>`).join('')}</div>`:'<p class="nota">Aparecerá cuando alguien se haya enfrentado al menos 3 veces al mismo rival y haya perdido alguna.</p>'}`}
   const jg=tablaInd().rows.filter(r=>r.jf).sort((a,b)=>b.jf-a.jf),mx=(jg[0]||{}).jf||1;
   if(jg.length)h+=`<h2 class="sec">🃏 Juegos ganados</h2><div class="jg-grid">${jg.map((r,i)=>`<div class="jg-card"><span class="pt-rk r${Math.min(i,3)}">${i+1}º</span>${av(nom(r.id))}<b>${esc(nom(r.id))}</b><span class="jg-n">${r.jf}</span><small>juegos</small><span class="pt-bar"><i style="width:${Math.round(r.jf/mx*100)}%"></i></span></div>`).join('')}</div>`;
   return h;
@@ -2746,7 +2747,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v34 · 19 oct';
+const APP_VER='v35 · 19 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
