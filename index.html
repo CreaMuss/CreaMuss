@@ -870,6 +870,18 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sheet button:focus:not(:focus-visible),dialog button:focus:not(:focus-visible){outline:none}
 
 .sd-dia{display:block;width:100%;margin:14px 0 4px;background:none;border:1px dashed var(--line);border-radius:14px;padding:12px;color:var(--mute);font-weight:800;font-size:.86rem}
+
+.sd-mesas-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:8px}
+.sd-mesas-op button{-webkit-appearance:none;appearance:none;border:2px solid var(--line);background:var(--card2);border-radius:12px;padding:8px 4px;display:flex;flex-direction:column;align-items:center}
+.sd-mesas-op b{font-family:var(--serif);font-size:1.4rem;line-height:1}.sd-mesas-op small{font-size:.7rem;color:var(--mute);font-weight:700}
+.sd-mesas-op button[aria-pressed="true"]{border-color:var(--oro);background:rgba(231,185,79,.18)}
+
+.sd-ext{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;background:var(--card2);border:1px dashed var(--line);border-radius:12px;padding:8px 10px;margin-top:8px}
+.sd-ext .av{margin:0}.sd-ext-tx b{display:block;font-size:.92rem}.sd-ext-tx small{font-size:.74rem;color:var(--mute)}
+.sd-step{display:flex;align-items:center;gap:8px}.sd-step b{min-width:18px;text-align:center;font-family:var(--serif);font-size:1.2rem}
+.sd-step button{-webkit-appearance:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:1.1rem;font-weight:800;color:var(--oro2)}
+.sd-step button:disabled{opacity:.35}
+.sd-mesas-op button:disabled{opacity:.35}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -2354,6 +2366,7 @@ function textoInact(m){const c=m.inact||{};return c.on===false?'No hay control d
 /* =====================================================================
    🎲 Sorteo del día: quién juega hoy → mesas y parejas al azar
    ===================================================================== */
+const avJ=x=>esExt(x)?'<span class="av ext">👤</span>':av(nom(x));
 let SD=null;
 function azar(n){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}
 function barajarAzar(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=azar(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -2377,7 +2390,7 @@ function tSorteoInd(){
   return h;
 }
 function mesasHTML(s,acciones){
-  const lado=(ids,der)=>`<div class="sr-par ${der?'der':''}">${ids.map(x=>`<span>${der?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`}</span>`).join('')}</div>`;
+  const lado=(ids,der)=>`<div class="sr-par ${der?'der':''}">${ids.map(x=>`<span>${der?`<b>${esc(nom(x))}</b>${avJ(x)}`:`${avJ(x)}<b>${esc(nom(x))}</b>`}</span>`).join('')}</div>`;
   return `<div class="sr-mesas">${s.mesas.map((m,i)=>{const reg=acciones&&registradaDe(m,s.ts),r=reg&&RV(reg.id);
     return `<div class="sr-mesa ${reg?'hecha':''}"><div class="sr-mt"><span>🃏 Partida ${i+1}</span>${reg?`<span class="sd-ok">✅ Registrada ${r.ga}–${r.gb}</span>`:acciones?'<span class="sd-pend">Por jugar</span>':''}</div>
     <div class="sr-vs">${lado(m.a,false)}<i>VS</i>${lado(m.b,true)}</div>
@@ -2386,23 +2399,34 @@ function mesasHTML(s,acciones){
     ${acciones?`<div class="acciones"><button class="btn sec" data-acc="sdCompartir">📤 Enviar al grupo</button></div>`:''}`;
 }
 function hojaQuienJuega(){
-  const n=SD.sel.length,mesas=Math.floor(n/4),fuera=n%4,ant=K.sorteoHoy&&K.sorteoHoy.fecha===hoy()?K.sorteoHoy.fuera.filter(x=>P(x)):[];
+  SD.ext=SD.ext||[];const n=SD.sel.length+SD.ext.length,maxM=Math.floor(n/4);if(SD.mesas&&(SD.mesas>maxM||SD.mesas<SD.ext.length))SD.mesas=null;
+  const mesas=SD.mesas||0,fuera=mesas?n-mesas*4:0,ant=K.sorteoHoy&&K.sorteoHoy.fecha===hoy()?K.sorteoHoy.fuera.filter(x=>P(x)):[];
   SD.fijos=(SD.fijos||[]).filter(x=>SD.sel.includes(x));
   abrirHoja(`<h3 class="st">👥 ¿Quién juega ahora?</h3><p class="sub">Toca a los jugadores que están para jugar.</p>
     ${ant.length?`<div class="sd-desc"><b>🪑 ${ant.length===1?'Descansó':'Descansaron'} en el sorteo anterior</b><small>Toca para que ${ant.length===1?'juegue':'jueguen'} seguro en estas partidas. Los demás se sortean.</small>
-      <div class="sd-desc-l">${ant.map(x=>`<button data-acc="sdFijo" data-id="${x}" aria-pressed="${SD.fijos.includes(x)}">${av(nom(x))}<b>${esc(nom(x))}</b><span>${SD.fijos.includes(x)?'✅ Juega seguro':'Que juegue seguro'}</span></button>`).join('')}</div></div>`:''}
+      <div class="sd-desc-l">${ant.map(x=>`<button data-acc="sdFijo" data-id="${x}" aria-pressed="${SD.fijos.includes(x)}">${avJ(x)}<b>${esc(nom(x))}</b><span>${SD.fijos.includes(x)?'✅ Juega seguro':'Que juegue seguro'}</span></button>`).join('')}</div></div>`:''}
     <div class="sr-pick">${[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id))).map(p=>`<button data-acc="sdSel" data-id="${p.id}" aria-pressed="${SD.sel.includes(p.id)}">${av(nom(p.id))}<b>${esc(nom(p.id))}</b>${SD.fijos.includes(p.id)?'<span class="sd-pin">📌</span>':''}</button>`).join('')}</div>
-    <div class="sr-cuenta ${mesas?'ok':''}">${n<4?`Faltan ${4-n} para una partida`:`<b>${n} jugadores</b> → ${mesas} ${mesas===1?'partida a jugar':'partidas a la vez'}${fuera?` · ${fuera} ${fuera===1?'descansa':'descansan'}`:''}${SD.fijos.length&&mesas?`<br><small>📌 ${SD.fijos.map(x=>esc(nom(x))).join(' y ')} ${SD.fijos.length===1?'juega':'juegan'} seguro</small>`:''}`}</div>
+    <div class="sd-ext"><span class="av ext">👤</span><span class="sd-ext-tx"><b>Externos</b><small>No son de la liga. Como máximo uno por mesa.</small></span><span class="sd-step"><button data-acc="sdExt" data-v="-1" ${SD.ext.length?'':'disabled'} aria-label="Quitar externo">−</button><b>${SD.ext.length}</b><button data-acc="sdExt" data-v="1" aria-label="Añadir externo">＋</button></span></div>
+    <label class="lbl">🃏 ¿Cuántas mesas hay disponibles? <span class="oblig">obligatorio</span></label>
+    ${maxM?`<div class="sd-mesas-op">${Array.from({length:Math.min(maxM,6)},(_,i)=>i+1).map(v=>`<button data-acc="sdMesas" data-v="${v}" aria-pressed="${mesas===v}" ${v<SD.ext.length?'disabled':''}><b>${v}</b><small>${v===1?'mesa':'mesas'}</small></button>`).join('')}</div>
+      <p class="nota">Cada mesa es una partida de 4 jugadores (2 parejas). Elige cuántas se pueden jugar a la vez: por barajas, sitio o porque así lo preferís.</p>`:`<p class="nota">Elige al menos 4 jugadores para poder elegir las mesas.</p>`}
+    <div class="sr-cuenta ${mesas?'ok':''}">${n<4?`Faltan ${4-n} para una partida`:!mesas?`<b>${n} jugadores${SD.ext.length?` (${SD.ext.length} ${SD.ext.length===1?'externo':'externos'})`:''}</b> · elige cuántas mesas`:`<b>${n} jugadores${SD.ext.length?` (${SD.ext.length} ${SD.ext.length===1?'externo':'externos'})`:''} · ${mesas} ${mesas===1?'mesa':'mesas'}</b> → juegan ${mesas*4}${fuera?` · ${fuera} ${fuera===1?'descansa':'descansan'}`:''}${SD.fijos.length?`<br><small>📌 ${SD.fijos.map(x=>esc(nom(x))).join(' y ')} ${SD.fijos.length===1?'juega':'juegan'} seguro</small>`:''}`}</div>
     <button class="sd-todos" data-acc="sdTodos">${n===K.part.length?'Quitar a todos':'Marcar a todos'}</button>
     <div class="acciones"><button class="btn" data-acc="sdSortear" ${mesas?'':'disabled'}>🎲 Sortear</button><button class="btn sec" data-acc="sdCancelar">Cancelar</button></div>`);
 }
 /* animación tipo bombo: las bolas salen una a una a su hueco */
 function animarSorteo(){
-  const nm=Math.floor(SD.sel.length/4),plazas=nm*4,fijos=(SD.fijos||[]).filter(x=>SD.sel.includes(x)).slice(0,plazas);
-  const resto=barajarAzar(SD.sel.filter(x=>!fijos.includes(x))),juegan=barajarAzar([...fijos,...resto.slice(0,plazas-fijos.length)]);
-  const orden=[...juegan,...resto.slice(plazas-fijos.length)],mesas=[];
-  for(let i=0;i<nm;i++)mesas.push({a:[orden[i*4],orden[i*4+1]],b:[orden[i*4+2],orden[i*4+3]]});
-  const res={fecha:hoy(),ts:Date.now(),mesas,fuera:orden.slice(nm*4)};SD.res=res;SD.paso=0;
+  const ext=SD.ext||[],total=SD.sel.length+ext.length,nm=Math.min(SD.mesas||0,Math.floor(total/4)),plazas=nm*4;
+  const fijos=(SD.fijos||[]).filter(x=>SD.sel.includes(x)).slice(0,plazas-ext.length);
+  const resto=barajarAzar(SD.sel.filter(x=>!fijos.includes(x))),libres=plazas-ext.length-fijos.length;
+  const liga=barajarAzar([...fijos,...resto.slice(0,libres)]),fueraL=resto.slice(libres);
+  /* cada externo va a una mesa distinta (como máximo uno por mesa) */
+  const huecosM=Array.from({length:nm},()=>[]),ordM=barajarAzar([...Array(nm).keys()]);
+  ext.forEach((x,k)=>huecosM[ordM[k]].push(x));
+  let q=0;huecosM.forEach(h=>{while(h.length<4)h.push(liga[q++])});
+  const mesas=huecosM.map(h=>{const t=barajarAzar(h);return{a:[t[0],t[1]],b:[t[2],t[3]]}});
+  const orden=[...mesas.flatMap(m=>[...m.a,...m.b]),...fueraL];
+  const res={fecha:hoy(),ts:Date.now(),mesas,fuera:fueraL};SD.res=res;SD.paso=0;
   const huecos=[];mesas.forEach((m,i)=>{huecos.push(['m'+i+'a0',m.a[0]],['m'+i+'a1',m.a[1]],['m'+i+'b0',m.b[0]],['m'+i+'b1',m.b[1]])});res.fuera.forEach((x,k)=>huecos.push(['f'+k,x]));SD.huecos=huecos;
   abrirHoja(`<h3 class="st">🎲 Sorteando ${nm===1?'la partida':'las partidas'}…</h3><div class="sr-escena"><div class="sr-bombo"><div class="sr-giro">${orden.map(x=>`<span class="sd-bola" data-b="${x}">${esc(nom(x).slice(0,2))}</span>`).join('')}</div></div><div class="sr-sale" id="srSale"></div></div>
     <div class="sr-mesas">${mesas.map((m,i)=>`<div class="sr-mesa"><div class="sr-mt"><span>🃏 Partida ${i+1}</span></div><div class="sr-vs"><div class="sr-par"><span id="hm${i}a0" class="hueco">?</span><span id="hm${i}a1" class="hueco">?</span></div><i>VS</i><div class="sr-par der"><span id="hm${i}b0" class="hueco">?</span><span id="hm${i}b1" class="hueco">?</span></div></div></div>`).join('')}</div>
@@ -2416,24 +2440,26 @@ function pasoSorteo(){
   const[hid,x]=SD.huecos[SD.paso++],el=$('h'+hid),sale=$('srSale'),bola=document.querySelector(`.sd-bola[data-b="${x}"]`);
   if(bola)bola.classList.add('fuera');
   if(sale){sale.innerHTML=`<span class="sd-bola grande">${esc(nom(x).slice(0,2))}</span><b>${esc(nom(x))}</b>`;sale.classList.remove('pop');void sale.offsetWidth;sale.classList.add('pop')}
-  if(el){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}
+  if(el){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${avJ(x)}`:`${avJ(x)}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}
   SD.t=setTimeout(pasoSorteo,650);
 }
 function finSorteo(){clearTimeout(SD.t);
-  SD.huecos.forEach(([hid,x])=>{const el=$('h'+hid);if(el&&!el.classList.contains('lleno')){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${av(nom(x))}`:`${av(nom(x))}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}});
+  SD.huecos.forEach(([hid,x])=>{const el=$('h'+hid);if(el&&!el.classList.contains('lleno')){el.innerHTML=/b\d$/.test(hid)?`<b>${esc(nom(x))}</b>${avJ(x)}`:`${avJ(x)}<b>${esc(nom(x))}</b>`;el.classList.add('lleno')}});
   document.querySelectorAll('.sd-bola').forEach(b=>b.classList.add('fuera'));
   const sale=$('srSale');if(sale)sale.innerHTML='<b>✅ ¡Sorteo hecho!</b>';
   K.sorteoHoy=SD.res;guardarDB();
   const acc=$('srAcc');if(acc)acc.innerHTML=`<button class="btn" data-acc="sdVer">Ver ${SD.res.mesas.length===1?'la partida':'las partidas'}</button><button class="btn sec" data-acc="sdRepetir">🔁 Repetir</button>`;
 }
 Object.assign(ACC,{
-  sdNuevo(){SD={sel:[],fijos:[]};hojaQuienJuega()},
+  sdNuevo(){SD={sel:[],fijos:[],mesas:null,ext:[]};hojaQuienJuega()},
   sdNuevoDia(){if(!confirm('¿Terminar el día? Se quitarán de esta pantalla las partidas sorteadas. Las partidas ya registradas no se borran.'))return;K.sorteoHoy=null;guardarDB();toast('Sorteo limpio: listo para el próximo día');render()},
   sdCancelar(){if(SD)clearTimeout(SD.t);SD=null;cerrarHoja()},
   sdSel(el){const id=el.dataset.id;SD.sel=SD.sel.includes(id)?SD.sel.filter(x=>x!==id):[...SD.sel,id];hojaQuienJuega()},
   sdFijo(el){const id=el.dataset.id;SD.fijos=SD.fijos||[];if(SD.fijos.includes(id))SD.fijos=SD.fijos.filter(x=>x!==id);else{SD.fijos.push(id);if(!SD.sel.includes(id))SD.sel.push(id)}hojaQuienJuega()},
   sdTodos(){SD.sel=SD.sel.length===K.part.length?[]:K.part.map(p=>p.id);hojaQuienJuega()},
-  sdSortear(){if(SD.sel.length<4)return;animarSorteo()},
+  sdSortear(){if(SD.sel.length<4)return;if(!SD.mesas)return toast('Elige cuántas mesas hay disponibles');animarSorteo()},
+  sdMesas(el){SD.mesas=+el.dataset.v;hojaQuienJuega()},
+  sdExt(el){SD.ext=SD.ext||[];if(+el.dataset.v>0){const max=Math.floor((SD.sel.length+SD.ext.length+1)/4);if(SD.ext.length>=Math.max(1,max))return toast('Como máximo un externo por mesa: añade más jugadores o mesas');SD.ext.push('EXT'+(SD.ext.length+1)+'_'+uid(4))}else SD.ext.pop();hojaQuienJuega()},
   sdSaltar(){SD.paso=SD.huecos.length;finSorteo()},
   sdRepetir(){animarSorteo()},
   sdVer(){cerrarHoja();S.tab='sorteo';render()},
@@ -2537,7 +2563,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v27 · 15 oct';
+const APP_VER='v29 · 15 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
