@@ -853,6 +853,18 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sd-desc-l button[aria-pressed="true"]{border-color:var(--verde);background:rgba(127,217,156,.14)}
 .sd-desc-l button[aria-pressed="true"] span{color:var(--verde)}
 .sr-pick button{position:relative}.sd-pin{position:absolute;top:2px;right:6px;font-size:.8rem}
+
+/* sorteo: nombres bien separados en cualquier móvil (sin depender de gap en flex) */
+.sr-pick{gap:8px}
+.sr-pick button{-webkit-appearance:none;appearance:none;display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:52px;padding:8px 12px;line-height:1.2}
+.sr-pick button .av{flex:0 0 auto;margin-right:10px}
+.sr-pick button b{flex:1 1 auto;min-width:0;font-size:.95rem}
+.sd-desc-l button .av{margin-right:10px}
+.sr-par>span .av{flex:0 0 auto;margin-right:8px}
+.sr-par.der>span .av{margin-right:0;margin-left:8px}
+.sr-par>span{min-height:34px}
+.hueco .av{margin-right:8px}.sr-par.der .hueco .av{margin-right:0;margin-left:8px}
+.sd-todos{display:block;margin:10px auto 0;background:none;border:0;color:var(--oro2);font-weight:800;font-size:.86rem;text-decoration:underline;padding:6px}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -2373,7 +2385,8 @@ function hojaQuienJuega(){
       <div class="sd-desc-l">${ant.map(x=>`<button data-acc="sdFijo" data-id="${x}" aria-pressed="${SD.fijos.includes(x)}">${av(nom(x))}<b>${esc(nom(x))}</b><span>${SD.fijos.includes(x)?'✅ Juega seguro':'Que juegue seguro'}</span></button>`).join('')}</div></div>`:''}
     <div class="sr-pick">${[...K.part].sort((a,b)=>nom(a.id).localeCompare(nom(b.id))).map(p=>`<button data-acc="sdSel" data-id="${p.id}" aria-pressed="${SD.sel.includes(p.id)}">${av(nom(p.id))}<b>${esc(nom(p.id))}</b>${SD.fijos.includes(p.id)?'<span class="sd-pin">📌</span>':''}</button>`).join('')}</div>
     <div class="sr-cuenta ${mesas?'ok':''}">${n<4?`Faltan ${4-n} para una partida`:`<b>${n} jugadores</b> → ${mesas} ${mesas===1?'partida a jugar':'partidas a la vez'}${fuera?` · ${fuera} ${fuera===1?'descansa':'descansan'}`:''}${SD.fijos.length&&mesas?`<br><small>📌 ${SD.fijos.map(x=>esc(nom(x))).join(' y ')} ${SD.fijos.length===1?'juega':'juegan'} seguro</small>`:''}`}</div>
-    <div class="acciones"><button class="btn" data-acc="sdSortear" ${mesas?'':'disabled'}>🎲 Sortear</button><button class="btn sec" data-acc="sdTodos">${n===K.part.length?'Quitar todos':'Todos'}</button></div>`);
+    <button class="sd-todos" data-acc="sdTodos">${n===K.part.length?'Quitar a todos':'Marcar a todos'}</button>
+    <div class="acciones"><button class="btn" data-acc="sdSortear" ${mesas?'':'disabled'}>🎲 Sortear</button><button class="btn sec" data-acc="sdCancelar">Cancelar</button></div>`);
 }
 /* animación tipo bombo: las bolas salen una a una a su hueco */
 function animarSorteo(){
@@ -2386,7 +2399,7 @@ function animarSorteo(){
   abrirHoja(`<h3 class="st">🎲 Sorteando ${nm===1?'la partida':'las partidas'}…</h3><div class="sr-escena"><div class="sr-bombo"><div class="sr-giro">${orden.map(x=>`<span class="sd-bola" data-b="${x}">${esc(nom(x).slice(0,2))}</span>`).join('')}</div></div><div class="sr-sale" id="srSale"></div></div>
     <div class="sr-mesas">${mesas.map((m,i)=>`<div class="sr-mesa"><div class="sr-mt"><span>🃏 Partida ${i+1}</span></div><div class="sr-vs"><div class="sr-par"><span id="hm${i}a0" class="hueco">?</span><span id="hm${i}a1" class="hueco">?</span></div><i>VS</i><div class="sr-par der"><span id="hm${i}b0" class="hueco">?</span><span id="hm${i}b1" class="hueco">?</span></div></div></div>`).join('')}</div>
     ${res.fuera.length?`<div class="sr-fuera">🪑 Descansa: ${res.fuera.map((x,k)=>`<span id="hf${k}" class="hueco">?</span>`).join(' ')}</div>`:''}
-    <div class="acciones" id="srAcc"><button class="btn sec" data-acc="sdSaltar">⏩ Saltar animación</button></div>`);
+    <div class="acciones" id="srAcc"><button class="btn sec" data-acc="sdSaltar">⏩ Saltar animación</button><button class="btn sec" data-acc="sdCancelar">Cancelar</button></div>`);
   clearTimeout(SD.t);SD.t=setTimeout(pasoSorteo,700);
 }
 function pasoSorteo(){
@@ -2406,7 +2419,8 @@ function finSorteo(){clearTimeout(SD.t);
   const acc=$('srAcc');if(acc)acc.innerHTML=`<button class="btn" data-acc="sdVer">Ver ${SD.res.mesas.length===1?'la partida':'las partidas'}</button><button class="btn sec" data-acc="sdRepetir">🔁 Repetir</button>`;
 }
 Object.assign(ACC,{
-  sdNuevo(){SD={sel:(K.sorteoHoy&&K.sorteoHoy.fecha===hoy())?[...K.sorteoHoy.mesas.flatMap(m=>[...m.a,...m.b]),...K.sorteoHoy.fuera].filter(x=>P(x)):[]};hojaQuienJuega()},
+  sdNuevo(){SD={sel:[],fijos:[]};hojaQuienJuega()},
+  sdCancelar(){if(SD)clearTimeout(SD.t);SD=null;cerrarHoja()},
   sdSel(el){const id=el.dataset.id;SD.sel=SD.sel.includes(id)?SD.sel.filter(x=>x!==id):[...SD.sel,id];hojaQuienJuega()},
   sdFijo(el){const id=el.dataset.id;SD.fijos=SD.fijos||[];if(SD.fijos.includes(id))SD.fijos=SD.fijos.filter(x=>x!==id);else{SD.fijos.push(id);if(!SD.sel.includes(id))SD.sel.push(id)}hojaQuienJuega()},
   sdTodos(){SD.sel=SD.sel.length===K.part.length?[]:K.part.map(p=>p.id);hojaQuienJuega()},
