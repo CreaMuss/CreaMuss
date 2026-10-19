@@ -784,7 +784,8 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 
 .sg .sc.full{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;text-align:left}
 .sg .sc.full>div{text-align:left}
-.sg .sc.full span{display:block}
+.sg .sc.full>div span{display:block}
+.sg .sc.full .av{display:grid;place-items:center;line-height:1;padding:0;font-size:1rem}
 
 .sr-hero{background:radial-gradient(circle at 50% 0%,rgba(231,185,79,.22),transparent 65%),var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 16px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
 .sr-hero b{font-family:var(--serif);font-size:1.25rem}.sr-hero small{color:var(--mute);font-size:.85rem}
@@ -885,7 +886,7 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 
 /* ---------- pestañas: caben 6 ---------- */
 .tabs [data-t]{min-width:0}
-.tabs [data-t] span,.tabs [data-t] small{font-size:.66rem}
+.tabs [data-t] span,.tabs [data-t] small{font-size:.72rem}
 /* ---------- contador ---------- */
 .ct-intro{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
 .ct-ic{font-size:2rem}.ct-intro b{display:block;font-family:var(--serif);font-size:1.2rem}.ct-intro small{color:var(--mute);font-size:.86rem;line-height:1.35;display:block}
@@ -954,6 +955,13 @@ body.ct-abierto{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.ct-delta,.ct-msg{animation:none}}
 
 .ct-pie button.si.peligro{background:#C9574A;border-color:#C9574A;color:#fff}
+
+.sg .sc:not(.full){display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.sg .sc.full .av{color:#1A1A10!important;font-weight:800;font-size:1.05rem!important}
+
+.ia-min{white-space:nowrap;font-size:.7rem!important}
+.ia-min.ok{background:rgba(127,217,156,.16);color:var(--verde)}
+.ia-top b{flex:1 1 auto}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1381,7 +1389,7 @@ function vLock(c){
 }
 
 /* ================= Vista de campeonato ================= */
-const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['sorteo','🎲','Sorteo'],['estad','📊','Estadís.'],['reglas','📜','Reglas'],['contador','🧮','Contador']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Estadís.'],['reglas','📜','Reglas'],['contador','🧮','Contador']];
+const TABS=()=>esInd()?[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['sorteo','🎲','Sorteo'],['estad','📊','Stats'],['reglas','📜','Reglas'],['contador','🧮','Contador']]:[['inicio','🏠','Inicio'],['partidas','🃏','Partidas'],['tabla','🏆',K.meta.formato==='ko'?'Cuadro':'Tabla'],['estad','📊','Stats'],['reglas','📜','Reglas'],['contador','🧮','Contador']];
 function vCamp(){
   K=DB.camps[S.id];if(!K){S.vista='portal';return render()}
   if(esInd()&&S.tab==='tabla')S.tab='inicio';
@@ -2241,16 +2249,19 @@ function minPartidas(){const m=K.meta;if(m.minPartidas!=null)return m.minPartida
 function partidasInd(){return mesas().filter(m=>RV(m.id))}
 /* Estado de participación de un jugador */
 function estadoJug(id){
-  const p=P(id),cfg=inactCfg(),ahora=Date.now();
+  const cfg=inactCfg(),hoy0=new Date();hoy0.setHours(0,0,0,0);
+  /* día (a medianoche) en que se jugó: la fecha de la partida, no la hora de registro */
+  const diaNum=r=>{const f=r.fecha?aF(r.fecha):fechaDe(r);if(!f)return 0;const x=new Date(f);x.setHours(0,0,0,0);return x.getTime()};
   let ultV=0,ultC=0,pj=0;
-  partidasInd().forEach(m=>{if(!m.a.includes(id)&&!m.b.includes(id))return;const r=RV(m.id),t=(fechaDe(r)||new Date(0)).getTime();pj++;if(r.castigo)ultC=Math.max(ultC,t);else ultV=Math.max(ultV,t)});
-  const base=ultV||p.alta||K.creado||ahora;
-  const ref=Math.max(base,ultC),dias=Math.floor((ahora-base)/DIA_MS),diasRef=Math.floor((ahora-ref)/DIA_MS);
-  const castigos=(K.castigos||[]).filter(c=>c.jug===id);
-  const min=minPartidas();
-  return{id,pj,min,ok:!min||pj>=min,falta:Math.max(0,min-pj),ultV,dias,cfg,castigos,
-    castigado:ultC>ultV,vence:cfg?Math.max(0,cfg.semanas*7-diasRef):null,toca:!!cfg&&diasRef>=cfg.semanas*7};
+  partidasInd().forEach(m=>{if(!m.a.includes(id)&&!m.b.includes(id))return;const r=RV(m.id),t=diaNum(r);pj++;if(r.castigo)ultC=Math.max(ultC,t);else ultV=Math.max(ultV,t)});
+  /* días completos sin jugar: jugó hoy o ayer = 0; anteayer = 1… El contador empieza con su primera partida */
+  const entre=t=>Math.max(0,Math.round((hoy0-t)/DIA_MS)),cal=ultV?entre(ultV):null,dias=ultV?Math.max(0,cal-1):0;
+  const ref=Math.max(ultV,ultC),diasRef=ultV?Math.max(0,entre(ref)-1):0;
+  const castigos=(K.castigos||[]).filter(c=>c.jug===id),min=minPartidas();
+  return{id,pj,min,ok:!min||pj>=min,falta:Math.max(0,min-pj),ultV,cal,dias,cfg,castigos,
+    castigado:ultC>ultV,vence:cfg&&ultV?Math.max(0,cfg.semanas*7-diasRef):null,toca:!!cfg&&!!ultV&&diasRef>=cfg.semanas*7};
 }
+
 /* ---------- Inicio ---------- */
 function tInicioInd(){
   let h=avisosHTML();const cp=campeon();
@@ -2368,12 +2379,12 @@ function tEstadJugador(){
 /* ---------- Reglas: participación, inactividad y castigos ---------- */
 function participacionHTML(){
   const cfg=inactCfg(),min=minPartidas(),org=S.org||S.admin;
-  const est=K.part.map(p=>estadoJug(p.id)).sort((a,b)=>(b.toca-a.toca)||(b.dias-a.dias));
+  const est=K.part.map(p=>estadoJug(p.id)).sort((a,b)=>(b.toca-a.toca)||(!!b.ultV-!!a.ultV)||(b.dias-a.dias));
   let h=`<div class="part-cab"><div><b>${min||'–'}</b><span>${min?'Partidas mínimas':'Sin mínimo de partidas'}</span></div>${cfg?`<div><b>${cfg.semanas}</b><span>semanas sin jugar = sanción</span></div>`:'<div><b>No</b><span>control de inactividad</span></div>'}</div>`;
   h+=`<div class="part-lista">${est.map(e=>{const seg=cfg?Array.from({length:cfg.semanas},(_,i)=>`<i class="${e.dias>=(i+1)*7?'on':e.dias>i*7?'mitad':''}"></i>`).join(''):'';
-    const txt=!e.ultV?'Aún no ha jugado':e.dias===0?'Jugó hoy':e.dias===1?'Jugó ayer':e.dias<7?`Hace ${e.dias} días`:`${Math.floor(e.dias/7)} ${Math.floor(e.dias/7)===1?'semana':'semanas'} sin jugar`;
+    const fUlt=e.ultV?new Date(e.ultV):null,txt=!e.ultV?'Aún no ha jugado · empieza a contar con su primera partida':e.cal===0?'Jugó hoy':e.cal===1?'Jugó ayer · 0 días sin jugar':`${e.dias} ${e.dias===1?'día':'días'} sin jugar · última: ${DIAS[fUlt.getDay()].slice(0,3)} ${fUlt.getDate()} ${MESES[fUlt.getMonth()].slice(0,3)}`;
     const estado=cfg?(e.toca?'<span class="ia-est riesgo">⚠️ Toca sanción</span>':e.castigado?`<span class="ia-est cast">⚖️ Castigo aplicado</span>`:e.vence!=null&&e.vence<=7?`<span class="ia-est aviso">⏳ Sanción en ${e.vence} ${e.vence===1?'día':'días'}</span>`:''):'';
-    return `<div class="ia-fila ${e.toca?'riesgo':''}"><div class="ia-top">${av(nom(e.id))}<b>${esc(nom(e.id))}</b><span class="ia-min ${e.ok?'ok':''}">${min?(e.ok?'✅':'⏳')+' '+e.pj+'/'+min:e.pj+' PJ'}</span></div>
+    return `<div class="ia-fila ${e.toca?'riesgo':''}"><div class="ia-top">${av(nom(e.id))}<b>${esc(nom(e.id))}</b><span class="ia-min ${e.ok?'ok':''}">${!min?`${e.pj} ${e.pj===1?'partida':'partidas'}`:e.ok?`✅ Mínimo completado · ${e.pj} partidas`:`⏳ ${e.pj} de ${min} partidas mínimas`}</span></div>
       ${cfg?`<div class="ia-barra">${seg}</div><div class="ia-sem">${Array.from({length:cfg.semanas},(_,i)=>`<span>${i+1} sem</span>`).join('')}</div>`:''}<div class="ia-pie"><small>${txt}${e.castigos.length?` · ${e.castigos.length} ${e.castigos.length===1?'castigo':'castigos'}`:''}</small>${estado}</div>
       ${e.toca?`<button class="btn peligro peq" data-acc="castigo" data-j="${e.id}">⚖️ Ejecutar sanción${org?'':' (organizador)'}</button>`:''}
       ${e.castigos.length?`<button class="link-btn" data-acc="verCastigos" data-j="${e.id}">Ver partidas de castigo ›</button>`:''}</div>`}).join('')}</div>`;
@@ -2735,7 +2746,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v32 · 15 oct';
+const APP_VER='v34 · 19 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
