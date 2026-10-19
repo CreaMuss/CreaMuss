@@ -865,6 +865,11 @@ details.guia[open] summary{background:linear-gradient(90deg,rgba(231,185,79,.10)
 .sr-par>span{min-height:34px}
 .hueco .av{margin-right:8px}.sr-par.der .hueco .av{margin-right:0;margin-left:8px}
 .sd-todos{display:block;margin:10px auto 0;background:none;border:0;color:var(--oro2);font-weight:800;font-size:.86rem;text-decoration:underline;padding:6px}
+
+#sheetIn:focus{outline:none}
+.sheet button:focus:not(:focus-visible),dialog button:focus:not(:focus-visible){outline:none}
+
+.sd-dia{display:block;width:100%;margin:14px 0 4px;background:none;border:1px dashed var(--line);border-radius:14px;padding:12px;color:var(--mute);font-weight:800;font-size:.86rem}
 /* Portada CreaMus */
 .landing{position:relative;text-align:center;padding:18px 6px 26px;margin:-14px -14px 0;background:radial-gradient(120% 70% at 50% 0%,rgba(231,185,79,.18),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(30,91,69,.55),transparent 70%),var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
 .landing::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 9px)}
@@ -1244,7 +1249,9 @@ const iconoFormato=c=>c.meta.modalidad==='individual'?'🎲':c.meta.libre?'🃏'
 function textoCal(m){const c=m.cal;return c.tipo==='dia'?'Un día':c.tipo==='dias'?c.ndias+' días':c.tipo==='jornadas'?'Jornada a jornada':'Temporada libre'}
 
 /* ================= Hoja inferior ================= */
-function abrirHoja(html){$('sheetIn').innerHTML='<div class="asa"></div>'+html;const d=$('sheet');if(!d.open)d.showModal()}
+function abrirHoja(html){$('sheetIn').innerHTML='<div class="asa"></div>'+html;const d=$('sheet');if(!d.open)d.showModal();
+  /* que el móvil no marque el primer botón al abrir (se veía como seleccionado) */
+  const si=$('sheetIn');si.setAttribute('tabindex','-1');const ae=document.activeElement;if(ae&&ae.tagName==='BUTTON'&&si.contains(ae)){ae.blur();si.focus({preventScroll:true})}}
 function cerrarHoja(){const d=$('sheet');if(d.open)d.close()}
 $('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))cerrarHoja()});
 /* Deslizar hacia abajo para cerrar la hoja */
@@ -2365,7 +2372,8 @@ function tSorteoInd(){
     h+=`<h2 class="sec">🃏 ${s.mesas.length===1?'Partida a jugar':'Partidas a jugar'} <span class="chip">${hechas}/${s.mesas.length} registradas</span></h2>`+mesasHTML(s,true);
     if(todas)h+=`<div class="sd-fin">✅ ¡Todas registradas! Cuando queráis, sortead las siguientes con el botón de arriba.</div>`;
     else h+=`<div class="acciones"><button class="btn sec" data-acc="sdNuevo">🎲 Sortear nuevas partidas a jugar</button></div>`;
-  }else if(s)h+=`<p class="nota" style="text-align:center">Último sorteo: ${etiquetaDia(s.fecha)}.</p>`;
+    h+=`<button class="sd-dia" data-acc="sdNuevoDia">🗓️ Terminar el día y limpiar el sorteo</button>`;
+  }
   return h;
 }
 function mesasHTML(s,acciones){
@@ -2420,6 +2428,7 @@ function finSorteo(){clearTimeout(SD.t);
 }
 Object.assign(ACC,{
   sdNuevo(){SD={sel:[],fijos:[]};hojaQuienJuega()},
+  sdNuevoDia(){if(!confirm('¿Terminar el día? Se quitarán de esta pantalla las partidas sorteadas. Las partidas ya registradas no se borran.'))return;K.sorteoHoy=null;guardarDB();toast('Sorteo limpio: listo para el próximo día');render()},
   sdCancelar(){if(SD)clearTimeout(SD.t);SD=null;cerrarHoja()},
   sdSel(el){const id=el.dataset.id;SD.sel=SD.sel.includes(id)?SD.sel.filter(x=>x!==id):[...SD.sel,id];hojaQuienJuega()},
   sdFijo(el){const id=el.dataset.id;SD.fijos=SD.fijos||[];if(SD.fijos.includes(id))SD.fijos=SD.fijos.filter(x=>x!==id);else{SD.fijos.push(id);if(!SD.sel.includes(id))SD.sel.push(id)}hojaQuienJuega()},
@@ -2528,7 +2537,7 @@ const Q=new URLSearchParams(location.search),MODO_CAMP=!!Q.get('c');
 let BASE={},VER={},LISTA=null,ADMKEY=sessionStorage.getItem('cm-adm')||'',SES={},CAMP_INFO=null;
 if(ADMKEY)S.admin=true;
 try{Object.keys(localStorage).filter(k=>k.startsWith('cm-org-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
-const APP_VER='v26 · 14 oct';
+const APP_VER='v27 · 15 oct';
 const kAcc=id=>SES['a'+id]||ls('cm-acc-'+id)||ls('cm-lock-'+id),kOrg=id=>SES['o'+id];
 function claveDe(id){return S.admin&&ADMKEY?ADMKEY:(kOrg(id)||kAcc(id)||'')}
 const base=()=>location.origin+location.pathname.replace(/[^/]*$/,'');
